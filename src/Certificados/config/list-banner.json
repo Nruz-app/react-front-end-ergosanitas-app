@@ -1,0 +1,12 @@
+[
+    {
+        "order" : 1, 
+        "url": "/banner01.jpg",
+        "caption": "Slide 1"
+    },
+    {
+        "order" : 2, 
+        "url": "/banner02.jpg",
+        "caption": "Slide 2"
+    }
+]

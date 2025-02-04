@@ -1,0 +1,70 @@
+
+[
+    {
+       "src": "/files/gallery/gallery01.jpg",
+       "width": 320,
+       "height": 174,
+       "isSelected": true,
+       "caption": "After Rain (Jeshu John - designerspics.com)"
+    },
+    {
+       "src": "/files/gallery/gallery02.jpg",
+       "width": 400,
+       "height": 212,
+       "tags": [
+          { "value": "Ocean", "title": "Ocean" },
+          { "value": "People", "title": "People" }
+       ],
+       "alt": "Boats (Jeshu John - designerspics.com)"
+    },
+    {
+       "src": "/files/gallery/gallery03.jpg",
+       "width": 320,
+       "height": 212
+    },
+    {
+      "src": "/files/gallery/gallery04.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery05.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery06.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery07.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery08.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery09.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery10.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery11.jpg",
+      "width": 320,
+      "height": 212
+   },
+   {
+      "src": "/files/gallery/gallery12.jpg",
+      "width": 320,
+      "height": 212
+   }
+ ]

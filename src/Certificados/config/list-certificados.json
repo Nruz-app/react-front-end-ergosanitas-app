@@ -1,0 +1,26 @@
+[
+    {
+        "rutUser":"16900918-k",
+        "url_pdf":"/files/certificados/16900918.pdf",
+        "name_pdf": "certificado-Nicolas-Ruz.pdf",
+        "titulo" : "Certificado Nicolas Ruz"
+    },
+    {
+        "rutUser":"22914716-1",
+        "url_pdf":"/files/certificados/22914716.pdf",
+        "name_pdf": "certificado-Alonso-Gallardo-Serrano.pdf",
+        "titulo" : "Certificado Alonso Gallardo Serrano"
+    },
+    {
+        "rutUser":"23393141-1",
+        "url_pdf":"/files/certificados/23393141.pdf",
+        "name_pdf": "certificado-Emilia-Norambuena-Mejias",
+        "titulo" : "Certificado Emilia Norambuena Mejias"
+    },
+    {
+        "rutUser":"23532247-1",
+        "url_pdf":"/files/certificados/23532247.pdf",
+        "name_pdf": "certificado-Sebastian-Viera-Alvarez",
+        "titulo" : "Certificado Sebastian Viera Alvarez"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "id" : "1",
+        "img" : 0,
+        "title" : "ECG a Domicilio",
+        "description" : "Es un servicio médico que permite realizar un examen del corazón desde la comodidad del hogar. Mediante equipos portátiles, se monitorea la actividad eléctrica del corazón, ayudando a detectar problemas cardíacos de manera rápida y conveniente, sin la necesidad de acudir a una clínica"
+    },
+    {
+        "id" : "2",
+        "img" : 1,
+        "title" : "Servicio Enfermeria",
+        "description" : "Brindando cuidados de salud como administración de medicamentos, curaciones, control de signos vitales y apoyo en la recuperación, todo en un entorno cómodo y seguro"
+    },
+    {
+        "id" : "3",
+        "img" : 2,
+        "title" : "Cheque Adulto Mayor",
+        "description" : "Es un servicio médico diseñado para evaluar la salud de personas mayores, realizando exámenes físicos, pruebas diagnósticas y evaluaciones geriátricas. Este chequeo integral ayuda a detectar condiciones de salud y a promover el bienestar, garantizando un envejecimiento saludable y activo"
+    },
+    {
+        "id" : "4",
+        "img" : 3,
+        "title" : "Cheque Deportista",
+        "description" : "Es una evaluación integral de la salud y condición física de los deportistas. Este servicio incluye exámenes médicos, pruebas de resistencia y análisis específicos para identificar el rendimiento y prevenir lesiones. Su objetivo es garantizar que los atletas estén en óptimas condiciones para practicar su deporte de manera segura y efectiva"
+    }   
+]

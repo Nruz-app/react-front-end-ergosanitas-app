@@ -1,0 +1,34 @@
+[
+    {
+        "order"        : 1, 
+        "type"         : "text",
+        "name"         : "rut_paciente",
+        "placeholder"  : "111111111-k",
+        "label"        : "Ingresa Rut Paciente",
+        "helperText"   : "Ingrese el Rut Paciente",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 1, 
+        "type"         : "text",
+        "name"         : "nombre_paciente",
+        "placeholder"  : "Juan Alonso Peres",
+        "label"        : "Ingresa Nombre paciente",
+        "helperText"   : "Ingrese Nombre paciente",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre es Requerido"
+            }
+        ]     
+    }
+]

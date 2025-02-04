@@ -1,0 +1,34 @@
+[
+    {
+        "order"        : 2, 
+        "type"         : "text",
+        "name"         : "userName",
+        "placeholder"  : "ergosanitas@ergosanitas.com",
+        "label"        : "Ingresa usuario",
+        "helperText"   : "Ingrese el nombre de usuario",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Usuario es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 2, 
+        "type"         : "password",
+        "name"         : "password",
+        "placeholder"  : "**************",
+        "label"        : "Ingresa password",
+        "helperText"   : "Ingrese la contraseña",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Password es Requerido"
+            }
+        ]     
+    }
+]

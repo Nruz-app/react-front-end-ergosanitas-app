@@ -1,0 +1,302 @@
+[
+    {
+        "order"        : 2,
+        "type"         : "text",
+        "name"         : "rut",
+        "placeholder"  : "1111111-k",
+        "label"        : "Ingresa Rut",
+        "helperText"   : "Ingrese el RUT con guin y sin puntos",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : false,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Rut es Requerido"
+            },
+            {
+                "type"    : "REGEX_RUN",
+                "message" : "El Formato de RUT no es válido"
+            }
+        ]      
+    },
+    {
+        "order"        : 1, 
+        "type"         : "text",
+        "name"         : "nombre",
+        "placeholder"  : "Juan Perez gonzalez",
+        "label"        : "Ingresa Nombre",
+        "helperText"   : "Ingrese el Nombre Complete",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : false,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre es Requerido"
+            },
+            {
+                "type"    : "LETRAS",
+                "message" : "Solo se permiten letras para este campo"
+            }
+        ]     
+    },
+    {
+        "order"        : 3,
+        "type"         : "DatePickers",
+        "name"         : "fechaNacimiento",
+        "placeholder"  : "10/102420",
+        "label"        : "Selecione una Fecha Nacimiento",
+        "helperText"   : "Seleccione una fecha de Nacimeinto",
+        "defaultValue" : "",
+        "values"       : [],
+        "disabledText" : false,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Fecha es Requerido"
+            }
+        ]    
+    },
+    {
+        "order"        : 4,
+        "type"         : "number",
+        "name"         : "edad",
+        "placeholder"  : "20",
+        "label"        : "Ingresa Edad",
+        "helperText"   : "Ingrese el edad",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : false,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Edad es Requerido"
+            },
+            {
+                "type"    : "MAX",
+                "value"   : 100,
+                "message" : "La edad debe ser menor a 100"
+            }
+        ]      
+    },
+    {
+        "order"        : 5,
+        "type"         : "text",
+        "name"         : "estatura",
+        "placeholder"  : "1.70",
+        "label"        : "Ingresa Estatura",
+        "helperText"   : "Ingrese el estatura",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Estatura es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 6,
+        "type"         : "text",
+        "name"         : "peso",
+        "placeholder"  : "82.2",
+        "label"        : "Ingresa Peso",
+        "helperText"   : "Ingrese el peso",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Peso es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 7,
+        "type"         : "text",
+        "name"         : "hemoglucotest",
+        "placeholder"  : "107",
+        "label"        : "Ingresa Hemoglucotest",
+        "helperText"   : "Ingrese el Hemoglucotest",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Hemoglucotest es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 8,
+        "type"         : "text",
+        "name"         : "pulso",
+        "placeholder"  : "74",
+        "label"        : "Ingresa Pulso",
+        "helperText"   : "Ingrese el Pulso",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Pulso es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 9,
+        "type"         : "text",
+        "name"         : "presionArterial",
+        "placeholder"  : "123/68",
+        "label"        : "Ingresa Presion Arterial",
+        "helperText"   : "Ingrese el Presion Arterial",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Presion Arterial es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 10,
+        "type"         : "text",
+        "name"         : "saturacionOxigeno",
+        "placeholder"  : "98",
+        "label"        : "Ingresa Saturacion de Oxigeno",
+        "helperText"   : "Ingrese el Saturacion de Oxigeno",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Saturacion de Oxigeno es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 11,
+        "type"         : "text",
+        "name"         : "temperatura",
+        "placeholder"  : "36.5",
+        "label"        : "Ingresa Temperatura",
+        "helperText"   : "Ingrese Temperatura",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Temperatura es Requerido"
+            },
+            {
+                "type"    : "MAX",
+                "value"     : 4,
+                "message" : "max 4"
+            }
+        ]      
+    },
+    {
+        "order"        : 12,
+        "type"         : "text",
+        "name"         : "imc",
+        "placeholder"  : "18",
+        "label"        : "Ingresa Indice de Masa Corporal",
+        "helperText"   : "Ingrese Indice de Masa Corporal",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Indice de Masa Corporal es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 13,
+        "type"         : "text",
+        "name"         : "enfermedadesCronicas",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Enfermedades Cronicas",
+        "helperText"   : "Ingrese Enfermedades Cronicas",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 14,
+        "type"         : "text",
+        "name"         : "medicamentosDiarios",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Medicamentos de uso Diarios",
+        "helperText"   : "Ingrese Medicamentos de uso Diarios",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 15,
+        "type"         : "text",
+        "name"         : "sistemaOsteoarticular",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Sistema Osteoarticular",
+        "helperText"   : "Ingrese sistema Osteoarticular",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 16,
+        "type"         : "text",
+        "name"         : "sistemaCardiovascular",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Sistema Cardiovascular",
+        "helperText"   : "Ingrese sistema Cardiovascular",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 17,
+        "type"         : "text",
+        "name"         : "enfermedadesAnteriores",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Presencia de enfermedades anteriores que afecten la actividad física",
+        "helperText"   : "Ingrese Presencia de enfermedades anteriores que afecten la actividad física",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 18,
+        "type"         : "text",
+        "name"         : "Recuperacion",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Recuperación lograda en los casos",
+        "helperText"   : "Ingrese Recuperación lograda en los casos",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    },
+    {
+        "order"        : 19,
+        "type"         : "text",
+        "name"         : "gradoIncidenciaPosterio",
+        "placeholder"  : "N/A",
+        "label"        : "Ingresa Grado de incidencia posterio",
+        "helperText"   : "Ingrese Grado de incidencia posterio",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true      
+    }
+
+]

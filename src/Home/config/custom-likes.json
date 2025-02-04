@@ -1,0 +1,13 @@
+[
+    {
+        "order"        : 1,
+        "type"         : "text",
+        "name"         : "textoValue",
+        "placeholder"  : "Buscar un de Nuestros Servicios",
+        "label"        : "Ingresa un Servicios",
+        "helperText"   : "Ingrese un Servicio",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : []      
+    }
+]
