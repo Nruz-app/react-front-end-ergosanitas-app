@@ -80,7 +80,6 @@ export const ChequeoView = ({chequeoView}: Props) => {
                         { label: 'Presión Arterial', value: chequeoView.presionArterial },
                         { label: 'Saturación Oxígeno', value: chequeoView.saturacionOxigeno },
                         { label: 'Temperatura', value: chequeoView.temperatura },
-                        { label: 'IMC', value: chequeoView.imc },
                         { label: 'Enfermedades Crónicas', value: chequeoView.enfermedadesCronicas },
                         { label: 'Medicamentos Diarios', value: chequeoView.medicamentosDiarios },
                         { label: 'Sistema Osteoarticular', value: chequeoView.sistemaOsteoarticular },

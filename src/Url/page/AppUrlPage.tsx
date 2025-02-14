@@ -1,9 +1,12 @@
 import { Box, Typography } from "@mui/material"
 
-
 import { CertificadoForm } from "../components/CertificadoForm"
+import { useParams } from "react-router-dom";
 
 const AppUrlPage = () => {
+
+    const { rut_paciente_path } = useParams();
+
   return (
     <>
         <Box ml={15} mt={8} sx={{ flexGrow: 1 }}>
@@ -20,10 +23,11 @@ const AppUrlPage = () => {
                     animation: 'fadeInDownBig 1s ease-out'
                 }}
             >
-                Cargar Certificado
+                Cargar Certificado {rut_paciente_path}
             </Typography>
         </Box>
-        <CertificadoForm />
+        <CertificadoForm
+        />
     </>
   )
 }

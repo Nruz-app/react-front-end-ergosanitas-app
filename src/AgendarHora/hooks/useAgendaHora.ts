@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 
 const useAgendaHora = (agendaHora?: IAgendaHora) => {
 
-    const {control,reset,handleSubmit,formState: { errors },} = useForm({
+    const {control,reset,handleSubmit,setValue,formState: { errors },} = useForm({
         resolver: yupResolver<IAgendaHora | any>(agendaHoraValidationSchema),
         context: { agendaHora },
         mode: "all",
@@ -30,7 +30,7 @@ const useAgendaHora = (agendaHora?: IAgendaHora) => {
       
       }, [agendaHora, reset]);
   
-      return { control, reset, handleSubmit, errors };
+      return { control, reset, handleSubmit,setValue, errors };
 }
 
 export default useAgendaHora;

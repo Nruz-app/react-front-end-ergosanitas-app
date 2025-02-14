@@ -1,10 +1,10 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IColumnsTable } from "../../common/table/interface/table.interface";
 import { UseChequeoService } from "../services/useChequeoService";
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
+import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow  } from "@mui/material";
 
 import { IChequeo } from '../interface';
-import { DownloadPDF,LikeTextCheque } from "./";
+import { DownloadPDF } from "./";
 
 import { LoginContext, ModalContext } from '../../common/context';
 
@@ -14,8 +14,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-
+import { useNavigate } from "react-router-dom";
 import { type formData } from '../interface/';
+
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
+import { FilterTable } from "./filters/FilterTable";
+
 
 let rows:IChequeo[] = [];
 
@@ -31,6 +35,8 @@ export const ChequeoTable = (  {
   handleViewData
 } : Props ) => {
 
+
+   const navigate = useNavigate();
 
    const { user }  = useContext( LoginContext );
    const { user_email,user_perfil }  = user;
@@ -125,6 +131,10 @@ export const ChequeoTable = (  {
 
     }
 
+    const handRedictCertificado  = async (rut_paciente : string) => {
+      navigate(`/certificado/${rut_paciente}`);
+    } 
+
 
     const fetchAgendaHoras = useCallback(async (): Promise<void> => {
 
@@ -152,50 +162,45 @@ export const ChequeoTable = (  {
     }, [setStatusTable]);
 
 
-  
       return (
-        <Box ml={ 15 } mt={ 8 } sx={{ flexGrow: 1 }} >
-        <Typography
-            variant="h4"
-            align="center"
-            sx={{
-                fontFamily: 'cursive',
-                fontWeight: 'bold',
-                letterSpacing: '0.1rem',
-                textTransform: 'uppercase',
-                color: 'primary.main',
-                mb: 3,
-                animation: 'fadeOutRight 1s ease-out' 
-            }}
-            >
-              Listado de Chequeos
-        </Typography>
-          <Paper sx={{ 
-            mt: 4,
-            ml:4,
-            mr:4,
-            width: '90%', 
-            overflow: 'hidden', 
-            boxShadow: 3, // Sombra suave para darle profundidad
-            borderRadius: 2, // Bordes redondeados
-          }} >
-
-          <LikeTextCheque
-            setRowTable = { setRowTable }
-          />  
-
-          <Box sx={{  padding: 4, marginBottom: 1 }}>   
-            <TableContainer sx={{ maxHeight: 440 }}>
+        <Box sx={{ flexGrow: 1 }} >
+         
+          <FilterTable
+              setRowTable = { setRowTable }
+          />
+          
+          <Box sx={{  padding: 2, marginBottom: 1 }}>   
+          <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3,  margin: "auto" }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
-                  <TableRow>
+                <TableRow >
                   {
                     columnsTable.map((column) => (
                                   
-                      <TableCell key={column.id} > { column.displayName } </TableCell>
+                      <TableCell 
+                        key={column.id} 
+                        sx={{ 
+                          color: "white",
+                          bgcolor: "#1976d2", 
+                          fontFamily: "'UnifrakturMaguntia', serif", // Fuente gótica
+                          fontSize: "20px", // Tamaño más grande 
+                        }}> 
+                        { column.displayName } 
+                      </TableCell>
                     ))
                   }
-                  <TableCell colSpan = {3}  key={99} > Accion </TableCell>
+                  <TableCell 
+                    colSpan = {3}  
+                    key={99}
+                    sx={{ 
+                      color: "white",
+                      bgcolor: "#1976d2", 
+                      fontFamily: "'UnifrakturMaguntia', serif", // Fuente gótica
+                      fontSize: "20px", // Tamaño más grande
+                    }} 
+                  > 
+                    Accion 
+                  </TableCell>
                   </TableRow>
               </TableHead>
               <TableBody>
@@ -213,21 +218,19 @@ export const ChequeoTable = (  {
                             <TableCell >{row.edad}</TableCell>
                             <TableCell >
                             {
-                              (user_perfil == "Administrador") ? (
+                              <Button
+                                variant="outlined"
+                                style={{ color: "primary", borderColor: "primary" }}
+                                onClick={() => handleOpenModalView(row.rut)}
+                                title= {'Subir Examen - '+row.rut }
+                              >
+                                <VisibilityIcon />
+                              </Button>
+                            }
+                            {
+                               (user_perfil == "Administrador") && (
                                 <>
-                                  <DownloadPDF
-                                      handleClickDowload={handleClickDowload}
-                                      rut={row.rut}
-                                      title= {'Descargar PDF - '+row.rut }
-                                    />
-                                  <Button
-                                    variant="outlined"
-                                    style={{ color: "primary", borderColor: "primary" }}
-                                    onClick={() => handleOpenModal(row.rut, row.nombre)}
-                                    title= {'Subir Examen - '+row.rut }
-                                  >
-                                    <CloudUploadIcon />
-                                  </Button> 
+                                
                                   <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
@@ -240,10 +243,10 @@ export const ChequeoTable = (  {
                                   <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
-                                    onClick={() => handleOpenModalView(row.rut)}
-                                    title= {'Subir Examen - '+row.rut }
+                                    title={`Adjuntar ECG - ${row.rut}`}
+                                    onClick={() => handRedictCertificado(row.rut)}
                                   >
-                                    <VisibilityIcon />
+                                    <MonitorHeartIcon />
                                   </Button>
                                   <Button
                                     variant="outlined"
@@ -252,7 +255,12 @@ export const ChequeoTable = (  {
                                     title= {'Aprobar Certificado  - '+row.rut }
                                   >
                                     <FavoriteIcon />
-                                  </Button>
+                                  </Button> 
+                                  <DownloadPDF
+                                      handleClickDowload={handleClickDowload}
+                                      rut={row.rut}
+                                      title= {'Descargar PDF - '+row.rut }
+                                  />
                                   <Button
                                     variant="outlined"
                                     style={{ color: "error", borderColor: "error" }}
@@ -260,10 +268,18 @@ export const ChequeoTable = (  {
                                     onClick={() => handleDeletePaciente(row.rut)}
                                   >
                                     <DeleteIcon />
-                                  </Button> 
+                                  </Button>
+                                  <Button
+                                    variant="outlined"
+                                    style={{ color: "primary", borderColor: "primary" }}
+                                    onClick={() => handleOpenModal(row.rut, row.nombre)}
+                                    title= {'Subir Examen - '+row.rut }
+                                  >
+                                    <CloudUploadIcon />
+                                  </Button>
                                 </>
-                              )
-                              : ( <>-</> )
+
+                               )
                             }
                             </TableCell>
                         </TableRow>
@@ -284,7 +300,6 @@ export const ChequeoTable = (  {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Box>  
-          </Paper>
         </Box>
       )
 }

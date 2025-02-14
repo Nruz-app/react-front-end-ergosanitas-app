@@ -1,23 +1,19 @@
-import { useState } from "react";
-import { Chequeo } from "./Chequeo";
-import { ChequeoTable,FormUpload,ChequeoView } from "../components";
-import { Box, Button, ButtonGroup } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 
-import SaveIcon from '@mui/icons-material/Save';
+//import SaveIcon from '@mui/icons-material/Save';
 
 import { ModalProvider } from '../../common/context';
+import { TabPanel } from "../components/tabs/TabPanel";
+import React, { useState } from "react";
 
+import { Chequeo } from "./Chequeo";
+import { ChequeoTable,FormUpload,ChequeoView } from "../components";
 import { IChequeo, type formData } from '../interface/';
+
 import { LikeTextProvider } from "../context";
 import { UseChequeoService } from "../services/useChequeoService";
-import { ElectroCardiograma } from "./ElectroCardiograma";
-import { UseCertificadoService } from "../../Certificados/services/useCertificadoService";
 
-const initial_value:formData = {
-  rut    : '',
-  nombre : '',
-  url_pdf   : '' 
-}
+import { ElectroCardiograma } from "./ElectroCardiograma";
 
 let initial_status = {
   status        : 0,
@@ -25,52 +21,86 @@ let initial_status = {
   url_pdf   : ''
 }
 
+const initial_value:formData = {
+  rut    : '',
+  nombre : '',
+  url_pdf   : '' 
+}
+
 const initial_view = {
-    nombre                  : '',
-    rut                     : '',
-    fechaNacimiento         : '',
-    edad                    : '',
-    estatura                : '',
-    peso                    : '',
-    hemoglucotest           : '',
-    pulso                   : '',
-    presionArterial         : '',
-    saturacionOxigeno       : '',
-    temperatura             : '',
-    imc                     : '',
-    enfermedadesCronicas    : '',
-    medicamentosDiarios     : '',
-    sistemaOsteoarticular   : '',
-    sistemaCardiovascular   : '',
-    enfermedadesAnteriores  : '',
-    Recuperacion            : '',
-    gradoIncidenciaPosterio : '',
-    user_email              : ''
+  nombre                  : '',
+  rut                     : '',
+  fechaNacimiento         : '',
+  edad                    : '',
+  estatura                : '',
+  peso                    : '',
+  hemoglucotest           : '',
+  pulso                   : '',
+  presionArterial         : '',
+  presion_sistolica       : '',
+  saturacionOxigeno       : '',
+  temperatura             : '',
+  enfermedadesCronicas    : '',
+  medicamentosDiarios     : '',
+  sistemaOsteoarticular   : '',
+  sistemaCardiovascular   : '',
+  enfermedadesAnteriores  : '',
+  Recuperacion            : '',
+  gradoIncidenciaPosterio : '',
+  user_email              : '',
+  sexo_paciente           : '',
+  imc_paciente            : '',
 }
 
 
+import { UseCertificadoService } from "../../Certificados/services/useCertificadoService";
+
 export const AppChequeo = () => {
 
+  const [value, setValue] = React.useState(0);
 
   const [{status,rut_paciente,url_pdf},statusSet] = useState(initial_status);
-
   const [formData,formDataSet] = useState(initial_value);
+
+  
+
   const [chequeoView,setChequeoView] = useState(initial_view);
 
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    event.preventDefault();
+    setValue(newValue);
+
+    statusSet(
+      {status : newValue,
+      rut_paciente : '',
+      url_pdf : ''
+    });
+
+
+  };
+
   const handleUpdateStatus = async (status : number,rut_paciente : string) => {
 
+    try {
      const {  getCertificadoRut } = await UseCertificadoService();
 
      const {url_pdf}  = await getCertificadoRut(rut_paciente);
-     if(url_pdf) 
-      statusSet({status,rut_paciente,url_pdf});
-     else
-      statusSet({status,rut_paciente,url_pdf:''});
-    
-  } 
+     statusSet({status,rut_paciente,url_pdf});
+     
+      if(status==0)
+        setValue(0);
+      else 
+        setValue(1);
+     
+    }
+    catch(exception) {
+     statusSet({status,rut_paciente,url_pdf:''});
+     setValue(0);
+    }
+ }
 
-  const handleFormData = async(formData : formData) => {
+ const handleFormData = async(formData : formData) => {
 
     formDataSet(formData);
 
@@ -85,97 +115,100 @@ export const AppChequeo = () => {
 
   }
 
+  const a11yProps = (index: number) => {
+    return {
+      id: `vertical-tab-${index}`,
+      'aria-controls': `vertical-tabpanel-${index}`,
+    };
+  };
 
   return (
     <ModalProvider>
-      <Box 
-          ml={15} 
-          mt={8} 
-          sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            gap: 3 // más espacio entre los botones
+      <Box
+        sx={{
+          display: 'flex',
+          height: '100%',
+          bgcolor: 'background.paper',
+          paddingTop: 2, // Aleja del borde superior
+          paddingLeft: 2, // Aleja del borde izquierdo
+          justifyContent: 'center', // Centra el contenido
+          borderRadius: 2,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            width: '90%', // Limita el ancho para no ocupar toda la pantalla
+            height: '100%',
+            bgcolor: 'background.paper',
+            borderRadius: 2,
           }}
         >
-          <ButtonGroup
+          <Tabs
             orientation="vertical"
-            variant="contained"
-            size="large"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+            
             sx={{
-              width: '250px',
-              '& .MuiButton-root': {
-                fontWeight: 'bold', // Texto más llamativo
-                textTransform: 'uppercase', // Texto en mayúsculas para destacar
-              },
-            }}
-        >
-          <Button
-            color="primary"
-            startIcon={<SaveIcon />}
-            onClick={() => handleUpdateStatus(1, '')}
-            sx={{
-              borderRadius: '30px',
-              backgroundColor: '#007bff', // Color base del botón
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                backgroundColor: '#0056b3', // Color al pasar el mouse
-              
-              },
-            }}
-          >
-            Grabar
-          </Button>
-          <Button
-            color="success"
-            startIcon={<SaveIcon />}
-            onClick={() => handleUpdateStatus(2, '')}
-            sx={{
-              borderRadius: '30px',
-              backgroundColor: '#28a745', // Color base del botón
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                backgroundColor: '#1e7e34', // Color al pasar el mouse
-              
+              borderRight: 1,
+              borderColor: 'divider',
+              flexShrink: 0,
+              minWidth: 200,
+              bgcolor: 'background.paper',
+              boxShadow: 2,
+              borderRadius: '8px 0 0 8px',
+              '& .MuiTab-root': {
+                transition: 'background-color 0.3s ease',
+                '&:hover': {
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                },
               },
             }}
           >
-            Listar
-          </Button>
-          </ButtonGroup>
+            <Tab label="Listar" {...a11yProps(0)} />
+            <Tab label="Ingresar" {...a11yProps(1)} />
+          </Tabs>
+
+          <TabPanel value={value} index={0}>
+            <Box sx={{ flexGrow: 1 }}>
+              <LikeTextProvider>  
+                <ChequeoTable
+                  handleFormData = { handleFormData } 
+                  handleUpdateStatus = { handleUpdateStatus }
+                  handleViewData = { handleViewData }
+                />
+              </LikeTextProvider>
+            </Box> 
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+              <Box sx={{ flexGrow: 1 }}>
+                {
+                  (status == 1) ?
+                    <Chequeo 
+                      rut_paciente = {rut_paciente}
+                      handleUpdateStatus = { handleUpdateStatus }
+                    />
+                  :
+                    <ElectroCardiograma 
+                      rut_paciente = {rut_paciente}
+                      url_pdf = { url_pdf }
+                      handleUpdateStatus = { handleUpdateStatus }
+                    />  
+                }
+              </Box>
+          </TabPanel>
+        </Box>
       </Box>
-        {
-          (status == 1) ? 
-            <Chequeo 
-              rut_paciente = {rut_paciente}
-              handleUpdateStatus = { handleUpdateStatus }
-            />
-          : (status == 3) ?
-            (
-              <ElectroCardiograma 
-              rut_paciente = {rut_paciente}
-              url_pdf = { url_pdf }
-              handleUpdateStatus = { handleUpdateStatus }
-            />  
-          )
-          : (
-            <LikeTextProvider>  
-              <ChequeoTable
-                handleFormData = { handleFormData } 
-                handleUpdateStatus = { handleUpdateStatus }
-                handleViewData = { handleViewData }
-              />
-            </LikeTextProvider>  
-          )
-        }
-        <FormUpload
-          formData = { formData } 
-        />
-        <ChequeoView
-          chequeoView = { chequeoView }
-        />
-      </ModalProvider>
+      <FormUpload
+        formData = { formData } 
+      />
+      <ChequeoView
+        chequeoView = { chequeoView }
+      />
+    </ModalProvider>
       
   )
 }

@@ -26,7 +26,7 @@ export const AgendaHoraForm = () => {
   
 
   const navigate = useNavigate();
-  const { control,handleSubmit,errors } = useAgendaHora(); 
+  const { control,handleSubmit,errors,setValue } = useAgendaHora(); 
  
   const [valueServicios, valueServiciosSet] = useState(rows_servicios);
   const [ alertaPrecio,setAlertaPrecio]  = useState(initial_alertPrecio);
@@ -194,6 +194,7 @@ export const AgendaHoraForm = () => {
                               defaultValue={defaultValue}
                               helperText={helperText} 
                               values = { values! }
+                              setValue = { setValue }
                           />
                         </Grid>
                     )

@@ -25,7 +25,7 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
 
     const updateObservacionValue = async (estadoValue : string) =>  {
 
-        if(estadoValue === 'Alterado') {
+        if(estadoValue === 'Normal') {
 
             const valueDefault = `- Ritmo regular de origen Sinusal
 - Intervalo PR dentro de rangos normales

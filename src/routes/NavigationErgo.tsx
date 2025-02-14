@@ -114,7 +114,8 @@ export const NavigationErgo = () => {
                                 }}
                             >
                             {
-                                routesErgo.map( ({to,name,perfil}) => (
+                                routesErgo.filter(({ status }) => status) // Filtra solo los que tienen status: true
+                                .map(({ to, name, perfil }) => (
 
                                     
 
@@ -136,7 +137,7 @@ export const NavigationErgo = () => {
                                                         backgroundColor: isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent', 
                                                     })}
                                                 >
-                                                    { name }  aaa
+                                                    { name } 
                                                 </NavLink>
                                             )
                                             : (
@@ -169,7 +170,8 @@ export const NavigationErgo = () => {
                         </Box> 
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {
-                            routesErgo.map( ({to,name,perfil}) => (
+                           routesErgo.filter(({ status }) => status) // Filtra solo los que tienen status: true
+                           .map(({ to, name, perfil }) => (
            
                                 (user_perfil == perfil) ? (
                                     <Button

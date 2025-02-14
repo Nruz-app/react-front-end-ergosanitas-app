@@ -10,9 +10,9 @@ export interface IChequeo {
     hemoglucotest           : string;
     pulso                   : string;
     presionArterial         : string;
+    presion_sistolica       : string;
     saturacionOxigeno       : string;
     temperatura             : string;
-    imc                     : string;
     enfermedadesCronicas    : string;
     medicamentosDiarios     : string;
     sistemaOsteoarticular   : string;
@@ -21,4 +21,6 @@ export interface IChequeo {
     Recuperacion            : string;
     gradoIncidenciaPosterio : string;
     user_email              : string;
+    sexo_paciente           : string;
+    imc_paciente            : string;
 }

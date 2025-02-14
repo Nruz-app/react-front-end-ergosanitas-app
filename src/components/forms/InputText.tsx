@@ -1,5 +1,7 @@
 import { TextField } from "@mui/material"
-import { Controller } from "react-hook-form";
+import { Controller, UseFormSetValue } from "react-hook-form";
+
+import { useCalculoIMC } from '../../Chequeo/hooks';
 
 interface Props {
   control       : any;
@@ -12,10 +14,37 @@ interface Props {
   validations?  : any;
   disabled      : boolean;
   multiline?    : boolean;
-  handleFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  setValue?     : UseFormSetValue<any>;
 }
 
-export const InputText = ( { control,multiline = false,handleFocus,...props } : Props ) => {
+export const InputText = ( { control,multiline = false,setValue,...props } : Props ) => {
+
+    /********************************************************************* 
+    const [helpers] = useState<{ [key: string]: string | undefined }>({
+        [props.name]: props.helperText
+    });
+    ************************************************************************/
+      
+    
+    const handleOnchanger = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)  => {
+        
+        event.preventDefault();        
+        const {edad,estatura,peso,sexo_paciente} = control._formValues || {};
+
+        if(edad && estatura && sexo_paciente && peso) {
+
+            const imc = await useCalculoIMC(estatura,peso);
+            if(setValue) 
+                setValue('imc_paciente',imc);
+            
+            /*************************** 
+            setHelpers(prevHelpers => ({
+                ...prevHelpers,
+                [fieldName]: 'Nuevo mensaje Helpers'
+            }));
+            *********************************/
+        } 
+    }
 
   return (
     <Controller
@@ -31,7 +60,10 @@ export const InputText = ( { control,multiline = false,handleFocus,...props } : 
               {...field}
               inputRef={ref}
               ref={ref}
-              onChange={onChange}
+              onChange={(event) => {
+                onChange(event); 
+                handleOnchanger(event); 
+              }}
               helperText={error ? error.message : props.helperText}
               error={!!error}
               type={props.type}
@@ -41,7 +73,6 @@ export const InputText = ( { control,multiline = false,handleFocus,...props } : 
               placeholder={props.placeholder}
               variant="outlined"
               multiline = { multiline }
-              onFocus={ handleFocus } 
               //disabled = { props.disabled }
               sx={{ display: props.disabled ? 'none' : 'block' }}
               InputLabelProps={{

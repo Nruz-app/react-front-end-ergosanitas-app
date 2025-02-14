@@ -18,10 +18,6 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
 
   const { control,handleSubmit,setValue,errors } = useElectroCardiograma(); 
  
-  const onGoBack = async () => {
-    handleUpdateStatus(0,'');
-  }
-
   const onSubmit = async () => {
 
     let existeError = false;
@@ -88,16 +84,16 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
         <Grid container spacing={4} alignItems="center"> 
         
         {/* Imagen a la izquierda */}
-        <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
+        <Grid item xs={12} md={8} sx={{ textAlign: "center" }}>
           <img 
             src={url_pdf} 
-            alt="Descripción de la imagen" 
+            alt={url_pdf} 
             style={{ maxWidth: "100%", height: "auto", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }}
           />
         </Grid>
 
         {/* Formulario a la derecha */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
             <form onSubmit={handleSubmit(onSubmit) }> 
             <Grid container justifyContent="center" spacing={3}>
                 {
@@ -145,13 +141,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
                     })
                 }
             </Grid>
-            <Grid container justifyContent="center" spacing={3}>
-                <Grid item xs={12} sm={6} >
-                    <ButtonsForm 
-                        onSubmit = { onGoBack }
-                        title = "Volver"
-                    />
-                </Grid>
+            <Grid container justifyContent="center">
                 <Grid item xs={12} sm={6}  >
                     <ButtonsForm 
                         onSubmit = { onSubmit }

@@ -15,6 +15,7 @@ interface Route {
     to        : string,
     path      : string,
     perfil    : string,
+    status    : boolean
     Component : LazyExoticComponent<JSXComponent> | JSXComponent
 }
 
@@ -23,7 +24,8 @@ export const routesErgo:Route[] = [
         name      : 'Chequeos',
         to        : '/',
         path      : '/*',
-        perfil    : 'Testing',  
+        perfil    : 'Testing',
+        status    : true,  
         Component : AppChequeo
     },
     {
@@ -31,13 +33,15 @@ export const routesErgo:Route[] = [
         to        : '/agendarHora',
         path      : '/agendarHora/*',
         perfil    : 'All', 
+        status    : true,  
         Component : AppAgendarHoraPage
     },
     {
         name      : 'Certifiado',
         to        : '/certificado',
-        path      : '/certificado/*',
+        path      : '/certificado/:rut_paciente_path',
         perfil    : 'All', 
+        status    : false,  
         Component : AppUrlPage
     },
     {
@@ -45,6 +49,7 @@ export const routesErgo:Route[] = [
         to        : '/Estadisticas',
         path      : '/estadisticas/*',
         perfil    : 'All', 
+        status    : true,  
         Component : AppEstadisticasPages
     }
 ]

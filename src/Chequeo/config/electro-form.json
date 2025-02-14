@@ -6,9 +6,13 @@
         "placeholder"  : "Normal",
         "label"        : "Seleccion el Estado",
         "helperText"   : "Seleccione algun tipo de Estado",
-        "defaultValue" : "Normal",
+        "defaultValue" : "",
         "multiline"    : false, 
         "values"       : [
+            {
+                "value" : "",
+                "nombre" : ""
+            },
             {
                 "value" : "Normal",
                 "nombre" : "Normal"
@@ -69,24 +73,6 @@
             {
                 "type"    : "required",
                 "message" : "El Observacion es Requerido"
-            }
-        ]      
-    },
-    {
-        "order"        : 5,
-        "type"         : "text",
-        "name"         : "imc_paciente",
-        "placeholder"  : "25.6",
-        "label"        : "Ingresa IMC",
-        "helperText"   : "Ingrese el IMC",
-        "defaultValue" : "",
-        "value"        : "",
-        "disabledText" : false,
-        "multiline"    : false, 
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El IMC es Requerido"
             }
         ]      
     }

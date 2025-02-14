@@ -16,6 +16,8 @@ export { ChequeoView } from './ChequeoView';
 
 export {default as InputFileUpload } from './InputFileUpload';
 
-
 export { ElectroCardiogramaForm } from './ElectroCardiogramaForm';
+
+
+export { DatePickers } from './date-pickers/DatePickers';
 

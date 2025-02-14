@@ -79,13 +79,12 @@ export const LikeTextCheque = ({setRowTable}: Props) => {
 
         if(textoValue) {
         
-          const {  postLikeChequeo,postLikeChequeoUser } = await UseChequeoService() ;
+          const {  postLikeChequeo,postLikeChequeoUser } = await UseChequeoService();
 
 
           let responseChequeos:IChequeo[];
 
-          console.log(user_perfil);
-
+          
           if( user_perfil == 'Administrador')
                 responseChequeos = await postLikeChequeo(textoValue);
           else

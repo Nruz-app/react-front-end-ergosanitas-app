@@ -16,7 +16,7 @@
         ]     
     },
     {
-        "order"        : 1, 
+        "order"        : 2, 
         "type"         : "text",
         "name"         : "nombre_paciente",
         "placeholder"  : "Juan Alonso Peres",

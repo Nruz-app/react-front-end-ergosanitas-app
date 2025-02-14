@@ -32,7 +32,7 @@ export const  UseChequeoService = async () => {
 
     const postCreateChequeo = async (Chequeo : IChequeo) => {
        
-        
+        console.log('api',`${API}/chequeo-cardiovascular`);
         const response = await  apiAdapter.post(`${API}/chequeo-cardiovascular`,Chequeo);
         return response;
     }
@@ -83,6 +83,15 @@ export const  UseChequeoService = async () => {
         const response = await  apiAdapter.delete(`${API}/chequeo-cardiovascular/${rut_paciente}`)
         return response;
     }
+
+    const postFilterCalendar = async (fecha_calendar : string,user_email : string) => {
+       
+        const response:IChequeo[] = await  apiAdapter.post(`${API}/chequeo-cardiovascular/filter-calendar`,{
+            fecha_calendar,
+            user_email
+        });
+        return response;
+    }
    
     return { 
         getChequeo,
@@ -94,7 +103,8 @@ export const  UseChequeoService = async () => {
         postUpdateChequeo,
         postLikeChequeo,
         postLikeChequeoUser,
-        getDeleteRut
+        getDeleteRut,
+        postFilterCalendar
     };
     
 }
