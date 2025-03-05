@@ -55,7 +55,7 @@ export const DownloadFile = () => {
           },
         }}
       >
-        {btn.label} - {titulo} - {url_pdf}
+        {btn.label} - {titulo}
       </Button>
     ))}
   </Box>

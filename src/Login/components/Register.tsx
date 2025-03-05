@@ -61,7 +61,8 @@ export const Register = () => {
           user_id        : 0,
           user_email     : '',
           user_name      : '',
-          user_perfil    : ''
+          user_perfil    : '',
+          user_logo      : ''
         });  
     }
     

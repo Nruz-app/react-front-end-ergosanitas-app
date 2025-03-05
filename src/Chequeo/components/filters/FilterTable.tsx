@@ -6,16 +6,25 @@ import { Box } from "@mui/material";
 import { LikeTextCheque } from "../LikeTextCheque";
 import { DatePickers } from '../date-pickers/DatePickers';
 import { IChequeo } from "../../interface";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import { LoginContext } from '../../../common/context';
 
 interface Props {
     setRowTable  : (chequeo:IChequeo[]) => void;
 }
 
 export const FilterTable = ({setRowTable}: Props) => {
+
+    const { user }  = useContext( LoginContext );
+    const { user_perfil }  = user;
+    
+    let isInvisible = true
+    if(user_perfil == "Administrador")
+        isInvisible = false;  
+   
  
     const [value, setValue] = useState(0);
 
@@ -65,7 +74,9 @@ export const FilterTable = ({setRowTable}: Props) => {
                 icon={<DateRangeIcon />}
                 label="Calendario"
                 iconPosition="start"
+                
                 sx={{
+                    visibility: isInvisible ? "hidden" : "visible",
                     textTransform: "none",
                     fontSize: "1rem",
                     fontWeight: 500,

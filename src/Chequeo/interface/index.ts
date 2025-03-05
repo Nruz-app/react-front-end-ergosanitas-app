@@ -1,9 +1,10 @@
 
+export type { IChequeo } from './chequeo.interface';
 
+export type { formData } from './formData.interface';
 
-export { type  IChequeo } from './chequeo.interface';
+export type { IElectroCardiograma } from './electroCardiograma.interface';
 
-export { type  formData } from './formData.interface';
+export type { CalculadoraIMC } from './calculadora-imc';
 
-export { type  IElectroCardiograma } from './electroCardiograma.interface';
-
+export type { EstadoGenerales } from './estado-generales.interface';

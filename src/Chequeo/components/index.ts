@@ -21,3 +21,11 @@ export { ElectroCardiogramaForm } from './ElectroCardiogramaForm';
 
 export { DatePickers } from './date-pickers/DatePickers';
 
+export { FileUploadLogo } from './logo/fileUploadLogo';
+
+export { StatisticsGlobal } from './statistics-global/statistics-global';
+
+export { StatisticsSex } from './statistics-global/statistics-sex';
+
+export { CalculadoraImc } from './calculadora-imc/calculadora-imc';
+

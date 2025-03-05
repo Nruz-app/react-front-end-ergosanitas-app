@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
+import { //BrowserRouter, 
+    HashRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
 import { Suspense, useContext, useState } from "react"
 
 import AppBar from '@mui/material/AppBar';
@@ -43,7 +44,8 @@ export const Navigation = () => {
 
     return (
         <Suspense fallback={ <Loading /> }>
-        <BrowserRouter>
+        { /* <BrowserRouter> */ }
+        <HashRouter>
             <AppBar position="static" color="primary">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
@@ -216,7 +218,8 @@ export const Navigation = () => {
                 ))}
                 <Route path="/*" element={<Navigate to={routes[0].to} replace />} />
             </Routes>
-        </BrowserRouter>
+        </HashRouter>
+        { /* <BrowserRouter> */ }
     </Suspense>
     
     )

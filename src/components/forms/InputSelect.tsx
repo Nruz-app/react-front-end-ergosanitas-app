@@ -30,7 +30,7 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
             const valueDefault = `- Ritmo regular de origen Sinusal
 - Intervalo PR dentro de rangos normales
 - Eje Electrico normal
-- Sin precencia de onda Q patologica ni alteracion del segmento ST`
+- Sin presencia de onda Q patologica ni alteracion del segmento ST`
 
             setValue('observacion_paciente',valueDefault);
         }

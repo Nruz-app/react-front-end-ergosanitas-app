@@ -2,6 +2,7 @@ import { Box, Button, Grid, Modal, Typography } from "@mui/material"
 import { useContext } from "react";
 import { ModalContext } from "../../common/context";
 import { IChequeo } from "../interface";
+import dayjs from "dayjs";
 
 
 const style = {
@@ -58,12 +59,12 @@ export const ChequeoView = ({chequeoView}: Props) => {
                     {[
                         { label: 'Nombre', value: chequeoView.nombre },
                         { label: 'Rut', value: chequeoView.rut },
-                        { label: 'Fecha Nacimiento', value: chequeoView.fechaNacimiento },
+                        { label: 'Fecha Nacimiento', value: dayjs(chequeoView.fechaNacimiento).format("DD-MM-YYYY")  },
                         { label: 'Edad', value: chequeoView.edad },
                         { label: 'Estatura', value: chequeoView.estatura },
                         { label: 'Peso', value: chequeoView.peso },
                         { label: 'Hemoglucotest', value: chequeoView.hemoglucotest },
-                        { label: 'Pulso', value: chequeoView.pulso },
+                        { label: 'IMC', value: chequeoView.imc_paciente },
                     ].map((item) => (
                         <Typography 
                             key={item.label} 

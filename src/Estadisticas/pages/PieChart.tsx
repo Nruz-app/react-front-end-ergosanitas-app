@@ -8,11 +8,12 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js'
-import { Box, Card, CardContent, Typography } from '@mui/material';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
+import { useCallback,  useContext,  useEffect, useState } from 'react';
 import { UseEstadisticasService } from '../services/UseEstadisticasService';
 import { IEstadisticaIMC } from '../interface/estadisticaIMC.interface';
 import { LoginContext } from '../../common/context';
+//import { LoginContext } from '../../common/context';
 
 /********************************************************************* 
 * * - Link Docs 
@@ -25,8 +26,7 @@ import { LoginContext } from '../../common/context';
 const initialValues : IEstadisticaIMC = {
     labels: [],
     data: [],
-    totalExamen : 0,
-    canExamenNA : 0,
+    totalExamen : 0
 }
 
 
@@ -37,14 +37,15 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale)
 export const PieChartIMC = () => {
 
     const { user }  = useContext( LoginContext );
-     const { user_name }  = user;
+    const { user_email }  = user;
+    
     const [estadisticaIMC,setEstadisticaIMC] = useState<IEstadisticaIMC>(initialValues);
 
 
     const fetchEstadisticaIMC = useCallback(async (): Promise<void> => {
     
           const {  getEstadisticaIMC } = UseEstadisticasService() ;
-          const response = await getEstadisticaIMC('palestino.avalos@ergosanitas.com');
+          const response = await getEstadisticaIMC(user_email);
           
           setEstadisticaIMC(response);
     }, []);
@@ -60,25 +61,16 @@ export const PieChartIMC = () => {
         labels: estadisticaIMC.labels, //['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [
           {
-            label: '# IMC Paciente',
-            data: estadisticaIMC.data, //[12, 19, 3, 5, 2, 3],
+            label: "# IMC Paciente",
+            data: estadisticaIMC.data,
             backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              //'rgba(75, 192, 192, 0.2)',
-              //'rgba(153, 102, 255, 0.2)',
-              //'rgba(255, 159, 64, 0.2)',
+              "#FFCC80", // Amarillo pastel
+              "#64B5F6", // Azul pastel
+              "#81C784", // Verde pastel
+              "#FF8A80", // Rojo pastel
             ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              //'rgba(75, 192, 192, 1)',
-              //'rgba(153, 102, 255, 1)',
-              //'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
+            borderColor: "#ffffff",
+            borderWidth: 2,
           },
         ],
     };
@@ -87,74 +79,66 @@ export const PieChartIMC = () => {
 
 
   return (
-    <Box
-        sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 3,
-            backgroundColor: '#f9f9f9',
-            borderRadius: 2,
-            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)',
-            margin: 3,
-        }}
+    <Box sx={{  justifyContent: "center", alignItems: "center", p: 3 }}>
+    <Card
+      sx={{
+        borderRadius: 6,
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)", // Sombra más elegante
+        backgroundColor: "white",
+        textAlign: "center",
+      }}
     >
-        <Typography
-            variant="h4"
-            align="center"
+      <CardHeader
+        title={
+          <Typography
+            variant="h5"
             sx={{
-                fontFamily: 'cursive',
-                fontWeight: 'bold',
-                letterSpacing: '0.1rem',
-                textTransform: 'uppercase',
-                color: 'primary.main',
-                marginBottom: 3,
-                animation: 'fadeInDownBig 1s ease-out',
+              fontWeight: 700,
+              color: "primary.main",
+              letterSpacing: "0.5px",
             }}
+          >
+            Nutrición IMC
+          </Typography>
+        }
+      />
+      <CardContent>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 3,
+            backgroundColor: "#f9f9f9",
+            borderRadius: 4,
+            
+          }}
         >
-            Cantidad de Pacientes Por IMC - { user_name }
-        </Typography>
-
-        <Card
-            sx={{
-                width: 450,
-                borderRadius: 4,
-                boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.15)',
-                backgroundColor: 'white',
+          <Pie
+            data={data}
+            options={{
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "top",
+                  labels: {
+                    font: {
+                      size: 12,
+                      family: "Roboto",
+                      weight: "bold",
+                    },
+                    color: "#333",
+                    padding: 15,
+                  },
+                },
+              },
             }}
-        >
-            <CardContent>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: 2,
-                        backgroundColor: '#e3f2fd',
-                        borderRadius: 3,
-                    }}
-                >
-                    <Pie
-                        data={data}
-                        options={{
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                    labels: {
-                                        font: {
-                                            size: 14,
-                                            family: 'Roboto',
-                                        },
-                                    },
-                                },
-                            },
-                        }}
-                    />
-                </Box>
-            </CardContent>
-        </Card>
-    </Box>
+            style={{ width: "100%", height: "300px" }}
+          />
+        </Box>
+      </CardContent>
+    </Card>
+  </Box>
+  
   )
 }

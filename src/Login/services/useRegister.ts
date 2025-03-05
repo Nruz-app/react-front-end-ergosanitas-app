@@ -1,5 +1,6 @@
 import { ApiAdapter, HttpAdapter } from '../../common/api/api.adapter';
 import { IResponseUser } from '../interface';
+import { ILogoUser } from '../interface/user';
 
 
 export const  UseRegister = async () => {
@@ -21,7 +22,14 @@ export const  UseRegister = async () => {
 
     }
 
+    const loadLogoUser = async (selectedFile : File,user_email : string) => {
     
+        const uploadData = new FormData();
+        uploadData.append('file', selectedFile);
+        uploadData.append('user_email', user_email);
+        const response:ILogoUser = await  apiAdapter.post(`${API}/auth-register/load-logo`,uploadData);
+        return response;
+    }
 
-    return { authRegister };
+    return { authRegister,loadLogoUser };
 }

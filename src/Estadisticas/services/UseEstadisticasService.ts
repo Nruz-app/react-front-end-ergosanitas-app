@@ -10,8 +10,8 @@ export const UseEstadisticasService = () => {
 
     const getEstadisticaIMC =  async (user_email : string)  => {
     
-            const response:IEstadisticaIMC = await  apiAdapter.get(`${API}/estadisticas/estadistica-imc/${user_email}`,10,0)
-            return response;
+        const response:IEstadisticaIMC = await  apiAdapter.get(`${API}/estadisticas/estadistica-imc/${user_email}`,10,0)
+        return response;
     }
 
     return {

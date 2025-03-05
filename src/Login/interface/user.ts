@@ -11,4 +11,10 @@ export interface IUser {
     user_email     : string;
     user_name      : string;
     user_perfil    : string;
+    user_logo?     : string;
+}
+
+export interface ILogoUser {
+    message        : string;
+    user_logo     : string;
 }

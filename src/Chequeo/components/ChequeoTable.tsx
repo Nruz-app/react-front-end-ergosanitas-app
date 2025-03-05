@@ -121,11 +121,20 @@ export const ChequeoTable = (  {
 
     }
 
-    const handleDeletePaciente = async(rut_paciente : string) => {
+    /*const handleDeletePaciente = async(rut_paciente : string) => {
 
       const  { getDeleteRut } = await UseChequeoService();
 
       await getDeleteRut(rut_paciente);
+
+      fetchAgendaHoras();
+
+    }*/
+    const handleDeletePaciente = async(id : number) => {
+
+      const  { getDeleteById } = await UseChequeoService();
+
+      await getDeleteById(id);
 
       fetchAgendaHoras();
 
@@ -142,7 +151,7 @@ export const ChequeoTable = (  {
 
         let response;
         
-        if(user_perfil == "Administrador")
+        if(user_perfil != "Colegios")
             response = await getChequeo();  
         else
             response = await postChequeoUser(user_email);  
@@ -222,52 +231,112 @@ export const ChequeoTable = (  {
                                 variant="outlined"
                                 style={{ color: "primary", borderColor: "primary" }}
                                 onClick={() => handleOpenModalView(row.rut)}
-                                title= {'Subir Examen - '+row.rut }
+                                title= {'Visualizar Paciente - '+row.rut }
                               >
-                                <VisibilityIcon />
+                                <VisibilityIcon
+                                  style={{ 
+                                    backgroundColor: 'green',
+                                    color: 'white',  // Puedes ajustar el color del ícono también
+                                    borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                  }} 
+                                />
                               </Button>
                             }
                             {
-                               (user_perfil == "Administrador") && (
-                                <>
-                                
-                                  <Button
+                              (user_perfil != "Colegios") ? (
+
+                                <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     //href={`/${row.rut}`}
                                     onClick={ () => handleUpdatePaciente(row.rut)}
                                     title= {'Editar Paciente - '+row.rut }
                                   >
-                                    <EditIcon />
+                                    <EditIcon 
+                                      style={{ 
+                                        backgroundColor: row.status !== 'ingresado' ? 'green' : 'red',
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }} />
                                   </Button>
+                              ) : (row.status === 'ingresado') && (
                                   <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
-                                    title={`Adjuntar ECG - ${row.rut}`}
+                                    //href={`/${row.rut}`}
+                                    onClick={ () => handleUpdatePaciente(row.rut)}
+                                    title= {'Editar Paciente AAA- '+row.rut }
+                                  >
+                                    <EditIcon 
+                                      style={{ 
+                                        backgroundColor: row.status !== 'ingresado' ? 'green' : 'red',
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }} />
+                                </Button>
+                              )
+                            }
+                            {
+                               (user_perfil == "Administrador") && (
+                                <>
+                                  <Button
+                                    variant="outlined"
+                                    style={{ color: "primary", borderColor: "primary" }}
+                                    title={`ECG FOTO - ${row.rut}`}
                                     onClick={() => handRedictCertificado(row.rut)}
                                   >
-                                    <MonitorHeartIcon />
+                                    <MonitorHeartIcon
+                                      style={{ 
+                                        backgroundColor: 
+                                        row.status === 'ECG FOTO' || row.status === 'REVISION MEDICA' 
+                                        ? 'green' : 'red', 
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }} 
+                                    />
                                   </Button>
                                   <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     onClick={() => handleUpdatePacienteH(row.rut)}
-                                    title= {'Aprobar Certificado  - '+row.rut }
+                                    title= {'Revision Medica - '+row.rut }
                                   >
-                                    <FavoriteIcon />
+                                    <FavoriteIcon
+                                      style={{ 
+                                        backgroundColor: row.status == 'REVISION MEDICA' ? 'green' : 'red',
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }} 
+                                    />
                                   </Button> 
-                                  <DownloadPDF
+                                </>
+                                )
+                              }
+                              {
+                                 (user_perfil != "Usuario") && (
+                                    <DownloadPDF
                                       handleClickDowload={handleClickDowload}
                                       rut={row.rut}
                                       title= {'Descargar PDF - '+row.rut }
-                                  />
+                                    />
+                                 )
+                              }
+                              {
+                                (user_perfil == "Administrador") && (
+                                  <>
                                   <Button
                                     variant="outlined"
                                     style={{ color: "error", borderColor: "error" }}
                                     title= {'Borrar - '+ row.rut }
-                                    onClick={() => handleDeletePaciente(row.rut)}
+                                    onClick={() => handleDeletePaciente(row.id!)}
                                   >
-                                    <DeleteIcon />
+                                    <DeleteIcon
+                                      style={{ 
+                                        backgroundColor: 'blue',
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }} 
+                                    />
                                   </Button>
                                   <Button
                                     variant="outlined"
@@ -275,12 +344,16 @@ export const ChequeoTable = (  {
                                     onClick={() => handleOpenModal(row.rut, row.nombre)}
                                     title= {'Subir Examen - '+row.rut }
                                   >
-                                    <CloudUploadIcon />
+                                    <CloudUploadIcon 
+                                      style={{ 
+                                        backgroundColor: 'blue',
+                                        color: 'white',  // Puedes ajustar el color del ícono también
+                                        borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                                      }}/>
                                   </Button>
                                 </>
-
                                )
-                            }
+                             }
                             </TableCell>
                         </TableRow>
                       )

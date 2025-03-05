@@ -17,6 +17,12 @@ interface Props {
 export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}:Props) => {
 
   const { control,handleSubmit,setValue,errors } = useElectroCardiograma(); 
+  let extension = 'jpg'  
+
+  if (url_pdf) {
+    const path = url_pdf.split('.');
+    extension = path[path.length - 1]; // Accede al último elemento del array 
+  }
  
   const onSubmit = async () => {
 
@@ -80,16 +86,44 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
 
 
   return (
-    <Box sx={ { flexGrow: 1, py: 4, mx: "auto", maxWidth: "95%" } }>
+    <Box sx={ { flexGrow: 1, py: 4,  maxWidth: "95%" } }>
         <Grid container spacing={4} alignItems="center"> 
         
         {/* Imagen a la izquierda */}
         <Grid item xs={12} md={8} sx={{ textAlign: "center" }}>
-          <img 
-            src={url_pdf} 
-            alt={url_pdf} 
-            style={{ maxWidth: "100%", height: "auto", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }}
-          />
+        {
+            (extension =='pdf') ? (
+                <iframe 
+                    src={url_pdf} 
+                    style={{
+                        width: '100%',
+                        height: '500px', 
+                        border: 'none', 
+                        borderRadius: '10px', 
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                        display: 'block', // Esto asegura que el iframe se comporte como un bloque
+                        marginLeft: '0', // Alinea el iframe a la izquierda
+                        marginRight: 'auto', // Elimina margen a la derecha
+                    }} 
+                    title="Vista previa del PDF"
+                />)
+            : (
+                <img 
+                    src={url_pdf} 
+                    alt="Vista previa" 
+                    style={{ 
+                        maxWidth: "100%", 
+                        height: "auto", 
+                        borderRadius: "15px", // Borde más redondeado para un look más suave
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Sombra más sutil y difusa
+                        transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out", // Transición para un efecto suave al pasar el mouse
+                        cursor: "pointer", // Cambia el cursor para indicar que la imagen es interactiva
+                        margin: "20px 0", // Añade un poco de espacio alrededor de la imagen
+                    }} 
+                />
+   
+            )
+        }  
         </Grid>
 
         {/* Formulario a la derecha */}

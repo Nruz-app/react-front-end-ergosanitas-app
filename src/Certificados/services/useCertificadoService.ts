@@ -14,7 +14,6 @@ export const  UseCertificadoService = async () => {
     const getCertificadoRut =  async (rut_paciente : string)  => {
 
         const response:ICertificadoUrl = await  apiAdapter.get(`${API}/certificado/${rut_paciente}`,10,0)
-        console.log('response',response);
         return response;
     }
 

@@ -1,5 +1,5 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
-import { IChequeo } from '../interface';
+import { IChequeo,EstadoGenerales } from '../interface';
 
 import { type formData } from '../interface/';
 
@@ -12,9 +12,7 @@ export const  UseChequeoService = async () => {
 
 
     const chequeoPDF =  async (rut : string) => {
-
-        console.log('window',rut);
-        
+ 
         window.location.href = `${API}/chequeo-cardiovascular/pdf/${rut}`; 
     }
 
@@ -32,7 +30,6 @@ export const  UseChequeoService = async () => {
 
     const postCreateChequeo = async (Chequeo : IChequeo) => {
        
-        console.log('api',`${API}/chequeo-cardiovascular`);
         const response = await  apiAdapter.post(`${API}/chequeo-cardiovascular`,Chequeo);
         return response;
     }
@@ -55,12 +52,10 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
-    const postUpdateChequeo = async (Chequeo : IChequeo,rut : string) => {
+    const postUpdateChequeo = async (Chequeo : IChequeo,rut : string,user_email : string) => {
        
-        
-        const response = await  apiAdapter.put(`${API}/chequeo-cardiovascular/${rut}`,Chequeo);
+        const response = await  apiAdapter.put(`${API}/chequeo-cardiovascular/${rut}/${user_email}`,Chequeo);
         return response;
-
 
     }
 
@@ -75,12 +70,18 @@ export const  UseChequeoService = async () => {
             textoValue,
             user_email
         });
+
         return response;
     }
 
     const getDeleteRut =  async (rut_paciente : string)  => {
         
         const response = await  apiAdapter.delete(`${API}/chequeo-cardiovascular/${rut_paciente}`)
+        return response;
+    }
+    const getDeleteById =  async (id : number)  => {
+        
+        const response = await  apiAdapter.delete(`${API}/chequeo-cardiovascular/${id}`)
         return response;
     }
 
@@ -90,6 +91,12 @@ export const  UseChequeoService = async () => {
             fecha_calendar,
             user_email
         });
+        return response;
+    }
+
+    const getEstadoGeneral =  async (user_email : string)  => {
+        
+        const response:EstadoGenerales = await  apiAdapter.get(`${API}/chequeo-cardiovascular/estado-general/${user_email}`,10,0)
         return response;
     }
    
@@ -104,7 +111,9 @@ export const  UseChequeoService = async () => {
         postLikeChequeo,
         postLikeChequeoUser,
         getDeleteRut,
-        postFilterCalendar
+        getDeleteById,
+        postFilterCalendar,
+        getEstadoGeneral
     };
     
 }

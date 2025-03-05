@@ -34,7 +34,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
     const {nombre,rut,edad,estatura,peso,hemoglucotest,pulso
       ,presionArterial,presion_sistolica,saturacionOxigeno,temperatura,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
-      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente} = control._formValues || {};
+      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente,division_paciente,medio_pago_paciente} = control._formValues || {};
 
       const chequeo: IChequeo = {
         nombre,
@@ -58,7 +58,10 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
         gradoIncidenciaPosterio,
         user_email,
         sexo_paciente,
-        imc_paciente
+        imc_paciente,
+        status : 'ingresado',
+        division_paciente,
+        medio_pago_paciente
       };
 
     const {  postCreateChequeo } = await UseChequeoService() ;
@@ -82,7 +85,8 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
     const {nombre,rut,edad,estatura,peso,hemoglucotest,pulso
       ,presionArterial,saturacionOxigeno,temperatura,presion_sistolica,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
-      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente} = control._formValues || {};
+      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente, division_paciente,
+      medio_pago_paciente} = control._formValues || {};
 
       const chequeo: IChequeo = {
         nombre,
@@ -106,11 +110,15 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
         gradoIncidenciaPosterio,
         user_email,
         sexo_paciente,
-        imc_paciente
+        imc_paciente,
+        status : 'ingresado',
+        division_paciente,
+        medio_pago_paciente
       };
 
     const {  postUpdateChequeo } = await UseChequeoService() ;
-    const response = await postUpdateChequeo(chequeo,rut);
+
+    const response = await postUpdateChequeo(chequeo,rut,user_email);
 
       if(response) {
             
@@ -138,7 +146,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
                
               if(chequeo?.rut && name == 'rut') { disabled=true };
 
-              if ( user_perfil == 'Testing' && disabledText === true) { 
+              if ( user_perfil == 'Colegios' && disabledText === true) { 
                     disabled=true 
               };
 

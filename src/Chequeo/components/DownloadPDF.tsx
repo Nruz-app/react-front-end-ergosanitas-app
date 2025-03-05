@@ -23,7 +23,12 @@ export const DownloadPDF = ({handleClickDowload,rut,title}:Props) => {
             onClick={handleClick}
             title={title}
         >
-            <SimCardDownloadIcon />
+            <SimCardDownloadIcon 
+                style={{ 
+                    backgroundColor: 'blue',
+                    color: 'white',  // Puedes ajustar el color del ícono también
+                    borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                  }}/>
         </Button>
     )
 }

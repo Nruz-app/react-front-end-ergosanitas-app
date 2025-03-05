@@ -1,6 +1,7 @@
 
 
 export interface IChequeo {
+    id?                     : number;
     nombre                  : string;
     rut                     : string;
     fechaNacimiento         : string;
@@ -23,4 +24,7 @@ export interface IChequeo {
     user_email              : string;
     sexo_paciente           : string;
     imc_paciente            : string;
+    status                  : string;
+    division_paciente       : string;
+    medio_pago_paciente     : string;
 }

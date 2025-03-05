@@ -1,18 +1,17 @@
 import * as Yup from 'yup';
-import { IChequeo } from '../interface/';
+import { CalculadoraIMC } from '../interface/';
 
-import fromJson from '../config/custom-form.json';
+import fromIMCJson from '../config/custom-IMC.json';
 
 
 //Variables
-const REGEX_RUN     = /(\d{7}|\d{8})\-(\d{1}|k|K)/;
-const NUMBER_DOT    = /^[0-9]+(\.[0-9]+)?$/;
+const NUMBER_DOT = /^[0-9]+(\.[0-9]+)?$/;
 
 const initialValues: { [key: string] : any } = {};
 
 const fieldValidations : { [key:string]: any} = {};
 
-for (const input of fromJson) {
+for (const input of fromIMCJson) {
     initialValues[input.name] = input.value;
 
     // Validaciones de los campos
@@ -26,21 +25,18 @@ for (const input of fromJson) {
 
             schema = schema.required(rule.message);
         } 
-        else if (rule.type === 'REGEX_RUN') 
-            {
-            schema = (schema as Yup.StringSchema<string>).matches(new RegExp(REGEX_RUN), rule.message);
-        }
-        else if (rule.type === 'MAX') {
-
-            schema = schema.max((rule as any).value,rule.message);
-        }
         else if (rule.type === 'NUMBER_DOT') {
             schema = (schema as Yup.StringSchema<string>)
             .matches(new RegExp(NUMBER_DOT), rule.message);
+        }
+        
+        else if (rule.type === 'MAX') {
+
+            schema = schema.max((rule as any).value,rule.message);
         }
     }
 
     fieldValidations[input.name] = schema;
 }
 
-export const chequeoValidationSchema = Yup.object<IChequeo>().shape( {...fieldValidations } );
+export const calculadoraIMCValidationSchema = Yup.object<CalculadoraIMC>().shape( {...fieldValidations } );
