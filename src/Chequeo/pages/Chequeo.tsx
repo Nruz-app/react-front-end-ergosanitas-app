@@ -3,15 +3,12 @@ import { ChequeoForm, ChequeoFormUpdate } from "../components"
 
 interface Props  {
   rut_paciente : string;
-  handleUpdateStatus : (status : number, rut_paciente : string) => void;
+  id_paciente  : number;
+  handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
 }
 
 
-export const Chequeo = ({ rut_paciente,handleUpdateStatus }: Props) => {
-
-
-  
-
+export const Chequeo = ({ rut_paciente,id_paciente,handleUpdateStatus }: Props) => {
 
   return (
     <Box ml={ 15 } mt={ 8 } sx={{ flexGrow: 1 }} >
@@ -38,6 +35,7 @@ export const Chequeo = ({ rut_paciente,handleUpdateStatus }: Props) => {
           :
             <ChequeoFormUpdate 
               rut_paciente = { rut_paciente }
+              id_paciente = { id_paciente }
               handleUpdateStatus = { handleUpdateStatus } 
             />
         }

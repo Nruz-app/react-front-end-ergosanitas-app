@@ -11,6 +11,7 @@ import { useContext, useState } from 'react';
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import { LoginContext } from '../../../common/context';
+import { SelectClub } from '../select-club/select-club';
 
 interface Props {
     setRowTable  : (chequeo:IChequeo[]) => void;
@@ -85,11 +86,27 @@ export const FilterTable = ({setRowTable}: Props) => {
                     "&:hover": { color: "#1976D2" },
                 }}
             />
+            <Tab
+                icon={<DateRangeIcon />}
+                label="Club Deportivos"
+                iconPosition="start"
+                
+                sx={{
+                    visibility: isInvisible ? "hidden" : "visible",
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    fontWeight: 500,
+                    color: value === 2 ? "#1976D2" : "gray",
+                    transition: "0.3s",
+                    "&:hover": { color: "#1976D2" },
+                }}
+            />
         </Tabs>
 
         <Box sx={{ p: 2 }}>
             {value === 0 && <LikeTextCheque setRowTable={setRowTable} /> }
             {value === 1 && <DatePickers setRowTable={setRowTable} />}
+            {value === 2 && <SelectClub setRowTable={setRowTable} />}
         </Box>
     </Box>
     )

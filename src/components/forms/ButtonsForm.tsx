@@ -4,15 +4,17 @@ import { Button } from '@mui/material';
 interface Props {
   onSubmit : () => void;
   title : string;
+  btnStatus : boolean;
 }
 
-export const ButtonsForm = ( { title,onSubmit } :  Props ) => {
+export const ButtonsForm = ( { title,btnStatus,onSubmit } :  Props ) => {
   return (
     <Button
         onClick={ onSubmit }
         variant="contained"
         startIcon={<SaveAsIcon />}
         size="large"
+        disabled={btnStatus}
         sx={{
             backgroundColor: '#007bff', // Azul elegante
             color: '#FFFFFF',

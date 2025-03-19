@@ -8,13 +8,13 @@ import { UseChequeoService } from '../services/useChequeoService';
 //import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { IChequeo } from "../interface";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { LoginContext } from "../../common/context";
 
 
 interface Props {
   chequeo?:IChequeo;
-  handleUpdateStatus : (status : number, rut_paciente : string) => void;
+  handleUpdateStatus : (status : number, rut_paciente : string,id_paciente : number) => void;
 }
 
 
@@ -29,8 +29,11 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
 
  const { control,handleSubmit,setValue  } = useChequeo(chequeo);  
 
+ const [btnStatus,setBtnStatus] = useState<boolean>(false);
+
   const onSubmit = async () => {
 
+    setBtnStatus(true);
     const {nombre,rut,edad,estatura,peso,hemoglucotest,pulso
       ,presionArterial,presion_sistolica,saturacionOxigeno,temperatura,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
@@ -76,13 +79,15 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
 
           control._reset();  
           //navigate('/chequeo');
-          handleUpdateStatus(0,'');
+          handleUpdateStatus(0,'',0);
       }    
+      setBtnStatus(false);
   }
 
   const onUpdate = async () => {
 
-    const {nombre,rut,edad,estatura,peso,hemoglucotest,pulso
+    setBtnStatus(true);
+    const {id,nombre,rut,edad,estatura,peso,hemoglucotest,pulso
       ,presionArterial,saturacionOxigeno,temperatura,presion_sistolica,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
       Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente, division_paciente,
@@ -118,7 +123,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
 
     const {  postUpdateChequeo } = await UseChequeoService() ;
 
-    const response = await postUpdateChequeo(chequeo,rut,user_email);
+    const response = await postUpdateChequeo(chequeo,id,user_email);
 
       if(response) {
             
@@ -129,8 +134,9 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
 
           control._reset();  
           //navigate('/chequeo?status=1');
-          handleUpdateStatus(0,'');
-      }    
+          handleUpdateStatus(0,'',0);
+      }   
+      setBtnStatus(false); 
   }
   
 
@@ -211,6 +217,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
             (!chequeo)? (
               <ButtonsForm 
                 onSubmit = { onSubmit }
+                btnStatus = { btnStatus }
                 title = "Reserva"
               />
             )
@@ -218,6 +225,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
             (
               <ButtonsForm 
                 onSubmit = { onUpdate }
+                btnStatus = { btnStatus }
                 title = "Editar"
               />
             )

@@ -10,6 +10,11 @@ export const  UseCertificadoService = async () => {
     
     const apiAdapter: HttpAdapter = new ApiAdapter();
 
+    const getCertificadoExiste =  async (rut_paciente : string)  => {
+
+        const response:{status:number,mensaje:string} = await  apiAdapter.get(`${API}/certificado/validar/${rut_paciente}`,10,0)
+        return response;
+    }
 
     const getCertificadoRut =  async (rut_paciente : string)  => {
 
@@ -17,5 +22,5 @@ export const  UseCertificadoService = async () => {
         return response;
     }
 
-    return { getCertificadoRut }
+    return { getCertificadoRut,getCertificadoExiste }
 }

@@ -4,16 +4,16 @@ import { Button} from "@mui/material";
 
 
 interface Props { 
-    handleClickDowload   :  (rut : string) => void;
-    rut     : string,
-    title   : string
+    handleClickDowload : (id_paciente : number) => void;
+    id_paciente : number,
+    title       : string
 }
 
-export const DownloadPDF = ({handleClickDowload,rut,title}:Props) => {
+export const DownloadPDF = ({handleClickDowload,id_paciente,title}:Props) => {
 
     const handleClick = () => {
 
-        handleClickDowload(rut);
+        handleClickDowload(id_paciente);
     }
 
     return (

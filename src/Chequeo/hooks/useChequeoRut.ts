@@ -7,7 +7,7 @@ interface Props {
     setChequeo: React.Dispatch<React.SetStateAction<IChequeo | undefined>>;
 }
 
-const useChequeoRut = (rut_paciente: string) : Props => {
+const useChequeoRut = (id_paciente: number) : Props => {
 
    
     const [chequeo, setChequeo]: [
@@ -16,19 +16,19 @@ const useChequeoRut = (rut_paciente: string) : Props => {
     ] = useState<IChequeo>();
     
 
-    const loadChequeo = async (rut_paciente: string) => {
+    const loadChequeo = async (id_paciente: number) => {
         
         const {  getChequeoRut } = await UseChequeoService() ;
-        const resChequeo:IChequeo = await getChequeoRut(rut_paciente);
+        const resChequeo:IChequeo = await getChequeoRut(id_paciente);
         setChequeo(resChequeo);
     };
 
 
     useEffect(() => {
 
-        if (rut_paciente) loadChequeo(rut_paciente);
+        if (id_paciente) loadChequeo(id_paciente);
     
-    }, [rut_paciente]);
+    }, [id_paciente]);
 
     return { chequeo,setChequeo };
     

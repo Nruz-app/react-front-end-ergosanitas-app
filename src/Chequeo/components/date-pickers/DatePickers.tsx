@@ -21,30 +21,27 @@ export const DatePickers = ({setRowTable}: Props) => {
     const { user_email }  = user;
     const [value, setValue] = React.useState<Dayjs | null>(dayjs(new Date()));
 
+    const fetchData = async () => {
+      try {
+          const { postFilterCalendar } = await UseChequeoService();
+          const fecha_calendar = value!.format("YYYY-MM-DD");
+          const responseChequeos = await postFilterCalendar(fecha_calendar, user_email);
+          setRowTable(responseChequeos);
+          setValue(value);
+      } catch (error) {
+          console.error("Error al obtener los chequeos:", error);
+      }
+    }
 
-    React.useEffect(() => {
-      
-      const fetchData = async () => {
-          try {
-              const { postFilterCalendar } = await UseChequeoService();
-              const fecha_calendar = value!.format("YYYY-MM-DD");
-              const responseChequeos = await postFilterCalendar(fecha_calendar, user_email);
-              setRowTable(responseChequeos);
-              setValue(value);
-          } catch (error) {
-              console.error("Error al obtener los chequeos:", error);
-          }
-      };
-  
+    React.useEffect(() => {      
       fetchData();
-  }, []);
+    }, []);
 
     const OnChange = async (newValue : Dayjs) => {
 
         const fecha_calendar = newValue.format("YYYY-MM-DD");
-        let responseChequeos:IChequeo[];
         const {  postFilterCalendar } = await UseChequeoService();
-        responseChequeos = await postFilterCalendar(fecha_calendar,user_email);
+        const responseChequeos = await postFilterCalendar(fecha_calendar,user_email);
         setRowTable(responseChequeos); 
 
         setValue(newValue);

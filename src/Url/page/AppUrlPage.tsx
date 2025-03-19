@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 const AppUrlPage = () => {
 
-    const { rut_paciente_path } = useParams();
+    const { rut_paciente } = useParams();
 
   return (
     <>
@@ -23,7 +23,7 @@ const AppUrlPage = () => {
                     animation: 'fadeInDownBig 1s ease-out'
                 }}
             >
-                Cargar Certificado {rut_paciente_path}
+                Cargar Certificado {rut_paciente}
             </Typography>
         </Box>
         <CertificadoForm

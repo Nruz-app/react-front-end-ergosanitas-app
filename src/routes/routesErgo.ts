@@ -39,7 +39,7 @@ export const routesErgo:Route[] = [
     {
         name      : 'Certifiado',
         to        : '/certificado',
-        path      : '/certificado/:rut_paciente_path',
+        path      : '/certificado/:rut_paciente/:id_paciente',
         perfil    : 'All', 
         status    : false,  
         Component : AppUrlPage

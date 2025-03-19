@@ -1,6 +1,5 @@
 
 import React from 'react'
-import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 
 interface TabPanelProps {
@@ -15,20 +14,20 @@ export const TabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
-      hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
+      sx={{
+        display: value !== index ? "none" : "block",
+        p: 3,
+        bgcolor: "background.default",
+        borderRadius: 2,
+      }}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3, bgcolor: 'background.default', borderRadius: 2 }}>
-          <Typography variant="body1" sx={{ color: 'text.primary' }}>
-            {children}
-          </Typography>
-        </Box>
-      )}
-    </div>
-  )
+      {children}
+    </Box>
+  );
+  
 }

@@ -7,11 +7,12 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 
 interface InputFileUploadProps {
+  typeAccept : string;
   onFileSelect: (file: File | null) => void;
 }
 
 
-const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect }) => {
+const InputFileUpload: FC<InputFileUploadProps> = ({ typeAccept,onFileSelect }) => {
 
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -30,7 +31,7 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect }) => {
   return (
     <Stack direction="column" alignItems="center" spacing={2}>
       <input
-        accept="image/*, .pdf"
+        accept= { typeAccept } 
         style={{ display: 'none' }}
         id="file-upload"
         type="file"

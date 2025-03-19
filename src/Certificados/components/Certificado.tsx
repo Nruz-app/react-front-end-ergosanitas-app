@@ -80,13 +80,11 @@ export const Certificado = () => {
              validationSchema = { validationSchema }  
              onSubmit = { async  ( {  rutUser } ) => {
 
-                const {url_pdf,name_pdf,titulo} = await GetUrlPdf(rutUser);
+                const {url_pdf,name_pdf,titulo,isValidRut} = await GetUrlPdf(rutUser);
 
-                console.log('url_pdf',url_pdf);
- 
                 onSetCertificado({
                     ...certificadoContext,
-                    isValidRut: true,
+                    isValidRut: isValidRut,
                     rutUser,
                     url_pdf,
                     name_pdf,

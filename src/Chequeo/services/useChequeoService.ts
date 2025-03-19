@@ -1,5 +1,5 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
-import { IChequeo,EstadoGenerales } from '../interface';
+import { IChequeo,EstadoGenerales, ResponseCargaMasica } from '../interface';
 
 import { type formData } from '../interface/';
 
@@ -11,9 +11,14 @@ export const  UseChequeoService = async () => {
     const apiAdapter: HttpAdapter = new ApiAdapter();
 
 
-    const chequeoPDF =  async (rut : string) => {
+    const chequeoPDFRut =  async (rut_paciente : string) => {
  
-        window.location.href = `${API}/chequeo-cardiovascular/pdf/${rut}`; 
+        window.location.href = `${API}/chequeo-cardiovascular/pdfRut/${rut_paciente}`; 
+    }
+
+    const chequeoPDF =  async (id_paciente : number) => {
+ 
+        window.location.href = `${API}/chequeo-cardiovascular/pdf/${id_paciente}`; 
     }
 
     const getChequeo =  async () : Promise<IChequeo[]> => {
@@ -46,15 +51,15 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
-    const getChequeoRut =  async (rut_paciente : string) : Promise<IChequeo> => {
+    const getChequeoRut =  async (id_paciente : number) : Promise<IChequeo> => {
         
-        const response:IChequeo = await  apiAdapter.get(`${API}/chequeo-cardiovascular/${rut_paciente}`,10,0)
+        const response:IChequeo = await  apiAdapter.get(`${API}/chequeo-cardiovascular/${id_paciente}`,10,0)
         return response;
     }
 
-    const postUpdateChequeo = async (Chequeo : IChequeo,rut : string,user_email : string) => {
+    const postUpdateChequeo = async (Chequeo : IChequeo,id : number,user_email : string) => {
        
-        const response = await  apiAdapter.put(`${API}/chequeo-cardiovascular/${rut}/${user_email}`,Chequeo);
+        const response = await  apiAdapter.put(`${API}/chequeo-cardiovascular/${id}/${user_email}`,Chequeo);
         return response;
 
     }
@@ -85,7 +90,7 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
-    const postFilterCalendar = async (fecha_calendar : string,user_email : string) => {
+    const postFilterCalendar = async (fecha_calendar : string,user_email : string) :Promise<IChequeo[]> => {
        
         const response:IChequeo[] = await  apiAdapter.post(`${API}/chequeo-cardiovascular/filter-calendar`,{
             fecha_calendar,
@@ -99,11 +104,29 @@ export const  UseChequeoService = async () => {
         const response:EstadoGenerales = await  apiAdapter.get(`${API}/chequeo-cardiovascular/estado-general/${user_email}`,10,0)
         return response;
     }
+
+    const postCargaMasiva = async(selectedFile : File,user_email : string) => {
+
+        const uploadData = new FormData();
+        uploadData.append('file', selectedFile);
+        uploadData.append('user_email', user_email);
+
+        const response = await  apiAdapter.post<ResponseCargaMasica>(`${API}/carga-masiva/excel`,uploadData);
+        return response;
+    }
+
+    const postFilterClubDeportivo = async (user_email : string) :Promise<IChequeo[]> => {
+       
+        const response:IChequeo[] = await  apiAdapter.post(`
+            ${API}/chequeo-cardiovascular/club-deportivo`,{user_email});
+        return response;
+    }
    
     return { 
         getChequeo,
         postChequeoUser,
         postCreateChequeo,
+        chequeoPDFRut,
         chequeoPDF,
         postUploadFile,
         getChequeoRut,
@@ -113,7 +136,9 @@ export const  UseChequeoService = async () => {
         getDeleteRut,
         getDeleteById,
         postFilterCalendar,
-        getEstadoGeneral
+        getEstadoGeneral,
+        postCargaMasiva,
+        postFilterClubDeportivo
     };
     
 }

@@ -89,6 +89,7 @@ export const FormUpload = ({ formData }: Props) => {
 
                 <InputFileUpload 
                     onFileSelect={handleFileSelect} 
+                    typeAccept="image/*, .pdf" 
                 />
             
             </Grid>   

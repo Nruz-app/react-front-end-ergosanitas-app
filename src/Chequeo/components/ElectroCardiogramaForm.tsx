@@ -5,16 +5,17 @@ import { ButtonsForm, InputSelect, InputText } from "../../components";
 import useElectroCardiograma from "../hooks/useElectroCardiograma";
 
 import Swal from 'sweetalert2';
-import { useElectroCardiogranaService } from "../services/useElectroCardiogranaService";
+import { UseElectroCardiogranaService } from "../services/useElectroCardiogranaService";
 
 interface Props {
   rut_paciente : string;
+  id_paciente  : number;
   url_pdf?     : string; 
-  handleUpdateStatus : (status : number, rut_paciente : string) => void;
+  handleUpdateStatus : (status : number, rut_paciente : string,id_paciente : number) => void;
 }
 
 
-export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}:Props) => {
+export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,id_paciente,handleUpdateStatus}:Props) => {
 
   const { control,handleSubmit,setValue,errors } = useElectroCardiograma(); 
   let extension = 'jpg'  
@@ -54,7 +55,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
     }
 
 
-    const {  postCreateElectroCardiograma } = await useElectroCardiogranaService() ;
+    const {  postCreateElectroCardiograma } = await UseElectroCardiogranaService() ;
 
     const { estado_paciente,
         frecuencia_cardiaca_paciente,
@@ -64,6 +65,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
 
     const response = await postCreateElectroCardiograma({
         rut_paciente,
+        id_paciente,
         estado_paciente,
         frecuencia_cardiaca_paciente,
         derivacion_paciente,
@@ -80,7 +82,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
    
              control._reset();  
              //navigate('/chequeo');
-             handleUpdateStatus(0,'');
+             handleUpdateStatus(0,'',0);
     }    
   }
 
@@ -180,6 +182,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,handleUpdateStatus}
                     <ButtonsForm 
                         onSubmit = { onSubmit }
                         title = "Ingresar"
+                        btnStatus = { false }
                     />
                 </Grid>
 

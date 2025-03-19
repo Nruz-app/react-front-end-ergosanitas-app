@@ -1,7 +1,7 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
 import { IElectroCardiograma } from '../interface';
 
-export const  useElectroCardiogranaService = async () => {
+export const  UseElectroCardiogranaService = async () => {
 
     const API = import.meta.env.VITE_API;
 

@@ -10,6 +10,10 @@ import { EstadisticasPage } from './EstadisticasCardPage';
 
 import { ChartsPage } from './chartsPage';
 
+export  { BarPresionPage } from './bar-presion-page';
+
+export  { PieChartIMC } from './PieChart';
+
 
 export { 
     AppEstadisticasPages,

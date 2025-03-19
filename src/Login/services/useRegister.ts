@@ -1,6 +1,6 @@
 import { ApiAdapter, HttpAdapter } from '../../common/api/api.adapter';
 import { IResponseUser } from '../interface';
-import { ILogoUser } from '../interface/user';
+import { ILogoUser, IUser } from '../interface/user';
 
 
 export const  UseRegister = async () => {
@@ -31,5 +31,11 @@ export const  UseRegister = async () => {
         return response;
     }
 
-    return { authRegister,loadLogoUser };
+    const getUserEmail =  async () : Promise<IUser[]> => {
+            
+        const response:IUser[] = await  apiAdapter.get(`${API}/auth-register/user_email`,10,0)
+        return response;
+    }
+
+    return { authRegister,loadLogoUser,getUserEmail };
 }

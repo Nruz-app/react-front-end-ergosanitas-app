@@ -19,14 +19,15 @@ import { type formData } from '../interface/';
 
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import { FilterTable } from "./filters/FilterTable";
+import { ExportExcel } from "./exportar-excel/Exportar-excel";
 
 
-let rows:IChequeo[] = [];
+const rows:IChequeo[] = [];
 
 interface Props {
   handleFormData : (formData : formData) => void;
-  handleUpdateStatus : (status : number, rut_paciente : string) => void;
-  handleViewData : (rut : string) => void;
+  handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
+  handleViewData : (id_paciente : number) => void;
 }
 
 export const ChequeoTable = (  {
@@ -51,8 +52,8 @@ export const ChequeoTable = (  {
     const [statusTable,setStatusTable] = useState(false);
     
     
-    const handleChangePage = (event: any, newPage: number) => {
-        event.preventDefault();
+    const handleChangePage = (event:  React.MouseEvent<HTMLButtonElement>| null, newPage: number) => {
+        event?.preventDefault();
         setPage(newPage);
     };
 
@@ -70,9 +71,9 @@ export const ChequeoTable = (  {
       onOpenModal(true);
     }
 
-    const handleOpenModalView = (rut: string) => {
+    const handleOpenModalView = (id_paciente: number) => {
 
-      handleViewData(rut);
+      handleViewData(id_paciente);
       onOpenModalView(true);
 
     }
@@ -103,21 +104,21 @@ export const ChequeoTable = (  {
         []
     ); 
 
-    const handleClickDowload = async (rut: string) => {
+    const handleClickDowload = async (id_paciente: number) => {
 
       const {  chequeoPDF } = await UseChequeoService() ;
-      await chequeoPDF(rut);
+      await chequeoPDF(id_paciente);
           
     }
 
-    const handleUpdatePaciente = async(rut_paciente : string) => {
+    const handleUpdatePaciente = async(rut_paciente : string,id_paciente : number) => {
 
-      handleUpdateStatus(1,rut_paciente)
+      handleUpdateStatus(1,rut_paciente,id_paciente)
 
     }
-    const handleUpdatePacienteH = async(rut_paciente : string) => {
+    const handleUpdatePacienteH = async(rut_paciente : string,id_paciente : number) => {
 
-      handleUpdateStatus(3,rut_paciente)
+      handleUpdateStatus(3,rut_paciente,id_paciente)
 
     }
 
@@ -140,10 +141,18 @@ export const ChequeoTable = (  {
 
     }
 
-    const handRedictCertificado  = async (rut_paciente : string) => {
-      navigate(`/certificado/${rut_paciente}`);
+    const handRedictCertificado  = async (rut_paciente : string,id_paciente : number) => {
+      navigate(`/certificado/${rut_paciente}/${id_paciente}`);
     } 
 
+    const capitalizeWords = (text : string) => {
+      // Convierte todo el texto a minúsculas y luego capitaliza la primera letra de cada palabra
+      return text
+        .toLowerCase() // Convierte todo a minúsculas
+        .split(' ')    // Divide el texto en palabras
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+        .join(' ');    // Junta las palabras nuevamente con espacios
+    };
 
     const fetchAgendaHoras = useCallback(async (): Promise<void> => {
 
@@ -177,7 +186,9 @@ export const ChequeoTable = (  {
           <FilterTable
               setRowTable = { setRowTable }
           />
-          
+
+          <ExportExcel rowsFiles = { rowTable } />
+
           <Box sx={{  padding: 2, marginBottom: 1 }}>   
           <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3,  margin: "auto" }}>
               <Table stickyHeader aria-label="sticky table">
@@ -198,9 +209,23 @@ export const ChequeoTable = (  {
                       </TableCell>
                     ))
                   }
+                  {
+                    (user_perfil != "Colegios") && (
+                      <TableCell 
+                        key={99} 
+                        sx={{ 
+                          color: "white",
+                          bgcolor: "#1976d2", 
+                          fontFamily: "'UnifrakturMaguntia', serif", // Fuente gótica
+                          fontSize: "20px", // Tamaño más grande 
+                        }}> 
+                        User 
+                      </TableCell>
+                    )
+                  }
                   <TableCell 
-                    colSpan = {3}  
-                    key={99}
+                    colSpan = {6}  
+                    key={999}
                     sx={{ 
                       color: "white",
                       bgcolor: "#1976d2", 
@@ -222,15 +247,20 @@ export const ChequeoTable = (  {
       
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                            <TableCell >{row.nombre}</TableCell>
+                            <TableCell >{ capitalizeWords(row.nombre) }</TableCell>
                             <TableCell >{row.rut}</TableCell>
                             <TableCell >{row.edad}</TableCell>
+                            {
+                              (user_perfil != "Colegios") && (
+                                <TableCell>{row.user_email.split('@')[0]}</TableCell>
+                              )
+                            }
                             <TableCell >
                             {
                               <Button
                                 variant="outlined"
                                 style={{ color: "primary", borderColor: "primary" }}
-                                onClick={() => handleOpenModalView(row.rut)}
+                                onClick={() => handleOpenModalView(row.id!)}
                                 title= {'Visualizar Paciente - '+row.rut }
                               >
                                 <VisibilityIcon
@@ -249,7 +279,7 @@ export const ChequeoTable = (  {
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     //href={`/${row.rut}`}
-                                    onClick={ () => handleUpdatePaciente(row.rut)}
+                                    onClick={ () => handleUpdatePaciente(row.rut,row.id!)}
                                     title= {'Editar Paciente - '+row.rut }
                                   >
                                     <EditIcon 
@@ -264,8 +294,8 @@ export const ChequeoTable = (  {
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     //href={`/${row.rut}`}
-                                    onClick={ () => handleUpdatePaciente(row.rut)}
-                                    title= {'Editar Paciente AAA- '+row.rut }
+                                    onClick={ () => handleUpdatePaciente(row.rut,row.id!)}
+                                    title= {'Editar Paciente - '+row.rut }
                                   >
                                     <EditIcon 
                                       style={{ 
@@ -283,7 +313,7 @@ export const ChequeoTable = (  {
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     title={`ECG FOTO - ${row.rut}`}
-                                    onClick={() => handRedictCertificado(row.rut)}
+                                    onClick={() => handRedictCertificado(row.rut,row.id!)}
                                   >
                                     <MonitorHeartIcon
                                       style={{ 
@@ -298,7 +328,7 @@ export const ChequeoTable = (  {
                                   <Button
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
-                                    onClick={() => handleUpdatePacienteH(row.rut)}
+                                    onClick={() => handleUpdatePacienteH(row.rut,row.id!)}
                                     title= {'Revision Medica - '+row.rut }
                                   >
                                     <FavoriteIcon
@@ -316,7 +346,7 @@ export const ChequeoTable = (  {
                                  (user_perfil != "Usuario") && (
                                     <DownloadPDF
                                       handleClickDowload={handleClickDowload}
-                                      rut={row.rut}
+                                      id_paciente={row.id!}
                                       title= {'Descargar PDF - '+row.rut }
                                     />
                                  )

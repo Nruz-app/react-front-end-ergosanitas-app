@@ -13,15 +13,15 @@ interface Props {
     name         : string;
     type?        : string; 
     placeholder? : string;
-    handleReset  : (e?: React.SyntheticEvent<any>) => void;
-    [x:string]   : any;
+    handleReset  : () => void; // handleReset  : (e?: React.SyntheticEvent<any>) => void;
+       //[x:string]   : any;
     title        : string;
     handlOnChange : (textoValue : string) => void;
     value        : string;   
 }
 
 
-export const TextInputBaseLike = ( { label,handleReset,handlOnChange, ...props }: Props ) => {
+export const TextInputBaseLike = ( { handleReset,handlOnChange, ...props }: Props ) => {
 
 
   const [value,setValue] = useState(props.value);  

@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
 
 import { 
     useFormCalculoIMC,
-    useCalculoIMC,
-    useCalcularPercentil,
-    useIMCRecomendaciones 
+    UseCalculoIMC,
+    UseCalcularPercentil,
+    UseIMCRecomendaciones 
 } from '../../hooks';
 
 export const CalculadoraImc = () => {
@@ -27,7 +27,7 @@ export const CalculadoraImc = () => {
         const {edad_paciente,estatura_paciente,peso_paciente,sexo_paciente} = control._formValues || {};
       
         if(estatura_paciente && peso_paciente) {
-            IMC = await useCalculoIMC(estatura_paciente,peso_paciente);
+            IMC = await UseCalculoIMC(estatura_paciente,peso_paciente);
         }
         if(edad_paciente >= 18) {
 
@@ -38,14 +38,14 @@ export const CalculadoraImc = () => {
             
         }
         else {
-            const percentil = await useCalcularPercentil(edad_paciente,IMC,sexo_paciente);
+            const percentil = await UseCalcularPercentil(edad_paciente,IMC,sexo_paciente);
             
             if (percentil < 5) categoria = "Bajo peso";
             else if (percentil < 85) categoria = "Peso saludable";
             else if (percentil < 95) categoria = "Sobrepeso";
             else categoria = "Obesidad";
         }
-        recomendaciones = await useIMCRecomendaciones(edad_paciente,IMC,sexo_paciente);
+        recomendaciones = await UseIMCRecomendaciones(edad_paciente,IMC,sexo_paciente);
 
         Swal.fire({
             icon: 'info',  // Puedes cambiar a 'success', 'warning', 'error', según sea necesario
@@ -107,6 +107,7 @@ export const CalculadoraImc = () => {
                     .map(({ type, name, placeholder, label, defaultValue, 
                         helperText,values }) => {
 
+                        // eslint-disable-next-line prefer-const
                         let disabled=false;
         
                         if (type === 'text' || type === 'number') {
@@ -155,6 +156,7 @@ export const CalculadoraImc = () => {
                     <ButtonsForm 
                         onSubmit = { onSubmit }
                         title = "Calcular"
+                        btnStatus = { false }
                     />
                 </Grid>
             </form>

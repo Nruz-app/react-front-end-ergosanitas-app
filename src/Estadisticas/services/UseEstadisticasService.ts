@@ -1,5 +1,5 @@
 import { ApiAdapter, HttpAdapter } from "../../common/api/api.adapter";
-import { IEstadisticaIMC } from "../interface/estadisticaIMC.interface";
+import { IEstadisticaIMC,IEstadisticaPresion } from "../interface";
 
 
 export const UseEstadisticasService = () => {
@@ -14,7 +14,14 @@ export const UseEstadisticasService = () => {
         return response;
     }
 
+    const getEstadisticaPresion =  async (user_email : string)  : Promise<IEstadisticaPresion> => {
+    
+        const response:IEstadisticaPresion = await  apiAdapter.get(`${API}/estadisticas/estadistica-presion/${user_email}`,10,0)
+        return response;
+    }
+
     return {
-        getEstadisticaIMC
+        getEstadisticaIMC,
+        getEstadisticaPresion
     }
 }

@@ -9,7 +9,7 @@ import { isMobile } from 'react-device-detect';
 function App() {
 
   if(isMobile) {
-    console.log('celulkar');
+    console.log('App Movie');
   }
   
 

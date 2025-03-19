@@ -15,6 +15,7 @@ export const  UseCertificadoService = async () => {
         const uploadData = new FormData();
         uploadData.append('file', selectedFile);
         uploadData.append('rut_paciente', certificado.rut_paciente);
+        uploadData.append('id_paciente', certificado.id_paciente!);
         uploadData.append('nombre_paciente', certificado.nombre_paciente);
 
         const response = await  apiAdapter.post(`${API}/certificado/save-url`,uploadData);

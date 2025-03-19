@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TextField } from "@mui/material"
 import { Controller, UseFormSetValue } from "react-hook-form";
 
-import { useCalculoIMC } from '../../Chequeo/hooks';
+import { UseCalculoIMC } from '../../Chequeo/hooks';
 
 interface Props {
   control       : any;
@@ -33,7 +34,7 @@ export const InputText = ( { control,multiline = false,setValue,...props } : Pro
 
         if(edad && estatura && sexo_paciente && peso) {
 
-            const imc = await useCalculoIMC(estatura,peso);
+            const imc = await UseCalculoIMC(estatura,peso);
             if(setValue) 
                 setValue('imc_paciente',imc);
             

@@ -25,7 +25,7 @@ for ( const input of fromJson ) {
     //Validaciones de los campos
     if(  !input.validations ) continue;
 
-    let schema = Yup.string();
+    const schema = Yup.string();
 
     fieldValidations[input.name] = schema ;
 }

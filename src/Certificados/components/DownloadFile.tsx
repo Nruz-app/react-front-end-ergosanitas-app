@@ -16,9 +16,8 @@ export const DownloadFile = () => {
   const handleClick = async () => {
     //navigate('/home'); // Redirige al destino
 
-    const {  chequeoPDF } = await UseChequeoService() ;
-    await chequeoPDF(rutUser);
-
+    const {  chequeoPDFRut } = await UseChequeoService() ;
+    await chequeoPDFRut(rutUser);
 
   }
 

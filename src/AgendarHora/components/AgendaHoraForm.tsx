@@ -268,6 +268,7 @@ export const AgendaHoraForm = () => {
             <ButtonsForm 
               onSubmit = { onSubmit }
               title = "Reserva"
+              btnStatus = { false }
             />
 
         </Grid>

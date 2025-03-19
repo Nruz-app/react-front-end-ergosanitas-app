@@ -8,3 +8,5 @@ export type { IElectroCardiograma } from './electroCardiograma.interface';
 export type { CalculadoraIMC } from './calculadora-imc';
 
 export type { EstadoGenerales } from './estado-generales.interface';
+
+export type { ResponseCargaMasica } from './response-carga-masiva';

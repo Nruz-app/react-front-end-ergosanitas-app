@@ -18,12 +18,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export const CertificadoForm = () => {
   
   const navigate = useNavigate();
-  const { rut_paciente_path } = useParams();
+  const { rut_paciente,id_paciente } = useParams();
 
   const { control,handleSubmit } = useCertificado(); 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);  
-
-  const { rut_paciente_url } = useParams();
 
 
   const handleFileSelect = (file: File | null) => {
@@ -41,7 +39,7 @@ export const CertificadoForm = () => {
 
        const response =  await postCerticadoSave(
               selectedFile!,
-              {rut_paciente,nombre_paciente});
+              {rut_paciente,id_paciente,nombre_paciente});
 
        if(response) {
 
@@ -64,14 +62,14 @@ export const CertificadoForm = () => {
   return (
     <Box sx={ { flexGrow: 1, py: 4, mx: "auto", maxWidth: "80%" } }>
     <form onSubmit={handleSubmit(onSubmit) }> 
-      <Grid container justifyContent="center" spacing={3}>{rut_paciente_url}
+      <Grid container justifyContent="center" spacing={3}>
         {
             certificadoJson.sort((a, b) => a.order - b.order)
             .map(({ type, name, placeholder, label, defaultValue, helperText }) => {
                 if (type === 'text' || type === 'number') {
 
                     if(name =="rut_paciente") {
-                      defaultValue = rut_paciente_path!;
+                      defaultValue = rut_paciente!;
                     }
 
                     return (
@@ -98,6 +96,7 @@ export const CertificadoForm = () => {
 
             <InputFileUpload 
                 onFileSelect={handleFileSelect} 
+                typeAccept="image/*, .pdf"
             />
 
             </Grid>   

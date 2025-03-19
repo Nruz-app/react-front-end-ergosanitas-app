@@ -1,7 +1,7 @@
 {
   "name": "ergosanitas-app",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,6 +29,8 @@
     "axios": "^1.7.5",
     "chart.js": "^4.4.6",
     "dayjs": "^1.11.13",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "formik": "^2.4.6",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",

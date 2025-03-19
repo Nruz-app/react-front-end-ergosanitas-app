@@ -3,11 +3,12 @@ import { ElectroCardiogramaForm } from "../components";
 
 interface Props {
     rut_paciente : string;
+    id_paciente : number;
     url_pdf : string;
-    handleUpdateStatus : (status : number, rut_paciente : string) => void;
+    handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
 }
 
-export const ElectroCardiograma = ({ rut_paciente,url_pdf,handleUpdateStatus }: Props) => {
+export const ElectroCardiograma = ({ rut_paciente,id_paciente,url_pdf,handleUpdateStatus }: Props) => {
 
 
     return (
@@ -30,6 +31,7 @@ export const ElectroCardiograma = ({ rut_paciente,url_pdf,handleUpdateStatus }: 
             {
                 <ElectroCardiogramaForm
                   rut_paciente = { rut_paciente }
+                  id_paciente = {id_paciente}
                   url_pdf = { url_pdf }
                   handleUpdateStatus = { handleUpdateStatus } 
                 />
