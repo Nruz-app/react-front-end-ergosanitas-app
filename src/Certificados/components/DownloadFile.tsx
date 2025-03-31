@@ -23,12 +23,11 @@ export const DownloadFile = () => {
     }
   }
 
-
+// { label: "Electro Cardiograma", color: "#1976D2", hoverColor: "#115293", isClick : false }
   return (
     <Box mt={4} sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
     {[
-      { label: "Certificado", color: "#4CAF50", hoverColor: "#388E3C", isClick : true },
-      { label: "Electro Cardiograma", color: "#1976D2", hoverColor: "#115293", isClick : false },
+      { label: "Certificado", color: "#4CAF50", hoverColor: "#388E3C", isClick : true }
     ].map((btn, index) => (
       <Button
         key={index}
