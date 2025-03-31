@@ -27,8 +27,8 @@ jobs:
       - name: Subir archivos a cPanel vía FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
-          server: ftp.tu-dominio.com
+          server: ftp.ergosanitas.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: build/  # Subimos la carpeta generada por React
+          local-dir: dist/  # Subimos la carpeta generada por React
           server-dir: /public_html/mi_react_app/  # Ruta en tu servidor
