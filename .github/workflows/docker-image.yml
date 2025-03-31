@@ -34,9 +34,12 @@ jobs:
           sudo apt-get install -y lftp
           lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
           set ftp:ssl-allow no
-          set net:max-retries 2
-          set net:timeout 30
+          set net:max-retries 5
+          set net:timeout 60
+          set mirror:parallel-transfer-count 1
+          set ftp:passive-mode on
           mirror -R dist/ /public_html/mi_react_app/
           quit
           EOF
+
 
