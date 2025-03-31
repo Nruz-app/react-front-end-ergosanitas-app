@@ -25,7 +25,7 @@ jobs:
         run: npm run build
 
       - name: Subir archivos a cPanel vía FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        uses: ergosan1/FTP-Deploy-Action@4.3.0
         with:
           server: ftp.ergosanitas.com
           username: ${{ secrets.FTP_USERNAME }}
