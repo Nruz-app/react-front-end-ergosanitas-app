@@ -59,7 +59,16 @@ export const FormUpload = ({ formData }: Props) => {
                 
                 setSelectedFile(null);
                 onOpenModal(false);
-                Swal.fire('Archivos Cargado Servidor','La Imagen Se ha subido con éxito','success')
+                
+                Swal.fire({
+                    title: '✅ ¡Archivos Cargado Servidor!',
+                    html: `La Imagen Se ha subido con éxito.`,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                    timer: 3000,
+                    timerProgressBar: true,
+                });     
+                    
 
             } 
             catch (error) {

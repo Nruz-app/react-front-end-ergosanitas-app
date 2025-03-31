@@ -26,7 +26,9 @@ export const GetUrlPdf = async (rutUser: string)  => {
         Swal.fire({
             icon: 'error',  
             title: 'Validar Certificado',
-            text: mensaje
+            text: mensaje,
+            timer: 2000, 
+            timerProgressBar: true,
         });
 
 

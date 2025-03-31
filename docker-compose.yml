@@ -1,0 +1,13 @@
+services:
+  react-app:
+    build: .
+    restart: always
+    ports:
+      - "5173:5173"   # Asegúrate de que el puerto 80 esté expuesto
+    container_name: react-app
+    networks:
+      - react-net
+
+networks:
+  react-net:
+    driver: bridge

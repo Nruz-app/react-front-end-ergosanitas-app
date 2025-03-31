@@ -8,48 +8,48 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 interface InputFileUploadProps {
   typeAccept : string;
-  onFileSelect: (file: File | null) => void;
+  onFileSelectExcel: (file: File | null) => void;
 }
 
 
-const InputFileUpload: FC<InputFileUploadProps> = ({ typeAccept,onFileSelect } : InputFileUploadProps) => {
+const FileUploadExcel: FC<InputFileUploadProps> = ({ typeAccept,onFileSelectExcel } : InputFileUploadProps) => {
 
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileNameExcel, setFileNameExcel] = useState<string | null>(null);
 
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChangeExcel = (event: ChangeEvent<HTMLInputElement>) => {
     
     if (event.target.files && event.target.files.length > 0) {
-      onFileSelect(event.target.files[0]);
-      setFileName(event.target.files[0].name);
+        onFileSelectExcel(event.target.files[0]);
+      setFileNameExcel(event.target.files[0].name);
     } 
     else {
-      onFileSelect(null);
+        onFileSelectExcel(null);
     }
   }
 
   return (
     <Stack direction="column" alignItems="center" spacing={2}>
       <input
-        accept= { typeAccept } 
+        accept= { typeAccept }
         style={{ display: 'none' }}
-        id="file-upload"
+        id="file-upload-excel"
         type="file"
-        onChange={handleFileChange}
+        onChange={handleFileChangeExcel}
       />
-      <label htmlFor="file-upload">
+      <label htmlFor="file-upload-excel">
         <Button
           variant="contained"
           component="span"
-          color="primary"
+          color="success"
           startIcon={<UploadFileIcon />}
           sx={{ textTransform: 'none', borderRadius: 8, padding: '8px 16px' }}
         >
-          Subir archivo
+          Subir archivo Excel
         </Button>
       </label>
       {
-        fileName && (
+        fileNameExcel && (
           <Box 
             display="flex" 
             alignItems="center" 
@@ -62,7 +62,7 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ typeAccept,onFileSelect } :
           >
             <InsertDriveFileIcon color="primary" />
             <Typography variant="body2" color="text.primary" fontWeight="500">
-              Archivo seleccionado: <strong>{fileName}</strong>
+              Excel seleccionado: <strong>{fileNameExcel}</strong>
             </Typography>
           </Box>)
       }
@@ -71,4 +71,4 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ typeAccept,onFileSelect } :
 
 }
 
-export default InputFileUpload;
+export default FileUploadExcel;

@@ -7,10 +7,11 @@ interface InputFileUploadProps {
   onFileSelect: (file: File | null) => void;
 }
 
-const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect }) => {
+const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect } : InputFileUploadProps) => {
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
+  const handleFileChangeLogo = (event: ChangeEvent<HTMLInputElement>) => {
+     event.preventDefault(); 
+
     if (event.target.files && event.target.files.length > 0) {
       onFileSelect(event.target.files[0]);
     } 
@@ -24,14 +25,14 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect }) => {
         <input
             accept="image/*"
             style={{ display: 'none' }}
-            id="file-upload"
+            id="file-upload-logo"
             type="file"
-            onChange={handleFileChange}
+            onChange={handleFileChangeLogo}
         />
         <Typography
             variant="body1"
             component="label"
-            htmlFor="file-upload"
+            htmlFor="file-upload-logo"
             sx={{
                 display: 'inline-flex',
                 alignItems: 'center',

@@ -28,7 +28,6 @@ export const  UseChequeoService = async () => {
     }
     const postChequeoUser =  async (user_email : string) : Promise<IChequeo[]> => {
 
-        
         const response:IChequeo[] = await  apiAdapter.post(`${API}/chequeo-cardiovascular/user`,{user_email})
         return response;
     }
@@ -59,6 +58,8 @@ export const  UseChequeoService = async () => {
 
     const postUpdateChequeo = async (Chequeo : IChequeo,id : number,user_email : string) => {
        
+        console.log('Chequeo',Chequeo);
+        console.log('user_email',Chequeo.user_email)
         const response = await  apiAdapter.put(`${API}/chequeo-cardiovascular/${id}/${user_email}`,Chequeo);
         return response;
 

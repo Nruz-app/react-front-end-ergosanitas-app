@@ -1,7 +1,7 @@
 {
   "name": "ergosanitas-app",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,6 +33,7 @@
     "file-saver": "^2.0.5",
     "formik": "^2.4.6",
     "lodash": "^4.17.21",
+    "mapbox-gl": "^3.10.0",
     "moment": "^2.30.1",
     "pro-gallery": "^5.0.106",
     "react": "^18.3.1",

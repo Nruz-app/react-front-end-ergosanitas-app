@@ -43,7 +43,7 @@ export const LikeTextCheque = ({setRowTable}: Props) => {
   const { onSetLikeText,...likeTextContext }  = useContext( LikeTextContext );
 
   const { user }  = useContext( LoginContext );
-  const { user_email,user_perfil }  = user;
+  const { user_email }  = user;
 
 
   const debounceRef = useRef<NodeJS.Timeout>();  
@@ -63,8 +63,9 @@ export const LikeTextCheque = ({setRowTable}: Props) => {
 
     const handleReset = async ( )  => {
 
-        const {  getChequeo } = await UseChequeoService() ;
-        const response = await getChequeo();
+        const { postChequeoUser } = await UseChequeoService() ;
+       
+        const response = await postChequeoUser(user_email);
 
         onSetLikeText({
             ...likeTextContext,
@@ -79,18 +80,10 @@ export const LikeTextCheque = ({setRowTable}: Props) => {
 
         if(textoValue) {
         
-          const {  postLikeChequeo,postLikeChequeoUser } = await UseChequeoService();
-
-
-          let responseChequeos:IChequeo[];
-
+          const { postLikeChequeoUser } = await UseChequeoService();
           
-          if( user_perfil == 'Administrador')
-                responseChequeos = await postLikeChequeo(textoValue);
-          else
-                responseChequeos = await postLikeChequeoUser(textoValue,user_email);
+          const responseChequeos:IChequeo[] = await postLikeChequeoUser(textoValue,user_email);
   
-
           onSetLikeText({
             ...likeTextContext,
             chequeos : responseChequeos,

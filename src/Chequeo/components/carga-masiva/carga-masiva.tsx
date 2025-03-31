@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Paper, Typography } from "@mui/material"
 import { useContext, useState } from "react";
-import { InputFileUpload } from '../../../Chequeo/components';
+import  FileUploadExcel  from './file-upload/file-upload-excel';
 import { ExportToExcel } from '../../hooks/';
 
 import PostAddIcon from '@mui/icons-material/PostAdd';
@@ -14,10 +14,10 @@ export const CargaMasiva = () => {
     const { user_email }  = user;
     const [btnStatus,setBtnStatus] = useState(false);
     
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFileExcel, setSelectedFileExcel] = useState<File | null>(null);
     
-    const handleFileSelect = (file: File | null) => {
-        setSelectedFile(file);
+    const handleFileExcel = (file: File | null) => {
+        setSelectedFileExcel(file);
     };
 
     const onExportToExcel = async (fileName : string) => {
@@ -26,9 +26,9 @@ export const CargaMasiva = () => {
     }
     const onCargaMasiva = async () => {
      
-        if (!selectedFile) {
+        if (!selectedFileExcel) {
             setBtnStatus(false);
-            setSelectedFile(null);
+            setSelectedFileExcel(null);
             alert('Por favor, selecciona un archivo');
         }  
 
@@ -36,7 +36,7 @@ export const CargaMasiva = () => {
 
         const {  postCargaMasiva } = await UseChequeoService() ;
         
-        const responseCargaMasica = await postCargaMasiva(selectedFile!,user_email);
+        const responseCargaMasica = await postCargaMasiva(selectedFileExcel!,user_email);
         
         if(responseCargaMasica.status == 200){
          
@@ -45,12 +45,12 @@ export const CargaMasiva = () => {
                 html: `Se han insertado <strong>${responseCargaMasica.cantidad}</strong> registros correctamente.`,
                 icon: 'success',
                 confirmButtonText: 'Aceptar',
-                timer: 5000, // Cierra automáticamente después de 5 segundos
+                timer: 3000, 
                 timerProgressBar: true,
             });
         }
         setBtnStatus(false);
-        setSelectedFile(null);
+        setSelectedFileExcel(null);
     }
 
   return (
@@ -112,9 +112,9 @@ export const CargaMasiva = () => {
                                     },
                                 }}
                             >
-                                <InputFileUpload 
-                                    onFileSelect={handleFileSelect} 
-                                    typeAccept=".xlsx" 
+                                <FileUploadExcel 
+                                    onFileSelectExcel={handleFileExcel} 
+                                    typeAccept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
                                 />
                                 <Typography
                                     variant="body2"

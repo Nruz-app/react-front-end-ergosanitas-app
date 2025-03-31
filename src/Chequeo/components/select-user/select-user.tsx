@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MenuItem, TextField } from "@mui/material";
 import { Controller, UseFormSetValue } from "react-hook-form";
+import { IUser } from "../../../Login/interface";
+import { useEffect, useState } from "react";
+import { UseRegister } from "../../../Login/services/useRegister";
 
 interface PropsSelect {
     value: string;
     nombre: string;
 }
+
+const initialSelectValue : IUser[] = [];
 
 
 interface Props {
@@ -23,27 +28,23 @@ interface Props {
     setValue      : UseFormSetValue<any>;     
 }
 
-export const InputSelect = ( { control,setValue,...props } : Props ) => {
+export const SelectUser = ( { control,...props } : Props ) => {
 
+    const [selectValue,setSelectValue] = useState<IUser[]>(initialSelectValue);
 
-    const updateObservacionValue = async (estadoValue : string) =>  {
+    const loadDataClub = async () => {
+        const { getUserEmail } = await UseRegister();
+                    
+        const rowUserEmail = await getUserEmail();
 
-        if(estadoValue === 'Normal') {
+        setSelectValue(rowUserEmail);
+    
+    } 
+    
+    useEffect(() => {      
+        loadDataClub();
+    }, [])
 
-            const valueDefault = `- Ritmo regular de origen Sinusal
-- Intervalo PR dentro de rangos normales
-- Eje Electrico normal
-- Sin presencia de onda Q patologica ni alteracion del segmento ST`
-
-            setValue('observacion_paciente',valueDefault);
-        }
-        else 
-            setValue('observacion_paciente','');
-        
-    }
-
-
-  
     return (
         <Controller
         name={props.name}
@@ -61,11 +62,11 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
                 //onChange={onChange}
                 onChange={(event) => {
                     onChange(event);
-                    updateObservacionValue(event.target.value)
                 }}
                 error={!!error}
                 fullWidth
                 label={props.label}
+                //disabled={props.disabled}
                 select
                 helperText={error ? error.message : props.helperText}
                 placeholder={props.placeholder}
@@ -89,10 +90,10 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
                     },
                 }}
             >
-                {props.values.map(({ nombre, value }) => (
+                {selectValue.map(({ user_email, user_name }) => (
                     <MenuItem 
-                        key={value} 
-                        value={value}
+                        key={user_email} 
+                        value={user_email}
                         sx={{
                             "&.Mui-selected": {
                                 backgroundColor: "#3f51b5",
@@ -106,7 +107,7 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
                             },
                         }}
                     >
-                        { nombre }
+                        { user_name }
                     </MenuItem>
                 ))}
             </TextField>

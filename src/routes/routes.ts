@@ -5,6 +5,7 @@ import { HomePage } from '../Home/pages';
 import { AppCertificadoPage } from '../Certificados/pages/';
 import { AppAgendarHoraPage } from '../AgendarHora/pages/';
 import { AppAsistenteVirtualPage } from '../AsistenteVirtual/pages';
+import { MapsPage } from '../Maps/pages';
 //import { AppServiciosPage } from '../Servicios/pages';
 
 
@@ -42,6 +43,12 @@ export const routes:Route[] = [
         to        : '/asistenteVirtual',
         path      : '/asistenteVirtual/*',
         Component : AppAsistenteVirtualPage
+    },
+    {
+        name      : 'Mapas',
+        to        : '/maps',
+        path      : '/maps/*',
+        Component : MapsPage
     }
 ]
 /*

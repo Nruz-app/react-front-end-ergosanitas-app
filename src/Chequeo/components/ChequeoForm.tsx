@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { IChequeo } from "../interface";
 import { useContext, useState } from "react";
 import { LoginContext } from "../../common/context";
+import { SelectUser } from "./";
 
 
 interface Props {
@@ -26,6 +27,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
 
  const { user }  = useContext( LoginContext );
  const { user_email,user_perfil }  = user;
+ const user_email_perfil = user_email; 
 
  const { control,handleSubmit,setValue  } = useChequeo(chequeo);  
 
@@ -37,7 +39,8 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
     const {nombre,rut,edad,estatura,peso,hemoglucotest,pulso
       ,presionArterial,presion_sistolica,saturacionOxigeno,temperatura,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
-      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente,division_paciente,medio_pago_paciente} = control._formValues || {};
+      Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente,
+      division_paciente,medio_pago_paciente,user_email,status} = control._formValues || {};
 
       const chequeo: IChequeo = {
         nombre,
@@ -59,10 +62,11 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
         enfermedadesAnteriores,
         Recuperacion,
         gradoIncidenciaPosterio,
-        user_email,
+        user_email_perfil,
+        user_email : user_email? user_email : user_email_perfil,
         sexo_paciente,
         imc_paciente,
-        status : 'ingresado',
+        status : status,
         division_paciente,
         medio_pago_paciente
       };
@@ -71,11 +75,15 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
     const response = await postCreateChequeo(chequeo);
 
       if(response) {
-            
-          Swal.fire(
-            'Paciente Listo Para el Chequeo',
-            `El Paciente ${nombre} Fue Creado con Exito!!!`,
-            'success');
+        
+          Swal.fire({
+              title: '✅ ¡Paciente Listo Para el Chequeo',
+              html: `El Paciente <strong>${nombre}</strong> Fue Creado con Exito!!!.`,
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              timer: 3000, // Cierra automáticamente después de 5 segundos
+              timerProgressBar: true,
+          });  
 
           control._reset();  
           //navigate('/chequeo');
@@ -91,7 +99,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
       ,presionArterial,saturacionOxigeno,temperatura,presion_sistolica,enfermedadesCronicas,
       medicamentosDiarios,sistemaOsteoarticular,sistemaCardiovascular,enfermedadesAnteriores,
       Recuperacion,gradoIncidenciaPosterio,fechaNacimiento,sexo_paciente,imc_paciente, division_paciente,
-      medio_pago_paciente} = control._formValues || {};
+      medio_pago_paciente,user_email,status,fecha_atencion} = control._formValues || {};
 
       const chequeo: IChequeo = {
         nombre,
@@ -114,23 +122,29 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
         Recuperacion,
         gradoIncidenciaPosterio,
         user_email,
+        user_email_perfil,
         sexo_paciente,
         imc_paciente,
-        status : 'ingresado',
+        status,
         division_paciente,
-        medio_pago_paciente
+        medio_pago_paciente,
+        fecha_atencion
       };
 
     const {  postUpdateChequeo } = await UseChequeoService() ;
 
-    const response = await postUpdateChequeo(chequeo,id,user_email);
+    const response = await postUpdateChequeo(chequeo,id,user_email_perfil);
 
       if(response) {
             
-          Swal.fire(
-            'Paciente Chequeo Modificado',
-            `El Paciente ${nombre} Fue Modificado con Exito!!!`,
-            'success');
+          Swal.fire({
+              title: '✅ ¡Paciente Chequeo Modificado!',
+              html: `El Paciente <strong>${nombre}</strong> Fue Modificado con Exito!!!.`,
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              timer: 3000,
+              timerProgressBar: true,
+          });  
 
           control._reset();  
           //navigate('/chequeo?status=1');
@@ -149,16 +163,24 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
             .map(({ type, name, placeholder, label, defaultValue, helperText,disabledText,values }) => {
 
               let disabled=false;
-               
-              if(chequeo?.rut && name == 'rut') { disabled=true };
+  
+              if ( user_perfil == 'Colegios' && disabledText === true) {
+                disabled=true 
+              }
+              if (user_perfil != 'Administrador') {
 
-              if ( user_perfil == 'Colegios' && disabledText === true) { 
-                    disabled=true 
-              };
+                if(chequeo?.rut && name == 'rut') disabled=true; 
+                if(name == 'user_email')  disabled=true;
+                if(name == 'status')  disabled=true;
+                if(name == 'fecha_atencion')  disabled=true;
 
-                if (type === 'text' || type === 'number') {
+              }
+              
+              
+                if (type === 'text' || type === 'number' ) {
                   
                     return (
+                        (disabled == false) &&
                         <Grid item xs={12} sm={6} key={name}>
                             <InputText
                                 control={control}
@@ -177,6 +199,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
                 else if (type === 'DatePickers') {
 
                   return ( 
+                    (disabled == false) &&
                       <Grid item xs={12} sm={6} key={name} >
                         <DatePickers
                           control={control}
@@ -184,6 +207,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
                           label={label}
                           defaultValue={defaultValue}
                           setValue = { setValue }
+                          disabled = { disabled }
                         />
                       </Grid>
                   )
@@ -191,6 +215,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
                 else if (type === 'selected') {
                         
                     return ( 
+                      (disabled == false) &&
                       <Grid item xs={12} sm={6} key={name}>
 
                             <InputSelect
@@ -202,11 +227,33 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
                                 defaultValue={defaultValue}
                                 helperText={helperText} 
                                 values = { values! }
+                                disabled = { disabled }
                                 setValue = { setValue }
                             />
                         </Grid>
                     )
                 }
+                else if (type === 'selected-user') {
+                        
+                  return ( 
+                    (disabled == false) &&
+                    <Grid item xs={12} sm={6} key={name}>
+
+                          <SelectUser
+                              control={control}
+                              type={type}
+                              name={name}
+                              placeholder={placeholder}
+                              label={label}
+                              defaultValue={defaultValue}
+                              helperText={helperText} 
+                              values = { values! }
+                              disabled = { disabled }
+                              setValue = { setValue }
+                          />
+                      </Grid>
+                  )
+              }
               
                 throw new Error(`El Type: ${type}, NO es Soportado`);
             })

@@ -76,7 +76,9 @@ export const AgendaHoraForm = () => {
         // Tipo de alerta (puede ser 'success', 'error', 'warning', 'info', 'question')
         icon: 'error',  
         title: 'Error Al Reservar Hora',
-        text: 'Por Favor Ingrese todos los valores del formularios'
+        text: 'Por Favor Ingrese todos los valores del formularios',
+        timer: 5000, // Cierra automáticamente después de 5 segundos
+        timerProgressBar: true,
       });
       return;
 
@@ -114,6 +116,8 @@ export const AgendaHoraForm = () => {
           html: html,
           confirmButtonText: "Pagar",
           showCancelButton: true,
+          timer: 2000, // Cierra automáticamente después de 5 segundos
+          timerProgressBar: true,
         }).then((result) => {
     
             if (result.isConfirmed) {
@@ -195,6 +199,7 @@ export const AgendaHoraForm = () => {
                               helperText={helperText} 
                               values = { values! }
                               setValue = { setValue }
+                              disabled = { false }
                           />
                         </Grid>
                     )

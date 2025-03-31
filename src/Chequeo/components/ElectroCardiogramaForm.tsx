@@ -48,7 +48,9 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,id_paciente,handleU
             // Tipo de alerta (puede ser 'success', 'error', 'warning', 'info', 'question')
             icon: 'error',  
             title: 'Error Al Ingresar Electrocardiograma',
-            text: 'Por Favor Ingrese todos los valores del formularios'
+            text: 'Por Favor Ingrese todos los valores del formularios',
+            timer: 3000,
+            timerProgressBar: true,
           });
           return;
     
@@ -169,6 +171,7 @@ export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,id_paciente,handleU
                                         helperText={helperText} 
                                         values = { values! }
                                         setValue = { setValue }
+                                        disabled = { false }
                                     />
                                 </Grid>
                             )

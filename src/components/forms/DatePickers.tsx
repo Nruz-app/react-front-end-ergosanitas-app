@@ -1,4 +1,3 @@
-import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -6,19 +5,26 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Controller, UseFormSetValue } from 'react-hook-form';
 import 'dayjs/locale/es';
+import { useState } from 'react';
 interface Props {
     control       : any;
     name          : string;
     label         : string;
     defaultValue? : string;   
+    disabled      : boolean;
     setValue     : UseFormSetValue<any>;   
 }
 
 export const DatePickers = ( { control,setValue,...props } : Props ) => {
 
-  const [value] = React.useState<Dayjs | null>(dayjs(new Date()));
+  
+  //const [value] = useState<Dayjs | null>(dayjs(new Date()));
 
-  const handleChanger = (newValue: any) => { 
+  const [value] = useState<Dayjs | null>(
+    props.name === 'fecha_atencion' ? null : dayjs(new Date())
+  );
+
+  const handleChanger = (newValue: dayjs.Dayjs | null) => { 
 
     if (newValue) {
       
@@ -46,7 +52,11 @@ export const DatePickers = ( { control,setValue,...props } : Props ) => {
     <Controller
      name={ props.name}
      control={ control}
-     defaultValue={ value ? dayjs(value).toISOString() : dayjs().toISOString() } 
+     defaultValue={ 
+        props.name === 'fecha_atencion' 
+        ? null 
+        : value ? dayjs(value).toISOString() : dayjs().toISOString()
+      } 
       render={({
         field: { onChange,value, ref, ...field },
       }) => (
@@ -55,18 +65,18 @@ export const DatePickers = ( { control,setValue,...props } : Props ) => {
           {...field}
           label={ props.label }
           inputRef={ ref }
-          defaultValue={ value ? dayjs( value ) : dayjs() } 
-          value={value ? dayjs(value) : dayjs() }
+          defaultValue={props.name === 'fecha_atencion' ? null : value ? dayjs(value) : dayjs()}
+          value={props.name === 'fecha_atencion' ? null : value ? dayjs(value) : dayjs()}
           onChange={(newValue) => {
 
             onChange(newValue ? dayjs(newValue).toISOString() : null); 
-            handleChanger(newValue)
-              
+            if(props.name !== 'fecha_atencion') 
+              handleChanger(newValue)
 
           }}
           slotProps={{
             textField: {
-              helperText: 'MM/DD/YYYY',
+              helperText: 'DD/MM/YYYY',
               variant: 'outlined',
               InputLabelProps: {
                 style: {
@@ -99,9 +109,6 @@ export const DatePickers = ( { control,setValue,...props } : Props ) => {
         />
       )}
     />
-
-
-   
     </DemoContainer>
   </LocalizationProvider>
   );

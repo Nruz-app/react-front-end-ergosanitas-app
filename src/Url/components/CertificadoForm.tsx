@@ -47,7 +47,9 @@ export const CertificadoForm = () => {
             title: 'Certificado',
             text: 'Se ha grabado el certificado',
             icon: 'success',
-            confirmButtonText: 'Ok'
+            confirmButtonText: 'Ok',
+            timer: 3000,
+            timerProgressBar: true,
           });
 
           control._reset(); 

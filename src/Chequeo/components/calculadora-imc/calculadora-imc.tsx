@@ -62,6 +62,8 @@ export const CalculadoraImc = () => {
             `,
             confirmButtonText: 'Aceptar',
             confirmButtonColor: '#3085d6',
+            timer: 3000,
+            timerProgressBar: true,
         });
                         
     }
@@ -143,6 +145,7 @@ export const CalculadoraImc = () => {
                                         helperText={helperText} 
                                         values = { values! }
                                         setValue = { setValue }
+                                        disabled = { false }
                                     />
                                 </Grid>
                             )

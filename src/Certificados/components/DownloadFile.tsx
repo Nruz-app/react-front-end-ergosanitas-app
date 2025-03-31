@@ -13,12 +13,14 @@ export const DownloadFile = () => {
   //const navigate = useNavigate();
   const { name_pdf, url_pdf,titulo,rutUser }  = useContext( CertificadoContext );
 
-  const handleClick = async () => {
+  const handleClick = async (isClick : boolean) => {
+
     //navigate('/home'); // Redirige al destino
+    if(isClick) {
+      const {  chequeoPDFRut } = await UseChequeoService() ;
+      await chequeoPDFRut(rutUser);
 
-    const {  chequeoPDFRut } = await UseChequeoService() ;
-    await chequeoPDFRut(rutUser);
-
+    }
   }
 
 
@@ -31,10 +33,10 @@ export const DownloadFile = () => {
       <Button
         key={index}
         variant="contained"
-        href={url_pdf}
+        href={!btn.isClick ? url_pdf : ''}
         target="_blank"
-        download={name_pdf}
-        onClick={ btn.isClick ? handleClick : undefined }
+        download={!btn.isClick ? name_pdf : ''}
+        onClick={ btn.isClick ? () => handleClick(btn.isClick) : undefined }
         startIcon={<CloudDownloadIcon sx={{ fontSize: 28 }} />}
         sx={{
           borderRadius: "12px",

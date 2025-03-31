@@ -66,37 +66,54 @@ export const SelectClub = ({setRowTable}: Props) => {
         }}
       >
         <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-        <InputLabel id="id-club-deportivo-label">Club</InputLabel>
-        <Select
-            labelId="Club-Deportivos"
+          <InputLabel id="id-club-deportivo-label">Selecciona un Club</InputLabel>
+          <Select
+            labelId="id-club-deportivo-label"
             id="id-club-deportivo"
-            label="Model"
-            onChange={ onchangerDataClub }
-        >
-            {
-                selectValue.map((user, index) => (
-                    <MenuItem 
-                        key = { index }
-                        value= {user.user_email}
-                        sx={{
-                            "&.Mui-selected": {
-                                backgroundColor: "#51d1f6 ",
-                                color: "#fff",
-                            },
-                            "&.Mui-selected:hover": {
-                                backgroundColor: "#51d1f6 ",
-                            },
-                            "&:hover": {
-                                backgroundColor: "#f1f1f1",
-                            },
-                        }}
-                    >
-                        { user.user_name }
-                    </MenuItem>
-                ))
-            }            
-          </Select>
-        </FormControl>
+            label="Selecciona un Club"
+            onChange={onchangerDataClub}
+            sx={{
+              borderRadius: '8px', // Bordes redondeados
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#ccc', // Borde de entrada
+                },
+                '&:hover fieldset': {
+                  borderColor: '#51d1f6', // Borde al pasar el mouse
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#51d1f6', // Borde al tener foco
+                },
+              },
+            }}
+          >
+          <MenuItem value="" sx={{ color: "#999" }}>
+            <em>Selecciona un Club</em>
+          </MenuItem>
+          {
+            selectValue.map((user, index) => (
+              <MenuItem
+                key={index}
+                value={user.user_email}
+                sx={{
+                  '&.Mui-selected': {
+                    backgroundColor: '#51d1f6',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#51d1f6',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }}
+              >
+                { user.user_name  }
+              </MenuItem>
+            ))
+          }
+        </Select>
+      </FormControl>
       </Paper>
     </Box>
   )

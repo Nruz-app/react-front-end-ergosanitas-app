@@ -4,7 +4,7 @@ import { LoginContext, ModalContext } from "../../common/context";
 
 import { useUser } from '../hooks';
 import { UseRegister } from '../services/useRegister';
-
+import Swal from 'sweetalert2';
 import { InputText } from '../../components';
 
 import userForm from '../config/custom-form.json';
@@ -40,33 +40,66 @@ export const Register = () => {
   
   const onSubmit = async () => {
 
-    const {userName,password}  = control._formValues;
+      const {userName,password}  = control._formValues;
+      let errorLogin = false;
+      const {  authRegister } = await UseRegister() ;
 
-    const {  authRegister } = await UseRegister() ;
+      try {
 
-    onOpenModal(false);
+        onOpenModal(false);
 
-    const responseUser:IResponseUser = await authRegister(userName,password);
+        const responseUser:IResponseUser = await authRegister(userName,password);
+    
+        if(responseUser.success){
+    
+          const user:IUser = responseUser.user;
+    
+          ValidLogin (true,user);
+        
+        }
+        else {
+          errorLogin = true;
+          ValidLogin (false,{
+            user_id        : 0,
+            user_email     : '',
+            user_name      : '',
+            user_perfil    : '',
+            user_logo      : ''
+          });
+        }
 
-    if(responseUser.success){
+      }
+      catch(error) {
+        console.log('Error Login',error);
+        errorLogin=true;
+      }
 
-      const user:IUser = responseUser.user;
+      if(errorLogin) {
 
-      ValidLogin (true,user);
+        Swal.fire({
+          title: '⚠️ Error de Ingreso',
+          html: `<p style="font-size: 16px; color: #d32f2f;">
+               Usuario <b>${userName}</b> incorrecto.
+            </p>`,
+          icon: 'error',
+          iconColor: '#d32f2f',
+          confirmButtonText: 'Reintentar',
+          confirmButtonColor: '#d32f2f',
+          timer: 3000,
+          timerProgressBar: true,
+          showClass: {
+              popup: 'animate__animated animate__fadeInDown'
+          },
+          hideClass: {
+              popup: 'animate__animated animate__fadeOutUp'
+          }
+        });
+
+      }
      
     }
-    else {
-
-        ValidLogin (false,{
-          user_id        : 0,
-          user_email     : '',
-          user_name      : '',
-          user_perfil    : '',
-          user_logo      : ''
-        });  
-    }
     
-  }
+  
 
   return (
     <Modal
