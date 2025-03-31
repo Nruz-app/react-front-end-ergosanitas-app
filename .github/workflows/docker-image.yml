@@ -18,13 +18,16 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'  # Asegúrate de que sea compatible con tu proyecto
+          node-version: '20'  # Asegúrate de que sea compatible con tu proyecto
 
       - name: Instalar dependencias
         run: npm install --legacy-peer-deps
 
       - name: Construir la aplicación
         run: npm run build
+
+      - name: Verificar carpeta de build
+        run: ls -la dist/
 
       - name: Subir archivos a cPanel vía FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
@@ -35,3 +38,5 @@ jobs:
           local-dir: dist/  
           server-dir: /public_html/mi_react_app/
           passive: true
+          concurrency: 1  # Evita subir demasiados archivos a la vez
+          protocol: ftps
