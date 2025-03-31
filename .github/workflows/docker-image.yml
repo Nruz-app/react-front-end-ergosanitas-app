@@ -38,8 +38,8 @@ jobs:
           set net:timeout 60
           set mirror:parallel-transfer-count 1
           set ftp:passive-mode on
+          mkdir -p /public_html/mi_react_app/files/gallery
+          mkdir -p /public_html/mi_react_app/files/images
           mirror -R dist/ /public_html/mi_react_app/
           quit
           EOF
-
-
