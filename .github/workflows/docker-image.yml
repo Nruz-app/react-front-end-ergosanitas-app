@@ -35,8 +35,9 @@ jobs:
           server: ftp.ergosanitas.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
           local-dir: dist/  
           server-dir: /public_html/mi_react_app/
-          passive: true
+          passive: false
           concurrency: 1  # Evita subir demasiados archivos a la vez
           protocol: ftps
