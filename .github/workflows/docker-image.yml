@@ -29,15 +29,10 @@ jobs:
       - name: Verificar carpeta de build
         run: ls -la dist/
 
-      - name: Subir archivos a cPanel vía FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: ftp.ergosanitas.com
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          local-dir: dist/  
-          server-dir: /public_html/mi_react_app/
-          passive: false
-          concurrency: 1  # Evita subir demasiados archivos a la vez
-          protocol: ftps
+      - name: Subir archivos con lftp
+        run: |
+          sudo apt-get install -y lftp
+          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" -e "
+          set ftp:ssl-allow no;
+          mirror -R dist/ /public_html/mi_react_app/;
+          quit" ftp.ergosanitas.com
