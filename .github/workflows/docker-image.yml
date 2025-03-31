@@ -36,7 +36,7 @@ jobs:
           set ftp:ssl-allow no
           set net:max-retries 2
           set net:timeout 30
-          mirror -R dist/ /public_html/mi_react_app/
+          mirror -R dist/ /public_html/mi_react_app_v2/
           quit
           EOF
 
