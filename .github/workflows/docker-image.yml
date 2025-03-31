@@ -32,7 +32,11 @@ jobs:
       - name: Subir archivos con lftp
         run: |
           sudo apt-get install -y lftp
-          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" -e "
-          set ftp:ssl-allow no;
-          mirror -R dist/ /public_html/mi_react_app/;
-          quit" ftp.ergosanitas.com
+          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
+          set ftp:ssl-allow no
+          set net:max-retries 2
+          set net:timeout 30
+          mirror -R dist/ /public_html/mi_react_app/
+          quit
+          EOF
+
