@@ -5,20 +5,30 @@ on:
     branches:
       - main  # Cambia esto si usas otra rama para producción
 
+concurrency:
+  # Define un grupo de concurrencia basado en la referencia de la rama
+  group: ci-${{ github.ref }}
+  # Cancela cualquier ejecución anterior en progreso para esta rama
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [18.x,20.x,22.x]    
+
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Asegúrate de que sea compatible con tu proyecto
+          cache: 'npm'
 
       - name: Instalar dependencias
         run: npm install --legacy-peer-deps
@@ -31,17 +41,15 @@ jobs:
 
       - name: Subir archivos con lftp
         run: |
-          sudo apt-get install -y lftp
+          apt-get install -y lftp
           lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
           set ftp:ssl-allow no
           set net:max-retries 5
           set net:timeout 60
           set mirror:parallel-transfer-count 1
           set ftp:passive-mode on
-          mkdir -p /public_html/mi_react_app
-          mkdir -p /public_html/mi_react_app/files
-          mkdir -p /public_html/mi_react_app/files/gallery
-          mkdir -p /public_html/mi_react_app/files/images
+          mkdir -p /public_html/mi_react_app/{files/gallery,files/images}
           mirror -R dist/ /public_html/mi_react_app/
           quit
           EOF
+      
