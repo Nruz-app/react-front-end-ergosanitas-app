@@ -40,19 +40,21 @@ jobs:
             DOCKER_USER: ${{ secrets.DOCKER_USER }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}    
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
       
       - name: Build Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
           docker build -t nruz176/react-front-end-ergosanitas-app:$NEW_VERSION .
+          docker build -t nruz176/react-front-end-ergosanitas-app:latest .
 
       - name: Push Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}  
         run: |
-          docker push nruz176/react-front-end-ergosanitas-app:$NEW_VERSION .    
+          docker push nruz176/react-front-end-ergosanitas-app:$NEW_VERSION 
+          docker push nruz176/react-front-end-ergosanitas-app:latest
 
 #      - name: Configurar Node.js
 #        uses: actions/setup-node@v4
