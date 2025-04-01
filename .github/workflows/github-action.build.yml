@@ -44,6 +44,14 @@ jobs:
       - name: Instalar dependencias
         run: npm install --legacy-peer-deps
 
+      - name: Crear archivo .env.production
+        run: |
+          echo "VITE_API=${{ secrets.VITE_API }}" >> .env.production
+          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env.production
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env.production
+          echo "VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}" >> .env.production
+      
+
       - name: Construir la aplicación
         run: npm run build
 
