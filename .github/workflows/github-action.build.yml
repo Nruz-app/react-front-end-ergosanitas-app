@@ -25,49 +25,68 @@ jobs:
         with:
           fetch-depth: 0
 
-#      - name: Docker Login
-#        env:
-#            DOCKER_USER: ${{ secrets.DOCKER_USER }}
-#            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}    
-#        run: |
-#          echo "Iniciado Login" 
-#          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-#          echo "Fin del Login"   
-
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+#https://github.com/marketplace/actions/git-semantic-version?version=v4.0.3          
+      - name: Git Semantic Version
+        uses: PaulHatch/semantic-version@v4.0.3
+        id: version
         with:
-          node-version: 22.x
-          cache: 'npm'
+          major_pattern : "major"
+          minor_pattern : "feat"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
 
-      - name: Instalar dependencias
-        run: npm install --legacy-peer-deps
 
-      - name: Crear archivo .env.production
+      - name: Docker Login
+        env:
+            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}    
         run: |
-          echo "VITE_API=${{ secrets.VITE_API }}" >> .env.production
-          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env.production
-          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env.production
-          echo "VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}" >> .env.production
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      
+      - name: Build Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t nruz176/react-front-end-ergosanitas-app:$NEW_VERSION .
+
+      - name: Push Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}  
+        run: |
+          docker push nruz176/react-front-end-ergosanitas-app:$NEW_VERSION .    
+
+#      - name: Configurar Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 22.x
+#          cache: 'npm'
+
+#      - name: Instalar dependencias
+#        run: npm install --legacy-peer-deps
+
+#      - name: Crear archivo .env.production
+#        run: |
+#          echo "VITE_API=${{ secrets.VITE_API }}" >> .env.production
+#          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env.production
+#          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env.production
+#          echo "VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}" >> .env.production
       
 
-      - name: Construir la aplicación
-        run: npm run build
+#      - name: Construir la aplicación
+#        run: npm run build
 
-      - name: Verificar carpeta de build
-        run: ls -la dist/
+#      - name: Verificar carpeta de build
+#        run: ls -la dist/
 
-      - name: Subir archivos con lftp
-        run: |
-          sudo apt-get install -y lftp
-          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
-          set ftp:ssl-allow no
-          set net:max-retries 5
-          set net:timeout 60
-          set mirror:parallel-transfer-count 1
-          set ftp:passive-mode on
-          mkdir -p /public_html/{files/gallery,files/images}
-          mirror -R dist/ /public_html
-          quit
-          EOF
+#      - name: Subir archivos con lftp
+#        run: |
+#          sudo apt-get install -y lftp
+#          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
+#          set ftp:ssl-allow no
+#          set net:max-retries 5
+#          set net:timeout 60
+#          set mirror:parallel-transfer-count 1
+#          set ftp:passive-mode on
+#          mkdir -p /public_html/{files/gallery,files/images}
+#          mirror -R dist/ /public_html
+#          quit
+#          EOF
