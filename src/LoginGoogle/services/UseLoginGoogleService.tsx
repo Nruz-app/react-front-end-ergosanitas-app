@@ -5,7 +5,7 @@ import { IAuth } from '../interface/auth.interface';
 
 export const  UseLoginGoogleService = async () => {
 
-    const API = import.meta.env.VITE_API;    //const { ValidLogin }  = useContext( LoginContext );
+    const API = `${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}`;
     
     const apiAdapter: HttpAdapter = new ApiAdapter();
 

@@ -6,7 +6,7 @@ import { ICertificadoUrl } from '../interface/certificado-url.interface';
 
 export const  UseCertificadoService = async () => {
 
-    const API = import.meta.env.VITE_API;
+    const API = `${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}`;
     
     const apiAdapter: HttpAdapter = new ApiAdapter();
 

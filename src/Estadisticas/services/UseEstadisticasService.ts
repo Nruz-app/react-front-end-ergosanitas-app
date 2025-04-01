@@ -4,7 +4,7 @@ import { IEstadisticaIMC,IEstadisticaPresion } from "../interface";
 
 export const UseEstadisticasService = () => {
   
-    const API = import.meta.env.VITE_API;
+    const API = `${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}`;
         
     const apiAdapter: HttpAdapter = new ApiAdapter();
 

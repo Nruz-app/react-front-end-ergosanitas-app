@@ -5,7 +5,7 @@ import { QuestionResponse } from '../../interface/assistant-response.interface';
 
 export const createThreadUseCase = async () => {
 
-    const API = import.meta.env.VITE_API;
+    const API = `${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}`;
 
     const apiAdapter: HttpAdapter = new ApiAdapter();
 

@@ -4,7 +4,8 @@ import { IAgendaHora, IAgendaHoras, IServicios, IWebPay,WebPayRequest } from '..
 export const  UseAgendaHoraService = async () => {
 
 
-    const API = import.meta.env.VITE_API;
+    const API = `${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}`;
+    
     
     const apiAdapter: HttpAdapter = new ApiAdapter();
    
@@ -32,7 +33,7 @@ export const  UseAgendaHoraService = async () => {
         return response;
     }
 
-    const postEmailReservaHora = async (rut_paciente : String) => {
+    const postEmailReservaHora = async (rut_paciente : string) => {
 
         const response = await  apiAdapter.post(`${API}/email/reserva-hora`,{
             rut_paciente
