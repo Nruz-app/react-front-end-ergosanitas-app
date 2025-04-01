@@ -25,6 +25,16 @@ jobs:
         with:
           fetch-depth: 0
 
+#      - name: Docker Login
+#        env:
+#            DOCKER_USER: ${{ secrets.DOCKER_USER }}
+#            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}    
+#        run: |
+#          echo "Iniciado Login" 
+#          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+#          echo "Fin del Login"   
+
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -49,7 +59,7 @@ jobs:
           set net:timeout 60
           set mirror:parallel-transfer-count 1
           set ftp:passive-mode on
-          mkdir -p /public_html/mi_react_app/{files/gallery,files/images}
-          mirror -R dist/ /public_html/mi_react_app/
+          mkdir -p /public_html/{files/gallery,files/images}
+          mirror -R dist/ /public_html
           quit
           EOF
