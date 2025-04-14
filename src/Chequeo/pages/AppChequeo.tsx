@@ -63,6 +63,7 @@ const initial_view = {
 import { UseCertificadoService } from "../../Certificados/services/useCertificadoService";
 import { HomePage } from "./Home-page";
 import { ModalBarProvider } from "../context/modal-bar/Modal-bar-Provider";
+import { FormUser } from "../../User";
 
 export const AppChequeo = () => {
 
@@ -248,6 +249,11 @@ export const AppChequeo = () => {
               <Tab label={ collapsed? "C" : "Carga Masica Deportista"} {...a11yProps(2) } />
             )
           }
+          {
+            (user_perfil != "Colegios") && (
+              <Tab label={ collapsed? "P" : "Agregar Perfil"} {...a11yProps(3) } />
+            )
+          }
           </Tabs>
           {
             (user_perfil == "Colegios") ? (
@@ -327,6 +333,9 @@ export const AppChequeo = () => {
               </TabPanel>
               <TabPanel value={value} index={2}>
                 <CargaMasiva />
+              </TabPanel>
+              <TabPanel value={value} index={3}>
+                  <FormUser />
               </TabPanel>
               </>
             )

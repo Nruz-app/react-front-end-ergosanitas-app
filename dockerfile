@@ -19,11 +19,18 @@ RUN npm run build
 # Paso 7: Usa Nginx para servir la aplicación
 FROM nginx:alpine
 
-# Paso 8: Copia la configuración personalizada de Nginx (opcional, si necesitas una configuración específica)
-COPY ./config/default.conf /etc/nginx/conf.d/default.conf
 
 # Paso 9: Copia los archivos de la aplicación React construida desde la etapa anterior
 COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copiar otros archivos, como los de `public`
+COPY ./public/files /usr/share/nginx/html/public/files
+
+#Elimina la Configuracion que viene default Nginx
+RUN rm /etc/nginx/conf.d/default.conf  
+
+# Paso 8: Copia la configuración personalizada de Nginx (opcional, si necesitas una configuración específica)
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponer el puerto 80 para acceso web
 EXPOSE 5173

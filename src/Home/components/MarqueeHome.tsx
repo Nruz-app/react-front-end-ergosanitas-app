@@ -27,6 +27,8 @@ export const MarqueeHome = ( { dirrection }:Props) => {
             type="FaceBookApp" />
           <MarqueeBox
             type="TiktokApp" />
+          <MarqueeBox
+            type="Instagram" />  
         </Marquee>
     </Box>
   )

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ergosanitas
+  name: ergosanitas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ergosanitas
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ergosanitas
+    spec:
+      containers:
+      - image: nruz176/react-front-end-ergosanitas-app
+        name: react-front-end-ergosanitas-app
+        env:
+        - name: VITE_API
+          valueFrom:
+            configMapKeyRef:
+              name: ergosanitas-config
+              key: VITE_API
+        - name: VITE_API_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: ergosanitas-config
+              key: VITE_API_PATH
+        - name: VITE_GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: ergosanitas-secret
+              key: VITE_GOOGLE_CLIENT_ID
+        - name: VITE_MAPBOX_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ergosanitas-secret
+              key: VITE_MAPBOX_KEY              
+status: {}

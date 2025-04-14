@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import InputFileUpload from './InputFileUpload'
-import { Avatar, Box,  Card, CardContent } from '@mui/material';
+import { Avatar, Box, Grid, Paper, Typography } from '@mui/material';
 import { UseRegister } from '../../../Login/services/useRegister';
 
 import Swal from 'sweetalert2';
@@ -44,47 +44,59 @@ export const FileUploadLogo = ({user_email,user_logo} : Props) => {
     };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        p: 1,
-      }}
-    >
-      <Card
+    <Box sx={{ p: 3 }} >
+      <Paper
+        elevation={4}
         sx={{
-          textAlign: "center",
           borderRadius: 3,
-          boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.15)",  // Sombra más suave
-          display: 'flex',
-          flexDirection: 'column',  // Organiza los elementos de arriba a abajo
-          alignItems: 'center',  
-          justifyContent: 'center',
-          border: "1px solid #e0e0e0",    
+          p: 4,
+          backgroundColor: '#f9f9f9',
         }}
       >
-        {/* Avatar de logo del club */}
-        <Avatar
-          src={ logoUser }
-          alt= { selectedFile? 'Cambia Logo del CLub': 'Ingresa Logo del CLub' }
-          sx={{
-            mt : 2,
-            width: 120, 
-            height: 120,
-            bgcolor: "grey.300",
-            border: "4px solid #1976d2",  
-            mb: 3,  // Agrego margen inferior para separación con el contenido siguiente
-          }}
-        />   
+        <Grid container spacing={4} alignItems="center">
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            display="flex"
+            justifyContent="center"
+          >
+            <Box textAlign="center">
+              <Avatar
+                src={logoUser}
+                alt={
+                  selectedFile
+                    ? 'Cambia Logo del Club'
+                    : 'Ingresa Logo del Club'
+                }
+                sx={{
+                  width: 120,
+                  height: 120,
+                  bgcolor: 'grey.300',
+                  border: '4px solid #1976d2',
+                  mb: 2,
+                }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                {selectedFile ? 'Logo cargado' : 'Sin logo'}
+              </Typography>
+            </Box>
+          </Grid>
 
-      <CardContent>
-        {/* Componente de Carga de Archivo */}
-        <InputFileUpload onFileSelect={handleFileSelect} />
-      </CardContent>
-    </Card>
-  </Box>
+          <Grid item xs={12} sm={6} md={8}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="100%"
+            >
+              <InputFileUpload onFileSelect={handleFileSelect} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Box>
   
   )
 }

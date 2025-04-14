@@ -4,9 +4,9 @@ import { IUser } from '../interface/';
 import fromJson from '../config/custom-form.json';
 
 
-const initialValues: { [key: string] : any } = {};
+const initialValues: Record<string, unknown> = {};
 
-const fieldValidations : { [key:string]: any} = {};
+const fieldValidations: Record<string, Yup.AnySchema> = {};
 
 for (const input of fromJson) {
     initialValues[input.name] = input.value;

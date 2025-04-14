@@ -1,7 +1,7 @@
 {
   "name": "ergosanitas-app",
   "private": true,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -55,6 +55,7 @@
     "react-slideshow-image": "^4.3.1",
     "react-sweetalert2": "^0.6.0",
     "react-type-animation": "^3.2.0",
+    "swiper": "^11.2.6",
     "yup": "^1.4.0"
   },
   "devDependencies": {

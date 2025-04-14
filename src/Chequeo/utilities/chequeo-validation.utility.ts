@@ -8,9 +8,9 @@ import fromJson from '../config/custom-form.json';
 const REGEX_RUN     = /(\d{7}|\d{8})\-(\d{1}|k|K)/;
 const NUMBER_DOT    = /^[0-9]+(\.[0-9]+)?$/;
 
-const initialValues: { [key: string] : any } = {};
+const initialValues: Record<string, unknown> = {};
 
-const fieldValidations : { [key:string]: any} = {};
+const fieldValidations: Record<string, Yup.AnySchema> = {};
 
 for (const input of fromJson) {
     initialValues[input.name] = input.value;

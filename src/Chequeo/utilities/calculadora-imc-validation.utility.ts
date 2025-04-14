@@ -7,9 +7,9 @@ import fromIMCJson from '../config/custom-IMC.json';
 //Variables
 const NUMBER_DOT = /^[0-9]+(\.[0-9]+)?$/;
 
-const initialValues: { [key: string] : any } = {};
+const initialValues: Record<string, unknown> = {};
 
-const fieldValidations : { [key:string]: any} = {};
+const fieldValidations: Record<string, Yup.AnySchema> = {};
 
 for (const input of fromIMCJson) {
     initialValues[input.name] = input.value;

@@ -4,10 +4,10 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
 
-import imgEcgDomicilio from '../../assets/images/ECGDomicilio.jpg';
-import imgServicioEnfermeria from '../../assets/images/ServicioEnfermeria.jpg';
-import imgChequeoAdultoMayor from '../../assets/images/chequeoAdultoMayor.jpg';
-import imgChequeoDeportista from '../../assets/images/chequeoDeportistas.jpg';
+import imgEcgDomicilio from '/assets/images/ECGDomicilio.jpg';
+import imgServicioEnfermeria from '/assets/images/ServicioEnfermeria.jpg';
+import imgChequeoAdultoMayor from '/assets/images/chequeoAdultoMayor.jpg';
+import imgChequeoDeportista from '/assets/images/chequeoDeportistas.jpg';
 
 /*
 * * Link

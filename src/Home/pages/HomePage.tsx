@@ -1,35 +1,35 @@
 
 import { MarqueeHome,
-  BoxWelcome, 
-  CarrucelServicios, 
+  //BoxWelcome, 
+  //CarrucelServicios, 
   //BoxVideo,
   //VideoPlay, 
   GalleryImage, 
   //BoxServicios
 } from '../components/';
 
+import { CarouserServer } from '../components/carousel-swiper';
+
 //import { ModalProvider } from '../../common/context';
 
 export const HomePage = () => {
   return (
     <>
-      <MarqueeHome 
-        dirrection='right'
-      />
-      <BoxWelcome />  
-      
+      <MarqueeHome dirrection='right' />
        {
-        /*
-           <BoxServicios />
-          <BoxWelcome />
-          <ModalProvider>
-              <BoxVideo />
-              <VideoPlay />
+      /*
+        <BoxWelcome />
+        <BoxServicios />
+        <BoxWelcome />
+        <ModalProvider>
+            <BoxVideo />
+            <VideoPlay />
         </ModalProvider>
+        <CarrucelServicios />
         */
        }
-       
-      <CarrucelServicios />
+
+      <CarouserServer />
        
       <GalleryImage />
     </>

@@ -1,0 +1,78 @@
+[
+    {
+        "order"        : 1, 
+        "type"         : "text",
+        "name"         : "nombre_user",
+        "placeholder"  : "Nombre Club Deportivo",
+        "label"        : "Ingresa Nombre Club Deportivo",
+        "helperText"   : "Ingrese el Nombre Club Deportivo",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre Club Deportivo es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 2, 
+        "type"         : "text",
+        "name"         : "email_user",
+        "placeholder"  : "Email Club Deportivo",
+        "label"        : "Ingresa Email Club Deportivo",
+        "helperText"   : "Ingrese el Email Club Deportivo",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Email Club Deportivo es Requerido"
+            },
+            {
+                "type"    : "email",
+                "message" : "El Formato de Email no es Válido"
+            }
+        ]     
+    },
+    {
+        "order"        : 3, 
+        "type"         : "password",
+        "name"         : "password_user",
+        "placeholder"  : "Password Club Deportivo",
+        "label"        : "Ingresa Password Club Deportivo",
+        "helperText"   : "Ingrese el Password Club Deportivo",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Password Club Deportivo es Requerido"
+            }
+        ]     
+    },
+    {
+        "order":44,
+        "type":"selected",
+        "name":"perfil_user",
+        "placeholder":"Perfil Club Deportivo",
+        "label":"Seleccion Perfil",
+        "helperText":"Seleccione Perfil Club Deportivo",
+        "defaultValue":"1",
+        "values":[
+            {
+                "value":"3",
+                "nombre":"Colegios"
+            },
+           {
+              "value":"2",
+              "nombre":"Usuario"
+           },
+           {
+            "value":"1",
+            "nombre":"Administrador"
+            }
+        ],
+        "disabledText":true
+    }
+]

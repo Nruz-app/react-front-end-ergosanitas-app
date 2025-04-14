@@ -4,6 +4,7 @@ import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 
 import IconTikTok from '../../assets/images/iconTiktok.png';
 import logoTrans from '../../assets/images/logoTrans.png';
+import IconInstragram from '/public/assets/images/iconInstagram.png';
 
 interface Props {
     type : string
@@ -243,6 +244,66 @@ export const MarqueeBox = ( { type } : Props ) => {
                     }}
                 >
                     Tik Tok: <br /> Ergo Sanitas
+                </Typography>
+
+            </Box>
+        )
+
+    }
+    //
+    else if( type === 'Instagram' ) {
+
+        return (
+            <Box
+                sx={{
+                    ml: 2,
+                    mr: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: '#f1f1f3', // Fondo sutil para el Box
+                    padding: '0.5rem 1rem',
+                    borderRadius: '8px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Sombra para dar profundidad
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                        boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.2)', // Sombra más profunda al hacer hover
+                    },
+                }}
+            >
+                <img 
+                    src={IconInstragram} 
+                    alt="Instragram Logo" 
+                    style={{ 
+                        fontSize: '2.0rem', 
+                        padding: '1rem', // Aumentar ligeramente el padding para destacar más la imagen
+                        borderRadius: '50%', // Hacer la imagen circular
+                        width: '3rem', // Ajustar el tamaño de la imagen (ancho y alto)
+                        height: '3rem',
+                        marginRight: '1.5rem', // Aumentar el margen para mayor espaciado
+                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Añadir sombra para un efecto 3D sutil
+                        transition: 'transform 0.3s ease', // Añadir una transición suave
+                    }}
+                    className="tiktok-logo" // Añadir clase para manejo de eventos como hover
+                />
+
+                <Typography
+                    component="a"
+                    href='https://www.instagram.com/ergosanitas/'
+                    target="_blank"
+                    sx={{
+                       
+                        textDecoration: 'none', // Sin subrayado en el enlace
+                        color: '#2a9d8f', // Color de texto verde aqua
+                        fontWeight: 'bold',
+                        fontSize: '1rem', // Tamaño de fuente más grande
+                        letterSpacing: '0.1em', // Espaciado entre letras
+                        '&:hover': {
+                            color: '#e76f51', // Cambio de color al pasar el mouse
+                            textDecoration: 'underline', // Subrayado al hacer hover
+                        },
+                    }}
+                >
+                    Instagram: <br />Ergo Sanitas
                 </Typography>
 
             </Box>

@@ -1,13 +1,13 @@
 import * as Yup from 'yup';
-import { IElectroCardiograma } from '../interface/';
+import { Iuser } from '../';
+import fromJson from '../config/custom-form.json';
 
-import electroCardiogramaJson from '../config/electro-form.json';
-
+//Variables
 const initialValues: Record<string, unknown> = {};
 
 const fieldValidations: Record<string, Yup.AnySchema> = {};
 
-for (const input of electroCardiogramaJson) {
+for (const input of fromJson) {
     initialValues[input.name] = input.value;
 
     // Validaciones de los campos
@@ -21,9 +21,13 @@ for (const input of electroCardiogramaJson) {
 
             schema = schema.required(rule.message);
         } 
+        else if (rule.type === 'email') {
+                    
+            schema = (schema as Yup.StringSchema<string>).email( rule.message);
+        }
     }
 
     fieldValidations[input.name] = schema;
 }
 
-export const electroCardiogramaValidationSchema = Yup.object<IElectroCardiograma>().shape( {...fieldValidations } );
+export const userValidationSchema = Yup.object<Iuser>().shape( {...fieldValidations } );

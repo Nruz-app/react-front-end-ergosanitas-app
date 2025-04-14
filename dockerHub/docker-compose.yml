@@ -1,0 +1,16 @@
+#version: "3"
+
+services:
+  react-app:
+    image: nruz176/react-front-end-ergosanitas-app:latest
+    build: .
+    ports:
+      - "5173:5173"  # Asegúrate de mapear el puerto adecuado
+    container_name: react-app
+    restart: always
+    networks:
+      - react-net
+
+networks:
+  react-net:
+    driver: bridge
