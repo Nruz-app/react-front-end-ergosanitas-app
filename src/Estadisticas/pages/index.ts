@@ -12,11 +12,17 @@ import { ChartsPage } from './chartsPage';
 
 export  { BarPresionPage } from './bar-presion-page';
 
-export  { PieChartIMC } from './PieChart';
+import { PieChartIMC } from './pie-chart-IMC';
 
+import  { PieChartHemoglucotest } from './pie-chart-hemoglucotest';
+
+import  { PieChartSaturacion } from './pie-chart-saturacion';
 
 export { 
     AppEstadisticasPages,
     EstadisticasPage,
-    ChartsPage
+    ChartsPage,
+    PieChartIMC,
+    PieChartHemoglucotest,
+    PieChartSaturacion
  };

@@ -56,38 +56,38 @@ jobs:
           docker push nruz176/react-front-end-ergosanitas-app:$NEW_VERSION 
           docker push nruz176/react-front-end-ergosanitas-app:latest
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: 'npm'
+#      - name: Configurar Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 22.x
+#          cache: 'npm'
 
-      - name: Instalar dependencias
-        run: npm install --legacy-peer-deps
+#      - name: Instalar dependencias
+#        run: npm install --legacy-peer-deps
 
-      - name: Crear archivo .env.production
-        run: |
-          echo "VITE_API=${{ secrets.VITE_API }}" >> .env.production
-          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env.production
-          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env.production
-          echo "VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}" >> .env.production
+#      - name: Crear archivo .env.production
+#        run: |
+#          echo "VITE_API=${{ secrets.VITE_API }}" >> .env.production
+#          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env.production
+#          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env.production
+#          echo "VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}" >> .env.production
       
 
-      - name: Construir la aplicación
-        run: npm run build
+#      - name: Construir la aplicación
+#        run: npm run build
 
-      - name: Verificar carpeta de build
-        run: ls -la dist/
-      - name: Subir archivos con lftp
-        run: |
-          sudo apt-get install -y lftp
-          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
-          set ftp:ssl-allow no
-          set net:max-retries 5
-          set net:timeout 60
-          set mirror:parallel-transfer-count 1
-          set ftp:passive-mode on
-          mkdir -p /public_html/{files/gallery,files/images}
-          mirror -R dist/ /public_html
-          quit
-          EOF
+#      - name: Verificar carpeta de build
+#        run: ls -la dist/
+#      - name: Subir archivos con lftp
+#        run: |
+#          sudo apt-get install -y lftp
+#          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp.ergosanitas.com <<EOF
+#          set ftp:ssl-allow no
+#          set net:max-retries 5
+#          set net:timeout 60
+#          set mirror:parallel-transfer-count 1
+#          set ftp:passive-mode on
+#          mkdir -p /public_html/{files/gallery,files/images}
+#          mirror -R dist/ /public_html
+#          quit
+#          EOF

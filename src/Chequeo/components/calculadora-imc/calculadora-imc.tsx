@@ -1,6 +1,6 @@
 
 
-import { Box, Card, Grid, Typography } from '@mui/material'
+import { Box, Button, Card, Grid, Modal, Typography } from '@mui/material'
 import { InputText,InputSelect,ButtonsForm } from '../../../components/';
 import formIMCJson from '../../config/custom-IMC.json';
 import Swal from 'sweetalert2';
@@ -11,12 +11,18 @@ import {
     UseCalcularPercentil,
     UseIMCRecomendaciones 
 } from '../../hooks';
+import { useContext } from 'react';
+import { ModalBarContext } from '../../context/modal-bar/Modal-bar-Context';
 
 export const CalculadoraImc = () => {
 
 
     const { control,handleSubmit,setValue  } = useFormCalculoIMC();  
+    const { isModalOpen,onOpenModal }  = useContext( ModalBarContext );
 
+    const handleClose = () => {
+        onOpenModal({isModalOpen : false,typePresion : ''});
+    }
 
     const onSubmit = async () => {
 
@@ -70,6 +76,13 @@ export const CalculadoraImc = () => {
 
 
   return (
+    <Modal
+        keepMounted
+        open={isModalOpen}
+        onClose={handleClose}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+    >
     <Box
         sx={{
             display: "flex",
@@ -161,10 +174,18 @@ export const CalculadoraImc = () => {
                         title = "Calcular"
                         btnStatus = { false }
                     />
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={handleClose}
+                    >
+                    Cerrar
+                    </Button>
                 </Grid>
             </form>
 
         </Card>
     </Box>
+    </Modal>
   )
 }

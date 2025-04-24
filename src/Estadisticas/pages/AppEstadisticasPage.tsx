@@ -1,6 +1,6 @@
 //import { EstadisticasPage,ChartsPage } from "./";
 
-import { PieChartIMC } from './PieChart';
+import { PieChartIMC } from './pie-chart-IMC';
 
 export const AppEstadisticasPages = () => {
   return (

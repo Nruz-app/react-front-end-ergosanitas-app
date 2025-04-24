@@ -5,8 +5,7 @@ import { LoginContext } from "../../../common/context";
 import { EstadoGenerales } from "../../interface";
 import { ModalBarContext } from "../../context/modal-bar/Modal-bar-Context";
 
-import BarChartIcon from '@mui/icons-material/BarChart';
-import TimelineIcon from '@mui/icons-material/Timeline';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icono para la lista
 
 const initialValues : EstadoGenerales = {
@@ -128,30 +127,12 @@ export const StatisticsGlobal = () => {
                 <Divider sx={{ my: 2 }} />
 
                 {/* Sección de botones */}
-                <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}>
-                    <Button
-                    onClick={ () => handleOpenModal ('Presion Alterial')}
-                    variant="contained"
-                    startIcon={<BarChartIcon />}
-                    sx={{
-                        backgroundColor: "primary.main",
-                        color: "white",
-                        borderRadius: 8,
-                        px: 3,
-                        py: 1.5,
-                        fontWeight: "bold",
-                        "&:hover": {
-                        backgroundColor: "primary.dark",
-                        },
-                    }}
-                    >
-                        Presión Arterial
-                    </Button>
-
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+            
                     <Button
                         onClick={ () => handleOpenModal ('Presion Sistolica')}
                         variant="contained"
-                        startIcon={<TimelineIcon />}
+                        startIcon={<CalculateIcon />}
                         sx={{
                             backgroundColor: "secondary.main",
                             color: "white",
@@ -164,7 +145,7 @@ export const StatisticsGlobal = () => {
                             },
                         }}
                     >
-                    Presión Sistólica
+                        Calculadora IMC
                     </Button>
                 </Box>
             </CardContent>

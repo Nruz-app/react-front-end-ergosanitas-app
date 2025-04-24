@@ -3,7 +3,7 @@ import { Grid } from "@mui/material"
 import { FileUploadLogo,StatisticsGlobal,CalculadoraImc, FormPerfil } from '../components';
 import { useContext } from "react";
 import { LoginContext } from "../../common/context";
-import { BarPresionPage, PieChartIMC } from "../../Estadisticas/pages/";
+import { BarPresionPage, PieChartHemoglucotest, PieChartIMC, PieChartSaturacion } from "../../Estadisticas/pages/";
 
 export const HomePage = () => {
 
@@ -28,14 +28,21 @@ export const HomePage = () => {
 
       {/* Segunda Fila */}
       <Grid item xs={12} sm={6} md={6} >
+          <BarPresionPage />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6} >
+          <PieChartHemoglucotest />
+      </Grid>
+      {/* Tercera Fila */}
+      <Grid item xs={12} sm={6} md={6} >
           <PieChartIMC />
       </Grid>
       <Grid item xs={12} sm={6} md={6} >
-          <CalculadoraImc />
+          <PieChartSaturacion />
       </Grid>
       
       {/* Modal Barra Presion */}
-      <BarPresionPage />    
+      <CalculadoraImc />    
     </Grid>
     
   )

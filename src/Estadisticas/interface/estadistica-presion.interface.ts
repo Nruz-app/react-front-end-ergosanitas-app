@@ -1,7 +1,6 @@
 
 export interface IEstadisticaPresion {
-    total_paciente    : number;
-    nombres_pacientes : string[];
-    presion_alterial  : number[];
-    presion_sistolica : number[]
+    total_paciente  : number;
+    labels          : string[];
+    data            : number[];
 }

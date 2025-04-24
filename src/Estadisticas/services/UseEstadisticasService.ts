@@ -1,5 +1,5 @@
 import { ApiAdapter, HttpAdapter } from "../../common/api/api.adapter";
-import { IEstadisticaIMC,IEstadisticaPresion } from "../interface";
+import { IEstadistica,IEstadisticaPresion } from "../interface";
 
 
 export const UseEstadisticasService = () => {
@@ -10,7 +10,7 @@ export const UseEstadisticasService = () => {
 
     const getEstadisticaIMC =  async (user_email : string)  => {
     
-        const response:IEstadisticaIMC = await  apiAdapter.get(`${API}/estadisticas/estadistica-imc/${user_email}`,10,0)
+        const response:IEstadistica = await  apiAdapter.get(`${API}/estadisticas/estadistica-imc/${user_email}`,10,0)
         return response;
     }
 
@@ -20,8 +20,21 @@ export const UseEstadisticasService = () => {
         return response;
     }
 
+    const getEstadisticaHemoglucotest =  async (user_email : string)  : Promise<IEstadistica> => {
+    
+        const response:IEstadistica = await  apiAdapter.get(`${API}/estadisticas/estadistica-hemoglucotest/${user_email}`,10,0)
+        return response;
+    }
+    const getEstadisticaSaturacion =  async (user_email : string)  : Promise<IEstadistica> => {
+    
+        const response:IEstadistica = await  apiAdapter.get(`${API}/estadisticas/estadistica-saturacion/${user_email}`,10,0)
+        return response;
+    }
+
     return {
         getEstadisticaIMC,
-        getEstadisticaPresion
+        getEstadisticaPresion,
+        getEstadisticaHemoglucotest,
+        getEstadisticaSaturacion
     }
 }

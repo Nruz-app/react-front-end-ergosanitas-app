@@ -11,7 +11,7 @@ import {
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { useCallback,  useContext,  useEffect, useState } from 'react';
 import { UseEstadisticasService } from '../services/UseEstadisticasService';
-import { IEstadisticaIMC } from '../interface/estadisticaIMC.interface';
+import { IEstadistica } from '../interface/estadisticaIMC.interface';
 import { LoginContext } from '../../common/context';
 //import { LoginContext } from '../../common/context';
 
@@ -23,7 +23,7 @@ import { LoginContext } from '../../common/context';
 * * npm install react-chartjs-2 chart.js
 **********************************************************************/
 
-const initialValues : IEstadisticaIMC = {
+const initialValues : IEstadistica = {
     labels: [],
     data: [],
     totalExamen : 0
@@ -34,40 +34,39 @@ const initialValues : IEstadisticaIMC = {
 // Registrar los componentes de Chart.js
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
-export const PieChartIMC = () => {
+export const PieChartHemoglucotest = () => {
 
     const { user }  = useContext( LoginContext );
     const { user_email }  = user;
     
-    const [estadisticaIMC,setEstadisticaIMC] = useState<IEstadisticaIMC>(initialValues);
+    const [estadistica,setEstadistica] = useState<IEstadistica>(initialValues);
 
 
-    const fetchEstadisticaIMC = useCallback(async (): Promise<void> => {
+    const fetchEstadisticaHemoglucotest = useCallback(async (): Promise<void> => {
     
-          const {  getEstadisticaIMC } = UseEstadisticasService() ;
-          const response = await getEstadisticaIMC(user_email);
+          const {  getEstadisticaHemoglucotest } = UseEstadisticasService() ;
+          const response = await getEstadisticaHemoglucotest(user_email);
           
-          setEstadisticaIMC(response);
+          setEstadistica(response);
     }, []);
     
 
     useEffect(() => {
-          fetchEstadisticaIMC();
+          fetchEstadisticaHemoglucotest();
     }, []);
 
 
 
     const data = {
-        labels: estadisticaIMC.labels, //['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: estadistica.labels, 
         datasets: [
           {
-            label: "# IMC Paciente",
-            data: estadisticaIMC.data,
+            label: "# Hemoglucotest",
+            data: estadistica.data,
             backgroundColor: [
-              "#FFCC80", // Amarillo pastel
-              "#64B5F6", // Azul pastel
-              "#81C784", // Verde pastel
-              "#FF8A80", // Rojo pastel
+              "#81C784", 
+              "#FFCC80", 
+              "#FF8A80",
             ],
             borderColor: "#ffffff",
             borderWidth: 2,
@@ -98,7 +97,7 @@ export const PieChartIMC = () => {
               letterSpacing: "0.5px",
             }}
           >
-            Nutrición IMC
+            Glicemia Capilar
           </Typography>
         }
       />
@@ -133,7 +132,7 @@ export const PieChartIMC = () => {
                 },
               },
             }}
-            style={{ width: "100%", height: "400px" }}
+            style={{ width: "100%", height: "300px" }}
           />
         </Box>
       </CardContent>
