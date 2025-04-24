@@ -6,15 +6,16 @@ type LikeTextAction =
 
  
 export const LikeTextReducer = ( state: LikeTextState, action: LikeTextAction ) : LikeTextState  => {    
-    const {chequeos,textoValue} = action.payload;
+    const {textoValue,fechaCalendar,selectClub} = action.payload;
 
     switch ( action.type ) {
 
         case  'onSetLikeText': 
             return {
                 ...state,
-                chequeos,
-                textoValue
+                textoValue,
+                fechaCalendar,
+                selectClub
             }
             
         default:

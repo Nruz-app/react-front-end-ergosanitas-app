@@ -1,4 +1,5 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
+import { LikeTextState } from '../context/likeText/LikeTextProvider';
 import { IChequeo,EstadoGenerales, ResponseCargaMasica } from '../interface';
 
 import { type formData } from '../interface/';
@@ -122,6 +123,18 @@ export const  UseChequeoService = async () => {
             ${API}/chequeo-cardiovascular/club-deportivo`,{user_email});
         return response;
     }
+
+    const postChequeoSearch =  async (likeTextState : LikeTextState,user_email : string) : Promise<IChequeo[]> => {
+
+
+        console.log('likeTextState',likeTextState.selectClub);
+
+        const response:IChequeo[] = await  
+        apiAdapter.post(`${API}/chequeo-cardiovascular/search-chequeo`,{
+            ...likeTextState,user_email});
+            
+        return response;
+    }
    
     return { 
         getChequeo,
@@ -139,7 +152,8 @@ export const  UseChequeoService = async () => {
         postFilterCalendar,
         getEstadoGeneral,
         postCargaMasiva,
-        postFilterClubDeportivo
+        postFilterClubDeportivo,
+        postChequeoSearch
     };
     
 }

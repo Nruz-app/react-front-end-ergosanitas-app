@@ -1,9 +1,10 @@
 import { createContext } from 'react';
 import { LikeTextState } from './LikeTextProvider';
-import { IChequeo } from '../../interface';
-
+//import { Dayjs } from 'dayjs';
 export interface LikeTextContext {
-    chequeos : IChequeo[],
+    //fechaCalendar : Dayjs | null,
+    fechaCalendar : string,
+    selectClub : string,
     textoValue : string,
     onSetLikeText : (likeTextState:LikeTextState) => void;
 }

@@ -7,16 +7,10 @@ import * as Yup from 'yup';
 import fromJson from '../config/custom-likes.json';
 import { Form, Formik } from "formik";
 import { LikeTextContext } from "../context";
-import { UseChequeoService } from "../services/useChequeoService";
-import { IChequeo } from "../interface";
-import { LoginContext } from "../../common/context";
 
+const initialValues: Record<string, unknown> = {};
 
-
-const initialValues: { [key: string] : any } = {};
-
-const fieldValidations : { [key:string]: any} = {};
-
+const fieldValidations: Record<string, Yup.AnySchema> = {};
 
 for ( const input of fromJson ) {
 
@@ -32,18 +26,10 @@ for ( const input of fromJson ) {
 
 const validationSchema = Yup.object( { ...fieldValidations } );
 
-
-interface Props {
-    setRowTable  : (chequeo:IChequeo[]) => void;
-}
-
-export const LikeTextCheque = ({setRowTable}: Props) => {
+export const LikeTextCheque = () => {
 
 
   const { onSetLikeText,...likeTextContext }  = useContext( LikeTextContext );
-
-  const { user }  = useContext( LoginContext );
-  const { user_email }  = user;
 
 
   const debounceRef = useRef<NodeJS.Timeout>();  
@@ -62,43 +48,20 @@ export const LikeTextCheque = ({setRowTable}: Props) => {
     }
 
     const handleReset = async ( )  => {
-
-        const { postChequeoUser } = await UseChequeoService() ;
-       
-        const response = await postChequeoUser(user_email);
-
-        onSetLikeText({
-            ...likeTextContext,
-            chequeos : response,
-            textoValue : ''
-          });
-
-        setRowTable(response);  
+        const newLikeTextState = {...likeTextContext, textoValue : ''}
+        onSetLikeText(newLikeTextState);
     }
 
     const fetchLikeText = async (textoValue:string) => {
 
         if(textoValue) {
-        
-          const { postLikeChequeoUser } = await UseChequeoService();
-          
-          const responseChequeos:IChequeo[] = await postLikeChequeoUser(textoValue,user_email);
-  
-          onSetLikeText({
-            ...likeTextContext,
-            chequeos : responseChequeos,
-            textoValue : textoValue
-          });
-  
-          const rows = [...responseChequeos];
-          setRowTable(rows);
-        
+          const newLikeTextState = {...likeTextContext, textoValue}
+          onSetLikeText(newLikeTextState);
         }
-  
     }
 
   return (
-    <Box ml={ 4 } mr={ 4 } mt={ 2 } sx={{ flexGrow: 1 }} >
+    <Box   sx={{ flexGrow: 1 }} >
         <Formik
              initialValues = { initialValues }  
              validationSchema = { validationSchema }  

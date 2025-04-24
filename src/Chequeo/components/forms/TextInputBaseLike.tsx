@@ -51,7 +51,6 @@ export const TextInputBaseLike = ( { handleReset,handlOnChange, ...props }: Prop
       flexDirection: 'column', 
       alignItems: 'center', 
       justifyContent: 'center',
-      gap: 2, /* Añade espacio entre los elementos */
     }}
   >
     <Paper
@@ -59,8 +58,7 @@ export const TextInputBaseLike = ( { handleReset,handlOnChange, ...props }: Prop
         p: '20px 30px', 
         display: 'flex', 
         alignItems: 'center', 
-        width: '100%', 
-        maxWidth: 450, /* Aumenta el tamaño máximo del formulario */
+        width: '80%', 
         boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.15)', /* Sombra más pronunciada */
         borderRadius: '16px', /* Bordes más redondeados */
         backgroundColor: '#ffffff', /* Fondo blanco limpio */

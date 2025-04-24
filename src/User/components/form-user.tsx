@@ -20,8 +20,8 @@ export const FormUser = () => {
         if(response.success) {
 
              Swal.fire({
-                title: "Hora Reservada con Exito",
-                text: 'Se ha grabado el Usuario',
+                title: "Nuevo Usuario",
+                text: 'Se ha Creado el Usuario con Exito!!!',
                 timer: 2000, 
                 timerProgressBar: true,
             });  

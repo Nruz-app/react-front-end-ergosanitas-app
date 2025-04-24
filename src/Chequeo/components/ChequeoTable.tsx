@@ -20,6 +20,7 @@ import { type formData } from '../interface/';
 import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import { FilterTable } from "./filters/FilterTable";
 import { ExportExcel } from "./exportar-excel/Exportar-excel";
+import { LikeTextContext } from "../context";
 
 const rows:IChequeo[] = [];
 
@@ -38,6 +39,7 @@ export const ChequeoTable = (  {
 
    const navigate = useNavigate();
 
+   const { onSetLikeText,...likeTextContext }  = useContext( LikeTextContext );
    const { user }  = useContext( LoginContext );
    const { user_email,user_perfil }  = user;
 
@@ -182,31 +184,28 @@ export const ChequeoTable = (  {
 
     const fetchAgendaHoras = useCallback(async (): Promise<void> => {
 
-      setRowTable([]);
       setStatusTable(false);
+      const { postChequeoSearch } = await UseChequeoService(); 
+       
+      console.log('likeTextContext',likeTextContext.textoValue);
 
-      const { postChequeoUser } = await UseChequeoService() ;
-  
-      const response = await postChequeoUser(user_email);  
-      
-      const rows = [...response];
-
-      setRowTable(rows);
+      const responseTable:IChequeo[] = await postChequeoSearch(likeTextContext,user_email);
+      console.log('responseTable',responseTable);
+      rowTableCache.set(user_email, responseTable);
+      setRowTable([...responseTable]);
       setStatusTable(true);
       
-    }, []);
+    }, [onSetLikeText]);
 
     useEffect(() => {
       fetchAgendaHoras();
-    }, []);
+    }, [onSetLikeText]);
 
 
       return (
         <Box sx={{ flexGrow: 1 }} >
          
-          <FilterTable
-              setRowTable = { setRowTable }
-          />
+          <FilterTable />
 
           <ExportExcel rowsFiles = { rowTable } />
 

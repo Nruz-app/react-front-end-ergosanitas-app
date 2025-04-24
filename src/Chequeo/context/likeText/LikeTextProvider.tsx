@@ -1,15 +1,21 @@
 import { useReducer } from "react";
 import { LikeTextReducer } from "./likeTextReducer";
 import { LikeTextContext } from "./LikeTextContext";
-import { IChequeo } from "../../interface";
+//import dayjs, { Dayjs } from 'dayjs';
+import 'dayjs/locale/es';
+
 
 export interface LikeTextState {
-    textoValue   : string;
-    chequeos     : IChequeo[]; 
+    textoValue    : string;
+    //fechaCalendar : Dayjs | null;
+    fechaCalendar : string,
+    selectClub    : string;
 }
 const INITIAL_STATE: LikeTextState = {
     textoValue : '',
-    chequeos   : []
+    //fechaCalendar : dayjs(new Date()),
+    fechaCalendar : '',
+    selectClub    : ''
 }
 
 interface Props {
@@ -22,12 +28,12 @@ export const LikeTextProvider = ( { children } : Props ) => {
 
     const onSetLikeText = async (likeTextState : LikeTextState )   => {
 
-        const { textoValue,chequeos } = likeTextState;
+        const { textoValue,fechaCalendar,selectClub } = likeTextState;
         try {
             
             dispatch({
                 type: 'onSetLikeText',
-                payload: { chequeos, textoValue }
+                payload: { textoValue,fechaCalendar,selectClub }
             });
 
             

@@ -21,6 +21,8 @@ export { ElectroCardiogramaForm } from './ElectroCardiogramaForm';
 
 export { DatePickers } from './date-pickers/DatePickers';
 
+export { DatePickerInput } from './date-pickers/date-picker-input';
+
 export { FileUploadLogo } from './logo/fileUploadLogo';
 
 export { StatisticsGlobal } from './statistics-global/statistics-global';

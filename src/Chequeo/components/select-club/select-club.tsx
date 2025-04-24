@@ -1,28 +1,27 @@
+import { useContext, useEffect, useState } from "react";
 import { Box, MenuItem, Paper, Select,FormControl, InputLabel, SelectChangeEvent } from "@mui/material"
-import { useEffect, useState } from "react";
-import { UseChequeoService } from "../../services/useChequeoService";
-import { IChequeo } from "../../interface";
 import { UseRegister } from "../../../Login/services/useRegister";
 import { IUser } from "../../../Login/interface";
-
+import { LikeTextContext } from "../../context";
 const initialSelectValue : IUser[] = []
 
-interface Props {
-    setRowTable  : (chequeo:IChequeo[]) => void;
-}
 
 
-export const SelectClub = ({setRowTable}: Props) => {
+export const SelectClub = () => {
 
+    const { onSetLikeText,...likeTextContext }  = useContext( LikeTextContext );
     const [selectValue,setSelectValue] = useState<IUser[]>(initialSelectValue);
+    const [selectStatus,setSelectStatus] = useState(false);
     
     const loadDataClub = async () => {
+        setSelectStatus(false);
         const { getUserEmail } = await UseRegister();
                   
         const rowUserEmail = await getUserEmail();
 
         setSelectValue(rowUserEmail);
-
+        setSelectStatus(true);
+        
     } 
 
     useEffect(() => {      
@@ -37,10 +36,8 @@ export const SelectClub = ({setRowTable}: Props) => {
         if(!selectedValue) return;
 
         try {
-            const { postFilterClubDeportivo } = await UseChequeoService();
-            const responseChequeos = await postFilterClubDeportivo(selectedValue);
-            setRowTable(responseChequeos);
-          
+            const newLikeTextState = {...likeTextContext, selectClub : selectedValue}
+            onSetLikeText(newLikeTextState);
         } catch (error) {
             console.error("Error al obtener los chequeos:", error);
         }
@@ -48,10 +45,12 @@ export const SelectClub = ({setRowTable}: Props) => {
 
   return (
     <Box
+      mb={2}
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Paper
@@ -91,6 +90,7 @@ export const SelectClub = ({setRowTable}: Props) => {
             <em>Selecciona un Club</em>
           </MenuItem>
           {
+            selectStatus &&
             selectValue.map((user, index) => (
               <MenuItem
                 key={index}
