@@ -27,17 +27,17 @@ export const HomePage = () => {
       </Grid>
 
       {/* Segunda Fila */}
-      <Grid item xs={12} sm={6} md={6} >
+      <Grid item xs={12} sm={12} md={6} >
           <BarPresionPage />
       </Grid>
-      <Grid item xs={12} sm={6} md={6} >
+      <Grid item xs={12} sm={12} md={6} >
           <PieChartHemoglucotest />
       </Grid>
       {/* Tercera Fila */}
-      <Grid item xs={12} sm={6} md={6} >
+      <Grid item xs={12} sm={12} md={6} >
           <PieChartIMC />
       </Grid>
-      <Grid item xs={12} sm={6} md={6} >
+      <Grid item xs={12} sm={12} md={6} >
           <PieChartSaturacion />
       </Grid>
       

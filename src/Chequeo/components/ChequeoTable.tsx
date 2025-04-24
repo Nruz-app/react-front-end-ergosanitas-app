@@ -186,11 +186,7 @@ export const ChequeoTable = (  {
 
       setStatusTable(false);
       const { postChequeoSearch } = await UseChequeoService(); 
-       
-      console.log('likeTextContext',likeTextContext.textoValue);
-
       const responseTable:IChequeo[] = await postChequeoSearch(likeTextContext,user_email);
-      console.log('responseTable',responseTable);
       rowTableCache.set(user_email, responseTable);
       setRowTable([...responseTable]);
       setStatusTable(true);
