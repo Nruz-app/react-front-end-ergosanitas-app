@@ -24,7 +24,6 @@ export const BarPresionPage = () => {
     const { user_email }  = user;
 
     const [presionAlterial,setPresionAlterial] = useState<IEstadisticaPresion>(initialValues);
-    
 
     const fetchEstadisticaPresion = useCallback(async (): Promise<void> => {
         const {  getEstadisticaPresion } = UseEstadisticasService() ;
@@ -89,7 +88,7 @@ export const BarPresionPage = () => {
                   p: 3,
                   backgroundColor: "#f9f9f9",
                   borderRadius: 4,
-                  height: "250px", 
+                  height: "300px", 
                 }}
               >  
                 <Bar
@@ -111,7 +110,7 @@ export const BarPresionPage = () => {
                       },
                     },
                   }}
-                  style={isMobile ? { width: "100%", height: "800px" } : {} }
+                  style={isMobile ? undefined : { width: "100%", height: "300px" } }
                 />
               </Box>
             </CardContent>

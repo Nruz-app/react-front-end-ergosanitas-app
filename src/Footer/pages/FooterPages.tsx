@@ -28,7 +28,7 @@ export const Footer = () => {
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: valid ? 'success.main' : '#1976d2' ,    
-      width: { xs: '160%', sm: '100%' },
+      width: { xs: '140%', sm: '100%' },
       color: 'white',
       position: 'relative',
       bottom: 0,

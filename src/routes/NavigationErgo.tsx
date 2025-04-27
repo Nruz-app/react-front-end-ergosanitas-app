@@ -36,6 +36,12 @@ export const NavigationErgo = () => {
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
+        SubMenuActive(true);
+
+        setTimeout(() => {
+            setAnchorElNav(null);
+            SubMenuActive(false);
+        },3000); 
     };
 
     const handleCloseNavMenu = () => {
@@ -44,12 +50,13 @@ export const NavigationErgo = () => {
     };
 
     const handleCloseLogin = () => {
-            ValidLogin (false,{
-                user_id        : 0,
-                user_email     : '',
-                user_name      : '',
-                user_perfil    : ''
-              }); 
+
+        ValidLogin (false,{
+            user_id        : 0,
+            user_email     : '',
+            user_name      : '',
+            user_perfil    : ''
+        }); 
     }
 
     return (
@@ -58,7 +65,7 @@ export const NavigationErgo = () => {
         <HashRouter>
             <AppBar 
                 sx={{
-                    width: { xs: '170%', sm: '100%' },
+                    width: { xs: '150%', sm: '100%' },
                     px: 2, // padding horizontal
                 }}
                 position="static" 
@@ -69,39 +76,22 @@ export const NavigationErgo = () => {
                             width={ 100 }
                             height={ 100 }
                             src= { logoTrans } 
-                            title='Visitanos en ergosanitas.com' />
-
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                ml: 2,
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'Blackletter',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                                textTransform: 'uppercase',
-                            }}
-                        >
-                            Ergo Sanitas
-                        </Typography>   
+                            title='Visitanos en ergosanitas.com' />   
 
                         <Box 
                             sx={ { flexGrow: 1, display: { xs: 'flex', md: 'none' } } } >
                             <IconButton
                                 size="large"
-                                aria-controls="menu-appbar"
+                                aria-controls="menu-ergo"
                                 aria-haspopup="true"
                                 color="inherit"
                                 onClick={ handleOpenNavMenu }
-                            >
+                            >{active}
                             <MenuIcon />
                             </IconButton>
 
                             <Menu 
-                                id="menu-appbar"
+                                id="menu-ergo"
                                 anchorEl={ anchorElNav }
                                 anchorOrigin={{
                                   vertical: 'bottom',
@@ -171,6 +161,24 @@ export const NavigationErgo = () => {
                             }    
                             </Menu>
                         </Box> 
+
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                ml: 2,
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'Blackletter',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                                textTransform: 'uppercase',
+                            }}
+                        >
+                            Ergo Sanitas
+                        </Typography>
+
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {
                            // Filtra solo los que tienen status: true  

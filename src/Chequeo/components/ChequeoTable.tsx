@@ -273,8 +273,12 @@ export const ChequeoTable = (  {
               <TableBody>
                 {
                   (!statusTable) && (
-                   
-                    <LoadingTable />
+                    <TableRow hover role="checkbox" tabIndex={-1} key="loading">
+                      <TableCell colSpan={6} align="center">
+                        <LoadingTable />
+                      </TableCell>
+                    </TableRow>
+                    
                   )  
                 }
               {

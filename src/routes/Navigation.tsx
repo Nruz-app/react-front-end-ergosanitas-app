@@ -31,6 +31,12 @@ export const Navigation = () => {
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
         SubMenuActive(true);
+
+        setTimeout(() => {
+            setAnchorElNav(null);
+            SubMenuActive(false);
+        },3000); 
+    
     };
 
     const handleCloseNavMenu = () => {
@@ -40,6 +46,7 @@ export const Navigation = () => {
 
     const handleOpenModal = () => {
         onOpenModal(true);
+        SubMenuActive(false);
     }
 
     return (
@@ -49,7 +56,10 @@ export const Navigation = () => {
             <AppBar 
                 position="static" 
                 color="primary"
-                sx={{px: 2 }}
+                sx={{
+                    width: { xs: '150%', sm: '100%' },
+                    px: 2, // padding horizontal
+                }}
             >
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
@@ -60,29 +70,13 @@ export const Navigation = () => {
                             title="Visítanos en ergosanitas.com"
                         />
     
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                ml: 2,
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'Blackletter',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                                textTransform: 'uppercase',
-                            }}
-                        >
-                            Ergo Sanitas
-                        </Typography>
     
                         <Box
                             
                             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
                                 size="large"
-                                aria-controls="menu-appbar"
+                                aria-controls="menu-home"
                                 aria-haspopup="true"
                                 color="inherit"
                                 onClick={handleOpenNavMenu}     
@@ -91,7 +85,7 @@ export const Navigation = () => {
                             </IconButton>
     
                             <Menu
-                                id="menu-appbar"
+                                id="menu-home"
                                 anchorEl={anchorElNav}
                                 anchorOrigin={{
                                     vertical: 'bottom',
@@ -131,6 +125,23 @@ export const Navigation = () => {
                                 ))}
                             </Menu>
                         </Box>
+
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                ml: 2,
+                                mr: 2,
+                                display: { xs: 'flex', md: 'flex' },
+                                fontFamily: 'Blackletter',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                                textTransform: 'uppercase',
+                            }}
+                        >
+                            Ergo Sanitas
+                        </Typography>
     
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             {routes.map(({ to, name }) => (

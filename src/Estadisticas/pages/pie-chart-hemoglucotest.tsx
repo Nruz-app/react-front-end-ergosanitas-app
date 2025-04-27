@@ -133,7 +133,7 @@ export const PieChartHemoglucotest = () => {
                 },
               },
             }}
-            style={isMobile ? { width: "100%", height: "300px" } : {} }
+            style={isMobile ? undefined : { width: "100%", height: "300px" } }
           />
         </Box>
       </CardContent>

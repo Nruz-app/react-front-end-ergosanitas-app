@@ -64,56 +64,60 @@ export const SelectClub = () => {
           border: '1px solid #e0e0e0', // Borde suave
         }}
       >
-        <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-          <InputLabel id="id-club-deportivo-label">Selecciona un Club</InputLabel>
-          <Select
-            labelId="id-club-deportivo-label"
-            id="id-club-deportivo"
-            label="Selecciona un Club"
-            onChange={onchangerDataClub}
-            sx={{
-              borderRadius: '8px', // Bordes redondeados
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#ccc', // Borde de entrada
+        {
+          (selectValue.length > 0) &&
+          <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+            <InputLabel id="id-club-deportivo-label">Selecciona un Club</InputLabel>
+            <Select
+              labelId="id-club-deportivo-label"
+              id="id-club-deportivo"
+              label="Selecciona un Club"
+              value={ '' } 
+              onChange={onchangerDataClub}
+              sx={{
+                borderRadius: '8px', // Bordes redondeados
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#ccc', // Borde de entrada
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#51d1f6', // Borde al pasar el mouse
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#51d1f6', // Borde al tener foco
+                  },
                 },
-                '&:hover fieldset': {
-                  borderColor: '#51d1f6', // Borde al pasar el mouse
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#51d1f6', // Borde al tener foco
-                },
-              },
-            }}
-          >
-          <MenuItem value="" sx={{ color: "#999" }}>
-            <em>Selecciona un Club</em>
-          </MenuItem>
-          {
-            selectStatus &&
-            selectValue.map((user, index) => (
-              <MenuItem
-                key={index}
-                value={user.user_email}
-                sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: '#51d1f6',
-                    color: '#fff',
-                    '&:hover': {
+              }}
+            >
+            <MenuItem value="" sx={{ color: "#999" }}>
+              <em>Selecciona un Club</em>
+            </MenuItem>
+            {
+              selectStatus &&
+              selectValue.map((user, index) => (
+                <MenuItem
+                  key={index}
+                  value={user.user_email}
+                  sx={{
+                    '&.Mui-selected': {
                       backgroundColor: '#51d1f6',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: '#51d1f6',
+                      },
                     },
-                  },
-                  '&:hover': {
-                    backgroundColor: '#f1f1f1',
-                  },
-                }}
-              >
-                { user.user_name  }
-              </MenuItem>
-            ))
-          }
-        </Select>
-      </FormControl>
+                    '&:hover': {
+                      backgroundColor: '#f1f1f1',
+                    },
+                  }}
+                >
+                  { user.user_name  }
+                </MenuItem>
+              ))
+            }
+          </Select>
+        </FormControl>
+      }
       </Paper>
     </Box>
   )
