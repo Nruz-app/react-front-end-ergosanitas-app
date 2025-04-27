@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Box, Typography } from '@mui/material';
+import { LoginContext } from '../../common/context';
 
 export const Footer = () => {
 
   const [currentDateTime, setCurrentDateTime] = useState( new Date() );
+  const { valid }  = useContext( LoginContext );
 
   useEffect(() => {
 
@@ -25,11 +27,11 @@ export const Footer = () => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#1976d2',
+      backgroundColor: valid ? 'success.main' : '#1976d2' ,    
+      width: { xs: '160%', sm: '100%' },
       color: 'white',
       position: 'relative',
       bottom: 0,
-      width: '100%',
       height: { xs: 'auto', md: '100px' }, // Ajuste dinámico de altura
       padding: { xs: '16px', md: '0' }, // Padding para dispositivos pequeños
       mt: 5,

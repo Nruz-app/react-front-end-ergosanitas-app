@@ -1,6 +1,6 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import { isMobile } from 'react-device-detect';
 
 //Link Documentacion 
 //https://swiperjs.com/demos
@@ -17,6 +17,8 @@ import imgEcgDomicilio from '/assets/images/ECGDomicilio.jpg';
 import imgServicioEnfermeria from '/assets/images/ServicioEnfermeria.jpg';
 import imgChequeoAdultoMayor from '/assets/images/chequeoAdultoMayor.jpg';
 import imgChequeoDeportista from '/assets/images/chequeoDeportistas.jpg';
+
+
 
 
 const imgCardList = [
@@ -67,14 +69,14 @@ export const CarouserServer = () => {
 
       <Swiper 
         spaceBetween={20}
-        slidesPerView={3}
+        slidesPerView={isMobile ? 1 : 3}
         className="mySwiper"
-            modules={[Autoplay]}
-            autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-            }}
-        >
+        modules={[Autoplay]}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+      >
 
         {listCardJson.map(({ id, img, title, description }) => (
           <SwiperSlide key={id}>

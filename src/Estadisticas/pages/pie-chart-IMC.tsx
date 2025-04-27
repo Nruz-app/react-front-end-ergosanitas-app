@@ -13,6 +13,8 @@ import { useCallback,  useContext,  useEffect, useState } from 'react';
 import { UseEstadisticasService } from '../services/UseEstadisticasService';
 import { IEstadistica } from '../interface/estadisticaIMC.interface';
 import { LoginContext } from '../../common/context';
+import { isMobile } from 'react-device-detect';
+
 //import { LoginContext } from '../../common/context';
 
 /********************************************************************* 
@@ -65,8 +67,8 @@ export const PieChartIMC = () => {
             data: estadisticaIMC.data,
             backgroundColor: [
               "#FFCC80", 
-              "#64B5F6", 
-              "#81C784", 
+              "#81C784",
+              "#f39c12", 
               "#FF8A80",
             ],
             borderColor: "#ffffff",
@@ -133,7 +135,7 @@ export const PieChartIMC = () => {
                 },
               },
             }}
-            style={{ width: "100%", height: "300px" }}
+            style={isMobile ? { width: "100%", height: "300px" } : {} }
           />
         </Box>
       </CardContent>

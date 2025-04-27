@@ -5,7 +5,7 @@ import { TabPanel } from "../components/tabs/TabPanel";
 import React, { useContext, useState } from "react";
 
 import { Chequeo } from "./Chequeo";
-import { ChequeoTable,FormUpload,ChequeoView,CargaMasiva } from "../components";
+import { ChequeoTable,FormUpload,ChequeoView,CargaMasiva, CalculadoraImc } from "../components";
 import { IChequeo, type formData } from '../interface/';
 
 import { LikeTextProvider } from "../context";
@@ -170,6 +170,7 @@ export const AppChequeo = () => {
           color="success"
           onClick={() => setCollapsed(!collapsed)}
           sx={{
+            width: '5%',
             borderRadius: '20px',
             boxShadow: 2,
             '&:hover': {
@@ -202,7 +203,7 @@ export const AppChequeo = () => {
               minWidth: 10,
               bgcolor: 'background.paper',
               boxShadow: 2,
-              width: collapsed ? 100 : 220,
+              width: collapsed ? 80 : 180,
               borderRadius: '8px 0 0 8px',
               '& .MuiTab-root': {
                 transition: 'background-color 0.3s ease',
@@ -215,51 +216,54 @@ export const AppChequeo = () => {
           >
           {
             (user_perfil == "Colegios") && (
-              <Tab label= { collapsed? "H" : "Home"} {...a11yProps(0)} />
+              <Tab label= { collapsed? "HM" : "Home"} {...a11yProps(0)} />
             )
           } 
           {
             (user_perfil == "Colegios") && (
-              <Tab label= { collapsed? "L" : "Lista de Deportista"}  {...a11yProps(1)} />
+              <Tab label= { collapsed? "LD" : "Lista de Deportista"}  {...a11yProps(1)} />
               
             )
           } 
           {
             (user_perfil == "Colegios") && (
-              <Tab label={ collapsed? "A" : "Agrega un Deportista"} {...a11yProps(2) } />
+              <Tab label={ collapsed? "AD" : "Agrega un Deportista"} {...a11yProps(2) } />
             )
           }
           {
             (user_perfil == "Colegios") && (
-              <Tab label={ collapsed? "C" : "Carga Masiva Deportista"} {...a11yProps(3) } />
+              <Tab label={ collapsed? "CD" : "Carga Masiva Deportista"} {...a11yProps(3) } />
             )
           }
           {
             (user_perfil != "Colegios") && (
-              <Tab label={ collapsed? "L" : "Lista de Deportista"}  {...a11yProps(0)} />
+              <Tab label={ collapsed? "LD" : "Lista de Deportista"}  {...a11yProps(0)} />
             )
           }
           {
             (user_perfil != "Colegios") && (
-              <Tab label={ collapsed? "A" : "Agrega un Deportista"} {...a11yProps(1) } />
+              <Tab label={ collapsed? "AD" : "Agrega un Deportista"} {...a11yProps(1) } />
             )
           }
           {
             (user_perfil != "Colegios") && (
-              <Tab label={ collapsed? "C" : "Carga Masica Deportista"} {...a11yProps(2) } />
+              <Tab label={ collapsed? "CM" : "Carga Masica Deportista"} {...a11yProps(2) } />
             )
           }
           {
             (user_perfil != "Colegios") && (
-              <Tab label={ collapsed? "P" : "Agregar Perfil"} {...a11yProps(3) } />
+              <Tab label={ collapsed? "AP" : "Agregar Perfil"} {...a11yProps(3) } />
             )
+          }
+          {
+            <Tab label={ collapsed? "CQ" : "Calculos QTc"} {...a11yProps(4) } />
           }
           </Tabs>
           {
             (user_perfil == "Colegios") ? (
             <>
               <TabPanel value={value} index={0}>
-                <Box sx={{ flexGrow: 1, p: 3 }}>
+                <Box sx={{ flexGrow: 1 }}>
                   <ModalBarProvider>
                     <HomePage />
                   </ModalBarProvider>
@@ -340,6 +344,9 @@ export const AppChequeo = () => {
               </>
             )
           }
+          <TabPanel value={value} index={4}>
+            <CalculadoraImc />
+          </TabPanel>
         </Box>
       </Box>
       <FormUpload

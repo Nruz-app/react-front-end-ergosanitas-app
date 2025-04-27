@@ -46,7 +46,11 @@ export const Navigation = () => {
         <Suspense fallback={ <Loading /> }>
         { /* <BrowserRouter> */ }
         <HashRouter>
-            <AppBar position="static" color="primary">
+            <AppBar 
+                position="static" 
+                color="primary"
+                sx={{px: 2 }}
+            >
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <img

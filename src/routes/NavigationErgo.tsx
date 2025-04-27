@@ -17,7 +17,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 
 
-
 import { LoginContext, SubMenuContext } from '../common/context';
 
 import { routesErgo } from './routesErgo';
@@ -58,8 +57,12 @@ export const NavigationErgo = () => {
         { /* <BrowserRouter> */ }
         <HashRouter>
             <AppBar 
+                sx={{
+                    width: { xs: '170%', sm: '100%' },
+                    px: 2, // padding horizontal
+                }}
                 position="static" 
-                color='primary'>
+                color='success'>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <img 
@@ -116,11 +119,9 @@ export const NavigationErgo = () => {
                                 }}
                             >
                             {
-                                routesErgo.filter(({ status }) => status) // Filtra solo los que tienen status: true
+                                // Filtra solo los que tienen status: true
+                                routesErgo.filter(({ status }) => status) 
                                 .map(({ to, name, perfil }) => (
-
-                                    
-
                                     <MenuItem key={ name } >
                                         {
                                             (user_perfil == perfil) ? (
@@ -158,7 +159,7 @@ export const NavigationErgo = () => {
                                                             backgroundColor: isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent', 
                                                         })}
                                                     >
-                                                        { name }  bbb
+                                                        { name } 
                                                     </NavLink>
                                                 )
                                             )
@@ -172,7 +173,8 @@ export const NavigationErgo = () => {
                         </Box> 
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {
-                           routesErgo.filter(({ status }) => status) // Filtra solo los que tienen status: true
+                           // Filtra solo los que tienen status: true  
+                           routesErgo.filter(({ status }) => status) 
                            .map(({ to, name, perfil }) => (
            
                                 (user_perfil == perfil) ? (
@@ -264,7 +266,7 @@ export const NavigationErgo = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: '#2196F3', // Azul más vibrante
+                                backgroundColor: '#66BB6A    ', // Azul más vibrante
                                 padding: { xs: '12px 16px', sm: '16px 24px' }, // Espaciado adaptado a diferentes tamaños
                                 borderRadius: '30px', // Bordes más redondeados
                                 boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Sombra más pronunciada y elegante

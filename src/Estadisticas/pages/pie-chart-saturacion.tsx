@@ -14,6 +14,8 @@ import { UseEstadisticasService } from '../services/UseEstadisticasService';
 import { IEstadistica } from '../interface/estadisticaIMC.interface';
 import { LoginContext } from '../../common/context';
 //import { LoginContext } from '../../common/context';
+import { isMobile } from 'react-device-detect';
+
 
 /********************************************************************* 
 * * - Link Docs 
@@ -133,7 +135,7 @@ export const PieChartSaturacion = () => {
                 },
               },
             }}
-            style={{ width: "100%", height: "300px" }}
+            style={isMobile ? { width: "100%", height: "300px" } : {} }
           />
         </Box>
       </CardContent>

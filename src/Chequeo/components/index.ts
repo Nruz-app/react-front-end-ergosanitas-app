@@ -36,3 +36,5 @@ export { SelectUser } from './select-user/select-user';
 export { LoadingTable } from './loading-table/loading-table';
 
 export * from './form-perfil/form-perfil';
+
+export * from './modal/modal.component';

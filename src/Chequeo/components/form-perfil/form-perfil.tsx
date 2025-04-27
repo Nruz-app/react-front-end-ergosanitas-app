@@ -47,7 +47,7 @@ export const FormPerfil = ({user_email} : Props) => {
   }
 
   return (
-    <Box>
+    <Box sx={{  justifyContent: "center", alignItems: "center", p: 3, }}>
       <Paper
         elevation={4}
         sx={{
@@ -56,7 +56,7 @@ export const FormPerfil = ({user_email} : Props) => {
           backgroundColor: '#f9f9f9',
         }}
       >
-        <Grid container spacing={3} alignItems="center">
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={8} md={8}>
             <InputPassword
               newPassword={ newPassword }
@@ -70,15 +70,20 @@ export const FormPerfil = ({user_email} : Props) => {
                     onClick={handleUpdatePassword}
                     aria-label="editar"
                     sx={{
-                    color: '#1976d2',
+                    color: '#66bb6a',
                     '&:hover': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
-                        color: '#0d47a1',
+                        backgroundColor: '#81c784', // Verde un poco más oscuro en hover
+                        transform: 'scale(1.05)',
+                        color: '#FFFFFF',
+                    },
+                    '&:active': {
+                      backgroundColor: '#4caf50', // Verde más oscuro al hacer clic
+                      transform: 'scale(1)',
                     },
                     transition: '0.3s',
                     }}
                 >
-                    <EditIcon fontSize="medium" />
+                    <EditIcon fontSize="large" />
                 </IconButton>
                 </Tooltip>
 

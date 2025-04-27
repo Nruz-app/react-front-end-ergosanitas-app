@@ -14,6 +14,7 @@ import { UseEstadisticasService } from '../services/UseEstadisticasService';
 import { IEstadistica } from '../interface/estadisticaIMC.interface';
 import { LoginContext } from '../../common/context';
 //import { LoginContext } from '../../common/context';
+import { isMobile } from 'react-device-detect';
 
 /********************************************************************* 
 * * - Link Docs 
@@ -64,9 +65,9 @@ export const PieChartHemoglucotest = () => {
             label: "# Hemoglucotest",
             data: estadistica.data,
             backgroundColor: [
-              "#81C784", 
-              "#FFCC80", 
-              "#FF8A80",
+              "#FFCC80",
+              "#81C784",  
+              "#FF8A80"
             ],
             borderColor: "#ffffff",
             borderWidth: 2,
@@ -132,7 +133,7 @@ export const PieChartHemoglucotest = () => {
                 },
               },
             }}
-            style={{ width: "100%", height: "300px" }}
+            style={isMobile ? { width: "100%", height: "300px" } : {} }
           />
         </Box>
       </CardContent>

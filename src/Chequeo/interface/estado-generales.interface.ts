@@ -10,4 +10,5 @@ export interface EstadoGenerales {
     can_imc_normal : number;
     can_masculino : number;
     can_femenino : number;
+    can_realizado : number;
 }

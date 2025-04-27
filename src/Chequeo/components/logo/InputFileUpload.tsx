@@ -21,7 +21,7 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect } : InputFileU
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={2}>
+      <Stack direction="column" alignItems="center" spacing={2}>
         <input
             accept="image/*"
             style={{ display: 'none' }}
@@ -36,30 +36,27 @@ const InputFileUpload: FC<InputFileUploadProps> = ({ onFileSelect } : InputFileU
             sx={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                textDecoration: 'none',  // Elimina el subrayado por defecto de los enlaces
-                color: 'primary.main',  // Color primario del enlace
-                fontSize: '1rem',  // Tamaño de fuente cómodo
-                fontWeight: 500,  // Peso de la fuente para un toque elegante
-                padding: '10px 20px',  // Espaciado adecuado para que se vea bonito
-                borderRadius: 6,  // Bordes redondeados para suavizar el diseño
-                backgroundColor: 'rgba(0, 0, 0, 0.08)', // Fondo suave
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Sombra ligera para resaltar el enlace
-                transition: 'color 0.3s ease, transform 0.3s ease, background-color 0.3s ease',
-                cursor: 'pointer',  // Cambia el cursor para indicar interacción
+                color: 'white',  // Texto blanco
+                fontSize: '1rem',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                backgroundColor: '#66bb6a', // Verde claro
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease, transform 0.3s ease',
                 '&:hover': {
-                    color: '#1976d2',  // Color de texto cuando el mouse pasa por encima
-                    transform: 'scale(1.05)',  // Agrandar ligeramente al hacer hover
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)', // Fondo ligeramente más oscuro
+                    backgroundColor: '#81c784', // Verde un poco más oscuro en hover
+                    transform: 'scale(1.05)',
                 },
                 '&:active': {
-                    transform: 'scale(1)',  // Vuelve al tamaño original al hacer clic
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',  // Fondo más oscuro cuando está activo
+                    backgroundColor: '#4caf50', // Verde más oscuro al hacer clic
+                    transform: 'scale(1)',
                 },
             }}
         >
-            <UploadFileIcon sx={{ mr: 1 }} /> Logo
+            <UploadFileIcon sx={{ mr: 1 }} />
+            Cargar Logo
         </Typography>
-    </Stack>
+      </Stack>
   );
 
 }

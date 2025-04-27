@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material"
 
-import { FileUploadLogo,StatisticsGlobal,CalculadoraImc, FormPerfil } from '../components';
+import { FileUploadLogo,StatisticsGlobal, FormPerfil, ModalStatus } from '../components';
 import { useContext } from "react";
 import { LoginContext } from "../../common/context";
 import { BarPresionPage, PieChartHemoglucotest, PieChartIMC, PieChartSaturacion } from "../../Estadisticas/pages/";
@@ -11,9 +11,9 @@ export const HomePage = () => {
   const { user_email,user_logo }  = user;
     
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2}>
       {/* Primera Fila */}
-      <Grid item xs={12} sm={6} md={6}>
+      <Grid item xs={12} sm={12} md={6}>
         <FileUploadLogo 
           user_email={user_email} 
           user_logo={user_logo ? user_logo : ''} 
@@ -22,7 +22,7 @@ export const HomePage = () => {
           user_email={user_email} />
       </Grid>
   
-      <Grid item xs={12} sm={6} md={6}>  {/* Esto hace que ocupe 1/3 en pantallas medianas (md) */}
+      <Grid item xs={12} sm={12} md={6}>  {/* Esto hace que ocupe 1/3 en pantallas medianas (md) */}
           <StatisticsGlobal />
       </Grid>
 
@@ -42,7 +42,7 @@ export const HomePage = () => {
       </Grid>
       
       {/* Modal Barra Presion */}
-      <CalculadoraImc />    
+      <ModalStatus />    
     </Grid>
     
   )

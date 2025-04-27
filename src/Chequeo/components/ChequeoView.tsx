@@ -78,7 +78,7 @@ export const ChequeoView = ({chequeoView}: Props) => {
 
                 <Grid item xs={12} md={6}>
                     {[
-                        { label: 'Presión Arterial', value: chequeoView.presionArterial },
+                        { label: 'Presión Arterial', value: `${chequeoView.presion_sistolica}/${chequeoView.presionArterial}` },
                         { label: 'Saturación Oxígeno', value: chequeoView.saturacionOxigeno },
                         { label: 'Temperatura', value: chequeoView.temperatura },
                         { label: 'Enfermedades Crónicas', value: chequeoView.enfermedadesCronicas },

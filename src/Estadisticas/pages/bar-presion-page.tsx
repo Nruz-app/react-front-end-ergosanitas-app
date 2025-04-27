@@ -2,7 +2,7 @@ import { Box, Card, CardContent, CardHeader,  Typography } from "@mui/material";
 import { Bar  } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useCallback, useContext, useEffect, useState } from "react";
-
+import { isMobile } from 'react-device-detect';
 import { UseEstadisticasService } from "../services/UseEstadisticasService";
 import { LoginContext } from "../../common/context";
 import { IEstadisticaPresion } from "../interface";
@@ -50,7 +50,7 @@ export const BarPresionPage = () => {
             "#FF8A80",
           ],
            borderColor: "#ffffff",
-          borderWidth: 1
+          borderWidth: 2
         }
       ]
     };
@@ -89,7 +89,7 @@ export const BarPresionPage = () => {
                   p: 3,
                   backgroundColor: "#f9f9f9",
                   borderRadius: 4,
-                  height: "540px", 
+                  height: "250px", 
                 }}
               >  
                 <Bar
@@ -111,7 +111,7 @@ export const BarPresionPage = () => {
                       },
                     },
                   }}
-                  style={{ width: "100%", height: "800px" }}
+                  style={isMobile ? { width: "100%", height: "800px" } : {} }
                 />
               </Box>
             </CardContent>

@@ -1,12 +1,16 @@
-import { Box, Button, Card, CardContent, Divider, List, ListItem, ListItemIcon, Paper, Typography } from "@mui/material"
+import { Box,Button,Card, CardContent,  List, ListItem, ListItemIcon, Paper, Typography } from "@mui/material"
 import { useCallback, useContext, useEffect, useState } from "react";
 import { UseChequeoService } from "../../services/useChequeoService";
 import { LoginContext } from "../../../common/context";
 import { EstadoGenerales } from "../../interface";
 import { ModalBarContext } from "../../context/modal-bar/Modal-bar-Context";
-
-import CalculateIcon from '@mui/icons-material/Calculate';
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icono para la lista
+import DescriptionIcon from '@mui/icons-material/Description';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import WcIcon from '@mui/icons-material/Wc';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const initialValues : EstadoGenerales = {
    can_imc_normal           : 0,
@@ -18,7 +22,8 @@ const initialValues : EstadoGenerales = {
     porcentaje_imc_normal   : 0,
     porcentaje_estado_normal: 0,
     can_masculino           : 0,
-    can_femenino            : 0
+    can_femenino            : 0,
+    can_realizado           : 0,    
 }
 
 
@@ -39,11 +44,12 @@ export const StatisticsGlobal = () => {
     
     }, []);
 
-
+    
     const handleOpenModal = (typePresion : string) => {
 
         onOpenModal({isModalOpen:true,typePresion});
     }
+    
         
     useEffect(() => {
              fetchEstadoGeneral();
@@ -81,22 +87,38 @@ export const StatisticsGlobal = () => {
                     mb: 2,
                     }}
                 >
-                    <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                    <Typography
+                        variant="h5"
+                        color="primary"
+                        sx={{
+                            fontWeight: 600,
+                            mb: 2,
+                            textAlign: "center",
+                        }}
+                    >
                         Estado General
                     </Typography>
                     <List>
                         <ListItem>
                             <ListItemIcon>
-                                <CheckCircleIcon color="primary" />
+                                <AssignmentIcon  sx={{ color: '#1976D2', fontSize: 28 }} />
                             </ListItemIcon>
                             <Typography variant="body1">
-                            Exámenes Realizados: <strong>{estadoGenerales.total_examenes}</strong>
+                            Exámenes Total: <strong>{estadoGenerales.total_examenes}</strong>
+                            </Typography>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemIcon>
+                                <TaskAltIcon sx={{ color: '#388E3C ', fontSize: 28 }} />
+                            </ListItemIcon>
+                            <Typography variant="body1">
+                            Exámenes Realizados: <strong>{estadoGenerales.can_realizado ?? 0}</strong>
                             </Typography>
                         </ListItem>
 
                         <ListItem>
                             <ListItemIcon>
-                            <CheckCircleIcon color="primary" />
+                            <RestaurantIcon  sx={{ color: '#FFA000', fontSize: 28 }}  />
                             </ListItemIcon>
                             <Typography variant="body1">
                             Estado Nutricional: <strong>{estadoGenerales.porcentaje_imc_normal}%</strong>
@@ -105,36 +127,41 @@ export const StatisticsGlobal = () => {
 
                         <ListItem>
                             <ListItemIcon>
-                            <CheckCircleIcon color="primary" />
+                            <FavoriteIcon  sx={{ color: '#D32F2F', fontSize: 28 }}  />
                             </ListItemIcon>
                             <Typography variant="body1">
-                            Estado Cardiaco: <strong>{estadoGenerales.porcentaje_estado_normal}%</strong>
+                            Estado Cardiaco: <strong>{estadoGenerales.porcentaje_estado_normal?? 0}%</strong>
                             </Typography>
                         </ListItem>
 
                         <ListItem>
                             <ListItemIcon>
-                                <CheckCircleIcon color="primary" />
+                                <WcIcon sx={{ color: '#1976D2', fontSize: 28 }}  />
                             </ListItemIcon>
                             <Typography variant="body1">
                                 Masculino: <strong>{estadoGenerales.can_masculino}</strong> | Femenino: <strong>{estadoGenerales.can_femenino}</strong>
                             </Typography>
                         </ListItem>
+                        <ListItem>
+                            <ListItemIcon>
+                                <BarChartIcon sx={{ color: '#388E3C', fontSize: 28 }} />
+                            </ListItemIcon>
+                            <Typography variant="body1">
+                                Normales: <strong>{estadoGenerales.can_estado_normal}</strong> | Alterados: <strong>{estadoGenerales.can_estado_alterado}</strong>
+                            </Typography>
+                        </ListItem>
                     </List>
                 </Paper>
-
-                {/* Línea separadora */}
-                <Divider sx={{ my: 2 }} />
-
-                {/* Sección de botones */}
+    
+                {
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
             
                     <Button
                         onClick={ () => handleOpenModal ('Presion Sistolica')}
                         variant="contained"
-                        startIcon={<CalculateIcon />}
+                        startIcon={<DescriptionIcon />}
                         sx={{
-                            backgroundColor: "secondary.main",
+                            backgroundColor: "#66bb6a",
                             color: "white",
                             borderRadius: 8,
                             px: 3,
@@ -145,9 +172,10 @@ export const StatisticsGlobal = () => {
                             },
                         }}
                     >
-                        Calculadora IMC
+                        Detalle Clinico
                     </Button>
                 </Box>
+                }
             </CardContent>
         </Card>
     </Box>

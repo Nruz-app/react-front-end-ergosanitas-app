@@ -71,8 +71,8 @@ export const FileUploadLogo = ({user_email,user_logo} : Props) => {
                     : 'Ingresa Logo del Club'
                 }
                 sx={{
-                  width: 120,
-                  height: 120,
+                  width: 100,
+                  height: 100,
                   bgcolor: 'grey.300',
                   border: '4px solid #1976d2',
                   mb: 2,
