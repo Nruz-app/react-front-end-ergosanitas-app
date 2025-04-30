@@ -3,9 +3,9 @@ import { Box, MenuItem, Paper, Select,FormControl, InputLabel, SelectChangeEvent
 import { UseRegister } from "../../../Login/services/useRegister";
 import { IUser } from "../../../Login/interface";
 import { LikeTextContext } from "../../context";
-const initialSelectValue : IUser[] = []
 
 
+const initialSelectValue : IUser[] = [];
 
 export const SelectClub = () => {
 

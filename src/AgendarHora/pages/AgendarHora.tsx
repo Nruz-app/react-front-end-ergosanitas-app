@@ -1,11 +1,12 @@
 import { Box, Typography } from "@mui/material"
-import { AgendaHoraForm } from "../components"
+import { AgendaChequeoForm } from "../components"
 
-
+import { MarqueeHome } from "../../Home/components";
 
 export const AgendaHoraPage = () => {
   return (
     <>
+      <MarqueeHome dirrection='left' />
       <Box ml={ 15 } mt={ 8 } sx={{ flexGrow: 1 }} >
         <Typography
             variant="h4"
@@ -23,7 +24,7 @@ export const AgendaHoraPage = () => {
             Agenda Horas
         </Typography>
       </Box>   
-      <AgendaHoraForm />
+      <AgendaChequeoForm />
     </>
   )
 }

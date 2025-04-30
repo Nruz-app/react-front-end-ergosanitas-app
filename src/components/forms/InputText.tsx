@@ -30,7 +30,7 @@ export const InputText = ( { control,multiline = false,setValue,...props } : Pro
     const handleOnchanger = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)  => {
         
         event.preventDefault();        
-        const {edad,estatura,peso,sexo_paciente} = control._formValues || {};
+        const {edad,estatura,peso,sexo_paciente,fechaNacimiento} = control._formValues || {};
 
         if(edad && estatura && sexo_paciente && peso) {
 
@@ -45,6 +45,21 @@ export const InputText = ( { control,multiline = false,setValue,...props } : Pro
             }));
             *********************************/
         } 
+
+        //calcula fecha nacimiento 
+        if(fechaNacimiento) {
+
+            const posicion:number =  fechaNacimiento.length;   
+
+            if(posicion === 2 || posicion === 5 ) 
+                setValue!('fechaNacimiento',`${fechaNacimiento}/`);
+            
+            if(posicion > 10)
+                setValue!('fechaNacimiento',`${fechaNacimiento.slice(0,10)}`);
+                
+        }
+
+
     }
 
   return (

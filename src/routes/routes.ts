@@ -27,16 +27,16 @@ export const routes:Route[] = [
         Component : HomePage
     },
     {
-        name      : 'Certificados',
-        to        : '/certificados',
-        path      : '/certificados/*',
-        Component : AppCertificadoPage
-    },
-    {
         name      : 'Agendar',
         to        : '/agendarHora',
         path      : '/agendarHora/*',
         Component : AppAgendarHoraPage
+    },
+    {
+        name      : 'Certificados',
+        to        : '/certificados',
+        path      : '/certificados/*',
+        Component : AppCertificadoPage
     },
     {
         name      : 'Asistente',

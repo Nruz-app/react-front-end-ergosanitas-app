@@ -1,26 +1,22 @@
 [
     {
-        "order"        : 2, 
-        "type"         : "text",
-        "name"         : "nombre_paciente",
-        "placeholder"  : "Luis Andres Medina",
-        "label"        : "Ingresa Nombre",
-        "helperText"   : "Ingrese el Nombre Complete",
+        "order"        : 1,
+        "type"         : "AutoComplete",
+        "name"         : "user_email",
+        "placeholder"  : "ergosanitas club sport",
+        "label"        : "Ingrese un Club",
+        "helperText"   : "Ingrese o Seleccione un Club Asociado",
         "defaultValue" : "",
-        "value"        : "",
+        "values"       : [],
         "validations" : [
             {
                 "type"    : "required",
-                "message" : "El Nombre es Requerido"
-            },
-            {
-                "type"    : "LETRAS",
-                "message" : "Solo se permiten letras para este campo"
+                "message" : "El Club es Requerido"
             }
-        ]     
+        ]    
     },
     {
-        "order"        : 1,
+        "order"        : 2,
         "type"         : "text",
         "name"         : "rut_paciente",
         "placeholder"  : "1111111-k",
@@ -40,12 +36,32 @@
         ]      
     },
     {
-        "order"        : 3,
-        "type"         : "number",
-        "name"         : "edad_paciente",
-        "placeholder"  : "20",
-        "label"        : "Ingresa Edad",
-        "helperText"   : "Ingrese el edad del usuario",
+        "order"        : 3, 
+        "type"         : "text",
+        "name"         : "nombre_paciente",
+        "placeholder"  : "Luis Andres Medina",
+        "label"        : "Ingresa Nombre",
+        "helperText"   : "Ingrese el Nombre Complete",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre es Requerido"
+            },
+            {
+                "type"    : "LETRAS",
+                "message" : "Solo se permiten letras para este campo"
+            }
+        ]     
+    },
+    {
+        "order"        : 4,
+        "type"         : "text",
+        "name"         : "fechaNacimiento",
+        "placeholder"  : "20/10/2000",
+        "label"        : "Ingresa Fecha Nacimiento",
+        "helperText"   : "Ingrese el Fecha Nacimiento del usuario",
         "defaultValue" : "",
         "value"        : "",
         "validations" : [
@@ -61,23 +77,7 @@
         ]      
     },
     {
-        "order"        : 6,
-        "type"         : "text",
-        "name"         : "direccion_paciente",
-        "placeholder"  : "Angelmo 721",
-        "label"        : "Ingrese una Direccion",
-        "helperText"   : "Ingrese un lugar de residencia",
-        "defaultValue" : "",
-        "value"        : "",
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Rut es Requerido"
-            }
-        ]      
-    },
-    {
-        "order"        : 8,
+        "order"        : 5,
         "type"         : "text",
         "name"         : "email_paciente",
         "placeholder"  : "email@gmail.com",
@@ -97,38 +97,7 @@
         ]      
     },
     {
-        "order"        : 7,
-        "type"         : "text",
-        "name"         : "celular_paciente",
-        "placeholder"  : "+569 6212291023",
-        "label"        : "Ingrese un N° celular",
-        "helperText"   : "Ingrese un numero telefonico",
-        "defaultValue" : "",
-        "value"        : "",
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Rut es Requerido"
-            },
-            {
-                "type"    : "MIN",
-                "value"   : 10,
-                "message" : "El teléfono debe tener un mínimo de 10 caracteres"
-            },
-            {
-                "type"    : "MAX",
-                "value"   : 13,
-                "message" : "El teléfono debe tener un máximo de 13 caracteres"
-            },
-            {
-                "type"    : "REGEX_CELULAR",
-                "value"   : 13,
-                "message" : "El Formato de número no es Válido"
-            }
-        ]      
-    },
-    {
-        "order"        : 4,
+        "order"        : 6,
         "type"         : "selected",
         "name"         : "sexo_paciente",
         "placeholder"  : "Masculino",
@@ -151,63 +120,5 @@
                 "message" : "El Sexo es Requerido"
             }
         ]      
-    },
-    {
-        "order"        : 9,
-        "type"         : "selected-dinamic",
-        "name"         : "servicios_name",
-        "placeholder"  : "Electrocardiograma",
-        "label"        : "Seleccion el Servicio",
-        "helperText"   : "Seleccione Algun Tipo de Servicio a Realizar",
-        "defaultValue" : "",
-        "values"       : [
-            {
-                "value" : "Electrocardiograma",
-                "nombre" : "Electrocardiograma"
-            },
-            {
-                "value" : "TestPresion",
-                "nombre" : "Test de la presion Presion"
-            }
-        ],
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Servicio es Requerido"
-            }
-        ]          
-    },
-    {
-        "order"        : 5,
-        "type"         : "AutoComplete",
-        "name"         : "comuna_paciente",
-        "placeholder"  : "Santiago",
-        "label"        : "Ingrese una Comuna",
-        "helperText"   : "Ingrese o Seleccione una Comuna",
-        "defaultValue" : "",
-        "values"       : [],
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Comuna es Requerido"
-            }
-        ]    
-    },
-    {
-        "order"        : 10,
-        "type"         : "DatePickersTime",
-        "name"         : "fecha_reserva_paciente",
-        "placeholder"  : "10/102420",
-        "label"        : "Selecione una Fecha Reserva",
-        "helperText"   : "Seleccione una fecha de visita",
-        "defaultValue" : "",
-        "values"       : [],
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Fecha es Requerido"
-            }
-        ]    
     }
-
 ]

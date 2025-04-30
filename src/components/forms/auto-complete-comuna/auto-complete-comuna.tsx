@@ -1,12 +1,24 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
+/********************************************************************************
+* * Link 
+* * - https://api.countrystatecity.in/v1/countries/CL/states/RM/cities
+* * key 
+* * - name => X-CSCAPI-KEY
+* * - value => MXZaaVR0MTA2QlUyNktuR0RjdUQ1a29MQ1BjWTdXYUJlc3huY29aMw==
+**********************************************************************************/
 
-import { IUser } from "../../Login/interface";
-import { useEffect, useState } from "react";
-import { UseRegister } from "../../Login/services/useRegister";
 
-const initialSelectValue : IUser[] = [];
+import comunasJson  from '../../../AgendarHora/config/comunas.json';
+
+interface Comunas {
+    id : number;
+    latitude : string;
+    longitude : string;
+    name : string;
+}
+
 interface Props {
     control       : any;
     type          : string;
@@ -21,44 +33,21 @@ interface Props {
 
 
 export const InputAutoComplete = ( { control,...props } : Props ) => {
-
-    const [selectValue,setSelectValue] = useState<IUser[]>(initialSelectValue);
-    const [selectStatus,setSelectStatus] = useState(false);
-    
-
-    const loadDataClub = async () => {
-        setSelectStatus(false);
-        const { getUserEmail } = await UseRegister();
-                    
-        const rowUserEmail = await getUserEmail();
-
-        setSelectValue(rowUserEmail);
-        setSelectStatus(true);
-        
-    } 
-
-    useEffect(() => {      
-        loadDataClub();
-    }, [])
-
-
-
   return (
-    selectStatus && 
     <Controller
         name= { props.name }
         control={ control }
         rules={{ required: true }}
-        defaultValue = { selectValue }
+        defaultValue = { comunasJson.comunas }
         render={({
             field: { onChange, value, ref, ...field },
             fieldState: { error },
         }) => (
             <Autocomplete
                 {...field}
-                value={ selectValue.find(( {user_email} ) => user_email === value) || null}
-                options={ selectValue }
-                getOptionLabel={ ( option ) => `${ option.user_name }`}
+                value={ comunasJson.comunas.find(( comunas ) => comunas.name === value) || null}
+                options={ comunasJson.comunas }
+                getOptionLabel={ ( option ) => `${ option.name }`}
                 loading={ true }
                 loadingText="Cargando..."
                 renderInput={( params ) => (
@@ -94,9 +83,9 @@ export const InputAutoComplete = ( { control,...props } : Props ) => {
                     }}
                 />
             )}
-            onChange={(event, newValue: IUser | null) => {
+            onChange={(event, newValue: Comunas | null) => {
                 event.preventDefault();
-                onChange(newValue?.user_email??'')
+                onChange(newValue?.name??'')
             }}
             sx={{
                 "& .MuiAutocomplete-inputRoot": {
@@ -109,8 +98,8 @@ export const InputAutoComplete = ( { control,...props } : Props ) => {
                     color: "#f44336",
                 },
             }}
-            />
-        )}
-    />
+        />
+    )}
+/>
   )
 }

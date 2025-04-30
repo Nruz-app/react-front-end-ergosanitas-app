@@ -77,7 +77,7 @@ export const AgendaHoraForm = () => {
         icon: 'error',  
         title: 'Error Al Reservar Hora',
         text: 'Por Favor Ingrese todos los valores del formularios',
-        timer: 5000, // Cierra automáticamente después de 5 segundos
+        timer: 5000, 
         timerProgressBar: true,
       });
       return;
@@ -181,6 +181,7 @@ export const AgendaHoraForm = () => {
                                 defaultValue={defaultValue}
                                 helperText={helperText}
                                 disabled = {false}
+                                setValue = { setValue }
                             />
                         </Grid>
                     );
