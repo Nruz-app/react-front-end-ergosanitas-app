@@ -160,12 +160,12 @@ export const Navigation = () => {
                                         transition: 'all 0.3s ease-in-out',
                                         '&:hover': {
                                             backgroundColor: 'rgba(255, 255, 255, 0.2)', // Cambia el fondo al hacer hover
-                                            borderColor: 'primary.main', // Borde color primario al hacer hover
+                                            borderColor: '#ffff', // Borde color primario al hacer hover
                                         },
                                         '&.nav-active': {
-                                            color: 'primary.main',
+                                            color: '#ffff',
                                             backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo más oscuro si está activo
-                                            borderColor: 'primary.main', // Borde con color primario si está activo
+                                            borderColor: '#ffff', // Borde con color primario si está activo
                                         },
                                     }}
                                 >

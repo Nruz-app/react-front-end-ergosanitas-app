@@ -18,7 +18,7 @@ export const AgendarHoraTable = ( ) => {
     const [statusTable,setStatusTable] = useState(false);
     
     
-    const handleChangePage = (event: React.ChangeEvent<HTMLInputElement>, newPage: number) => {
+    const handleChangePage = (event: any, newPage: number) => {
         event.preventDefault();
         setPage(newPage);
     };

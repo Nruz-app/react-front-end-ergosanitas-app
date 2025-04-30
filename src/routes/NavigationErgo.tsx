@@ -201,12 +201,12 @@ export const NavigationErgo = () => {
                                             transition: 'all 0.3s ease-in-out',
                                             '&:hover': {
                                                 backgroundColor: 'rgba(255, 255, 255, 0.2)', // Cambia el fondo al hacer hover
-                                                borderColor: 'primary.main', // Cambia el color del borde al hacer hover
+                                                borderColor: 'primary.success', // Cambia el color del borde al hacer hover
                                             },
                                             '&.nav-active': {
-                                                color: 'primary.main',
+                                                color: 'primary.success',
                                                 backgroundColor: 'rgba(0, 0, 0, 0.4)', // Fondo más oscuro si está activo
-                                                borderColor: 'primary.main', // Borde con color primario si está activo
+                                                borderColor: 'primary.success', // Borde con color primario si está activo
                                             }
                                         }}
                                     >
@@ -241,12 +241,12 @@ export const NavigationErgo = () => {
                                                 transition: 'all 0.3s ease-in-out',
                                                 '&:hover': {
                                                     backgroundColor: 'rgba(255, 255, 255, 0.2)', // Cambia el fondo al hacer hover
-                                                    borderColor: 'primary.main', // Cambia el color del borde al hacer hover
+                                                    borderColor: '#ffff ', // Cambia el color del borde al hacer hover
                                                 },
                                                 '&.nav-active': {
-                                                    color: 'primary.main',
+                                                    color: '#ffff',
                                                     backgroundColor: 'rgba(0, 0, 0, 0.4)', // Fondo más oscuro si está activo
-                                                    borderColor: 'primary.main', // Borde con color primario si está activo
+                                                    borderColor: '#ffff', // Borde con color primario si está activo
                                                 }
                                             }}
                                         >

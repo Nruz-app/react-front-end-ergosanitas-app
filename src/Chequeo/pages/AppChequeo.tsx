@@ -31,7 +31,7 @@ const initial_value:formData = {
   url_pdf   : '' 
 }
 
-const initial_view = {
+const initial_view : IChequeo = {
   nombre                  : '',
   rut                     : '',
   fechaNacimiento         : '',
@@ -56,7 +56,9 @@ const initial_view = {
   imc_paciente            : '',
   status                  : 'ingresado',
   division_paciente       : '',
-  medio_pago_paciente     : ''
+  medio_pago_paciente     : '',
+  email_paciente         : '',
+  
 }
 
 
@@ -75,7 +77,7 @@ export const AppChequeo = () => {
   const [{status,rut_paciente,id_paciente,url_pdf},statusSet] = useState(initial_status);
   const [formData,formDataSet] = useState(initial_value);
 
-  const [chequeoView,setChequeoView] = useState(initial_view);
+  const [chequeoView,setChequeoView] = useState<IChequeo>(initial_view);
 
   const [collapsed, setCollapsed] = useState(isMobile);
 

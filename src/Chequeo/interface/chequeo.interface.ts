@@ -21,7 +21,7 @@ export interface IChequeo {
     enfermedadesAnteriores?  : string;
     Recuperacion?            : string;
     gradoIncidenciaPosterio? : string;
-    user_email?              : string;
+    user_email               : string;
     user_email_perfil?      : string; 
     sexo_paciente           : string;
     imc_paciente?           : string;
