@@ -16,25 +16,22 @@ interface Props {
     defaultValue? : string;
     helperText?   : string;
     validations?  : any;
+    perfil       : number; 
     values        : [];         
 }
 
 
-export const InputAutoComplete = ( { control,...props } : Props ) => {
+export const InputAutoComplete = ( { control,perfil = 3,...props } : Props ) => {
 
     const [selectValue,setSelectValue] = useState<IUser[]>(initialSelectValue);
     const [selectStatus,setSelectStatus] = useState(false);
-    
 
     const loadDataClub = async () => {
         setSelectStatus(false);
         const { getUserEmail } = await UseRegister();
-                    
-        const rowUserEmail = await getUserEmail();
-
+        const rowUserEmail = await getUserEmail(perfil);
         setSelectValue(rowUserEmail);
         setSelectStatus(true);
-        
     } 
 
     useEffect(() => {      

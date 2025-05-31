@@ -233,6 +233,7 @@ export const AgendaHoraForm = () => {
                   return ( 
                       <Grid item xs={12} sm={6} key={name} >
                         <InputAutoComplete
+                          perfil = { 3} 
                           control={control}
                           type={type}
                           name={name}
@@ -240,7 +241,9 @@ export const AgendaHoraForm = () => {
                           label={label}
                           defaultValue={defaultValue}
                           helperText={helperText} 
-                          values={ [] }                        />
+                          values={ [] } 
+                          
+                        />
                       </Grid>
                   )
                 }

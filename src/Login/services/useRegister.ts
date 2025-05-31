@@ -31,9 +31,9 @@ export const  UseRegister = async () => {
         return response;
     }
 
-    const getUserEmail =  async () : Promise<IUser[]> => {
+    const getUserEmail =  async (perfil : number) : Promise<IUser[]> => {
             
-        const response:IUser[] = await  apiAdapter.get(`${API}/auth-register/user_email`,10,0)
+        const response:IUser[] = await  apiAdapter.get(`${API}/auth-register/user_email/${perfil}`,10,0)
         return response;
     }
 

@@ -3,6 +3,7 @@ import { Box, Grid, Typography } from "@mui/material"
 import incidentesFormJson from '../config/incidentes-form.json';
 import Swal from 'sweetalert2';
 
+
 import { 
     InputText,
     InputSelect,
@@ -21,7 +22,7 @@ export const IncidentesForm = () => {
         const {  postIncidentesCreate } = await UseIncidentesService() ;
 
         const {nombres,edad,deporte,tipo_lesion,ubicacion,parte_cuerpo,descripcion,
-        primeros_auxilios,gravedad,estado} = control._formValues;
+        primeros_auxilios,gravedad,estado,user_email} = control._formValues;
 
         const response = await postIncidentesCreate({
             nombres,
@@ -33,7 +34,8 @@ export const IncidentesForm = () => {
             descripcion,
             primeros_auxilios,
             gravedad,
-            estado
+            estado,
+            user_email
         });
         if(response.status == "success"){
             Swal.fire({
@@ -121,7 +123,9 @@ export const IncidentesForm = () => {
                             label={label}
                             defaultValue={defaultValue}
                             helperText={helperText} 
-                            values={ [] }                        />
+                            values={ [] }   
+                            perfil = { 4 } 
+                        />
                         </Grid>
                     )
                     }
@@ -138,7 +142,6 @@ export const IncidentesForm = () => {
                         </Grid>
                     )
                     }
-
                     throw new Error(`El Type: ${type}, NO es Soportado`);
                 })
 

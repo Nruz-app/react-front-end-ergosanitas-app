@@ -16,7 +16,6 @@ export const  UseIncidentesService = async () => {
 
     const getIncidentesFindByUser =  async (user_email : string)  => {
 
-        console.log('user_email', user_email);
         const response:{status : string,message:string,data:IIncidentes[]} = await  apiAdapter.get(`${API}/incidencia-deportivos/find-by-user/${user_email}`,10,0)    
         return response.data
     }

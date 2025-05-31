@@ -133,6 +133,7 @@ export const AgendaChequeoForm = () => {
                   return ( 
                       <Grid item xs={12} sm={6} key={name} >
                         <InputAutoComplete
+                        perfil = { 3 }
                           control={control}
                           type={type}
                           name={name}

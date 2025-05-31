@@ -17,7 +17,7 @@ export const SelectClub = () => {
         setSelectStatus(false);
         const { getUserEmail } = await UseRegister();
                   
-        const rowUserEmail = await getUserEmail();
+        const rowUserEmail = await getUserEmail(3);
 
         setSelectValue(rowUserEmail);
         setSelectStatus(true);

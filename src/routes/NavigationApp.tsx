@@ -10,8 +10,6 @@ export const NavigationApp = () => {
 
   const { valid,user }  = useContext( LoginContext );
   
-  console.log('NavigationApp valid:', valid, 'user:', user);
-
   return (
     
     (!valid) ? 

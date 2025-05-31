@@ -35,7 +35,7 @@ export const SelectUser = ( { control,...props } : Props ) => {
     const loadDataClub = async () => {
         const { getUserEmail } = await UseRegister();
                     
-        const rowUserEmail = await getUserEmail();
+        const rowUserEmail = await getUserEmail(3);
 
         setSelectValue(rowUserEmail);
     
