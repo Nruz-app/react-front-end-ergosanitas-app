@@ -71,6 +71,10 @@
            {
             "value":"1",
             "nombre":"Administrador"
+            },
+            {
+            "value":"4",
+            "nombre":"Emergencia Deportiva"
             }
         ],
         "disabledText":true

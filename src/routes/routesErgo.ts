@@ -6,7 +6,7 @@ import { AppAgendarHoraPage } from '../AgendarHora/pages/';
 
 import { AppUrlPage } from '../Url/page';
 
-import { AppEstadisticasPages } from '../Estadisticas/pages';
+import { AppIncidentesPages } from '../Incidentes/';
 
 type JSXComponent = () => JSX.Element;
 
@@ -45,11 +45,11 @@ export const routesErgo:Route[] = [
         Component : AppUrlPage
     },
     {
-        name      : 'Estadisticas',
-        to        : '/Estadisticas',
-        path      : '/estadisticas/*',
+        name      : 'Incidentes',
+        to        : '/Incidentes',
+        path      : '/incidentes/*',
         perfil    : 'All', 
         status    : true,  
-        Component : AppEstadisticasPages
+        Component : AppIncidentesPages
     }
 ]

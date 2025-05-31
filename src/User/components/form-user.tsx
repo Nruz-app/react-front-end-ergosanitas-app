@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import formUserJson from '../config/custom-form.json';
 import { InputSelect, InputText } from './';
 import { ButtonsForm } from '../../components';
@@ -31,6 +31,21 @@ export const FormUser = () => {
 
     return (
     <Box sx={ { flexGrow: 1, py: 4, mx: "auto", maxWidth: "80%" } }>
+        <Typography
+            variant="h4"
+            align="center"
+            sx={{
+                fontFamily: 'cursive',
+                fontWeight: 'bold',
+                letterSpacing: '0.1rem',
+                textTransform: 'uppercase',
+                color: 'primary.main',
+                mb: 3,
+                animation: 'fadeInDownBig 1s ease-out' 
+            }}
+            >
+            Ingre Un Nuevo Perfil
+        </Typography>
         <form onSubmit={handleSubmit(onSubmit) } > 
             <Grid container justifyContent="center" spacing={3}>
             {

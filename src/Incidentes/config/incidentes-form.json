@@ -1,0 +1,301 @@
+[
+    {
+        "order"        : 1, 
+        "type"         : "text",
+        "name"         : "nombres",
+        "placeholder"  : "Luis Andres Medina",
+        "label"        : "Ingresa Nombre",
+        "helperText"   : "Ingrese el Nombre Complete",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Nombre es Requerido"
+            },
+            {
+                "type"    : "LETRAS",
+                "message" : "Solo se permiten letras para este campo"
+            }
+        ]     
+    },
+    {
+      "order":2,
+      "type":"number",
+      "name":"edad",
+      "placeholder":"20",
+      "label":"Ingresa Edad",
+      "helperText":"Ingrese el edad",
+      "defaultValue":"",
+      "value":"",
+      "disabledText":false,
+      "validations":[
+         {
+            "type":"required",
+            "message":"La Edad es Requerido"
+         },
+         {
+            "type":"MAX",
+            "value":100,
+            "message":"La edad debe ser menor a 100"
+         }
+      ]
+   },
+   {
+        "order"        : 3,
+        "type"         : "selected",
+        "name"         : "deporte",
+        "placeholder"  : "Futbol",
+        "label"        : "Seleccion el Deporte",
+        "helperText"   : "Seleccione algun tipo de Deporte",
+        "defaultValue" : "Futbol",
+        "values"       : [
+            {
+                "value" : "Futbol",
+                "nombre" : "Futbol"
+            },
+            {
+                "value" : "Voleibol",
+                "nombre" : "Voleibol"
+            },
+            {
+                "value" : "Baloncesto",
+                "nombre" : "Baloncesto"
+            },
+            {
+                "value" : "Atletismo",
+                "nombre" : "Atletismo"
+            },
+            {
+                "value" : "Tenis",
+                "nombre" : "Tenis"
+            },
+            {
+                "value" : "Rugby",
+                "nombre" : "Rugby"
+            },
+            {
+                "value" : "Otros",
+                "nombre" : "Otros"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Deporte es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 4,
+        "type"         : "selected",
+        "name"         : "tipo_lesion",
+        "placeholder"  : "Esguince",
+        "label"        : "Seleccion el Tipo Lesion",
+        "helperText"   : "Seleccione algun tipo de Tipo Lesion",
+        "defaultValue" : "Esguince",
+        "values"       : [
+            {
+                "value" : "Esguince",
+                "nombre" : "Esguince"
+            },
+            {
+                "value" : "Fractura",
+                "nombre" : "Fractura"
+            },
+            {
+                "value" : "Contusión",
+                "nombre" : "Contusión"
+            },
+            {
+                "value" : "Desgarro Muscular",
+                "nombre" : "Desgarro Muscular"
+            },
+            {
+                "value" : "Tendinitis",
+                "nombre" : "Tendinitis"
+            },
+            {
+                "value" : "Conmocion Cerebral",
+                "nombre" : "Conmocion Cerebral"
+            },
+            {
+                "value" : "Laceracion",
+                "nombre" : "Laceracion"
+            },
+            {
+                "value" : "Otros",
+                "nombre" : "Otros"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Tipo Lesion es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 5, 
+        "type"         : "text",
+        "name"         : "ubicacion",
+        "placeholder"  : "Cancha central",
+        "label"        : "Ingresa Ubicacion",
+        "helperText"   : "Ingrese el Ubicacion",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Ubicacion es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 6,
+        "type"         : "selected",
+        "name"         : "parte_cuerpo",
+        "placeholder"  : "Tobillo",
+        "label"        : "Seleccion el Parte Cuerpo",
+        "helperText"   : "Seleccione algun tipo de Parte Cuerpo",
+        "defaultValue" : "Tobillo",
+        "values"       : [
+            {
+                "value" : "Tobillo",
+                "nombre" : "Tobillo"
+            },
+            {
+                "value" : "Rodilla",
+                "nombre" : "Rodilla"
+            },
+            {
+                "value" : "Muslo",
+                "nombre" : "Muslo"
+            },
+            {
+                "value" : "Pierna",
+                "nombre" : "Pierna"
+            },
+            {
+                "value" : "Hombro",
+                "nombre" : "Hombro"
+            },
+            {
+                "value" : "Brazo",
+                "nombre" : "Brazo"
+            },
+            {
+                "value" : "Cabeza/Cuello",
+                "nombre" : "Cabeza/Cuello"
+            },
+            {
+                "value" : "Torso",
+                "nombre" : "Torso"
+            },
+            {
+                "value" : "Otra",
+                "nombre" : "Otra"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Parte Cuerpo es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 7, 
+        "type"         : "text",
+        "name"         : "descripcion",
+        "placeholder"  : "Descripcion del incidente",
+        "label"        : "Ingresa Descripcion",
+        "helperText"   : "Ingrese el Descripcion",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Descripcion es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 8, 
+        "type"         : "text",
+        "name"         : "primeros_auxilios",
+        "placeholder"  : "Aplicar hielo y reposo",
+        "label"        : "Ingresa Primeros Auxilios",
+        "helperText"   : "Ingrese el Primeros Auxilios",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Primeros Auxilios es Requerido"
+            }
+        ]     
+    },
+        {
+        "order"        : 9,
+        "type"         : "selected",
+        "name"         : "gravedad",
+        "placeholder"  : "Leve (sin tiempo fuera)",
+        "label"        : "Seleccion el Gravedad",
+        "helperText"   : "Seleccione algun tipo de Gravedad",
+        "defaultValue" : "Leve (sin tiempo fuera)",
+        "values"       : [
+            {
+                "value" : "Leve (sin tiempo fuera)",
+                "nombre" : "Leve (sin tiempo fuera)"
+            },
+            {
+                "value" : "Moderada (1-7 días fuera)",
+                "nombre" : "Moderada (1-7 días fuera)"
+            },
+            {
+                "value" : "Grave (8-28 días fuera)",
+                "nombre" : "Grave (8-28 días fuera)"
+            },
+            {
+                "value" : "Crítica (más de 28 días fuera)",
+                "nombre" : "Crítica (más de 28 días fuera)"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Gravedad es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 10,
+        "type"         : "selected",
+        "name"         : "estado",
+        "placeholder"  : "Pendiente de evaluacion",
+        "label"        : "Seleccion el Estado",
+        "helperText"   : "Seleccione algun tipo de Estado",
+        "defaultValue" : "Pendiente de evaluacion",
+        "values"       : [
+            {
+                "value" : "Pendiente de evaluacion",
+                "nombre" : "Pendiente de evaluacion"
+            },
+            {
+                "value" : "En tratamiento",
+                "nombre" : "En tratamiento"
+            },
+            {
+                "value" : "Recuperado",
+                "nombre" : "Recuperado"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Estado es Requerido"
+            }
+        ]      
+    }
+]
