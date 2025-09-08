@@ -2,7 +2,7 @@
     {
         "order"        : 1,
         "type"         : "AutoComplete",
-        "name"         : "user_email",
+        "name"         : "club_deportivo",
         "placeholder"  : "ergosanitas club sport",
         "label"        : "Ingrese un Club",
         "helperText"   : "Ingrese o Seleccione un Club Asociado",
@@ -16,7 +16,40 @@
         ]    
     },
     {
-        "order"        : 2, 
+        "order"        : 2,
+        "type"         : "selected",
+        "name"         : "liga",
+        "placeholder"  : "Magallanes Pudahuel",
+        "label"        : "Seleccion una Liga",
+        "helperText"   : "Seleccione una Liga",
+        "defaultValue" : "Magallanes Pudahuel",
+        "values"       : [
+            {
+                "value" : "Magallanes Pudahuel",
+                "nombre" : "Magallanes Pudahuel"
+            },
+            {
+                "value" : "Audax Huechuraba",
+                "nombre" : "Audax Huechuraba"
+            },
+            {
+                "value" : "Palestino Quilicura",
+                "nombre" : "Palestino Quilicura"
+            },
+            {
+                "value" : "Club intercolina",
+                "nombre" : "Club intercolina"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Deporte es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 3, 
         "type"         : "text",
         "name"         : "nombres",
         "placeholder"  : "Luis Andres Medina",
@@ -36,7 +69,7 @@
         ]     
     },
     {
-      "order":3,
+      "order":4,
       "type":"number",
       "name":"edad",
       "placeholder":"20",
@@ -58,7 +91,7 @@
       ]
    },
    {
-        "order"        : 4,
+        "order"        : 5,
         "type"         : "selected",
         "name"         : "deporte",
         "placeholder"  : "Futbol",
@@ -103,7 +136,48 @@
         ]      
     },
     {
-        "order"        : 5,
+        "order"        : 6,
+        "type"         : "selected",
+        "name"         : "categoria",
+        "placeholder"  : "Sub 18",
+        "label"        : "Seleccion una Categoria",
+        "helperText"   : "Seleccione una Categoria",
+        "defaultValue" : "Sub 14",
+        "values"       : [
+            {
+                "value" : "Sub 12",
+                "nombre" : "Sub 12"
+            },
+            {
+                "value" : "Sub 13",
+                "nombre" : "Sub 13"
+            },
+            {
+                "value" : "Sub 14",
+                "nombre" : "Sub 14"
+            },
+            {
+                "value" : "Sub 16",
+                "nombre" : "Sub 16"
+            },
+            {
+                "value" : "Sub 17",
+                "nombre" : "Sub 17"
+            },
+            {
+                "value" : "Sub 18",
+                "nombre" : "Sub 18"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Deporte es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 7,
         "type"         : "selected",
         "name"         : "tipo_lesion",
         "placeholder"  : "Esguince",
@@ -152,23 +226,7 @@
         ]      
     },
     {
-        "order"        : 6, 
-        "type"         : "text",
-        "name"         : "ubicacion",
-        "placeholder"  : "Cancha central",
-        "label"        : "Ingresa Ubicacion",
-        "helperText"   : "Ingrese el Ubicacion",
-        "defaultValue" : "",
-        "value"        : "",
-        "validations" : [
-            {
-                "type"    : "required",
-                "message" : "El Ubicacion es Requerido"
-            }
-        ]     
-    },
-    {
-        "order"        : 7,
+        "order"        : 8,
         "type"         : "selected",
         "name"         : "parte_cuerpo",
         "placeholder"  : "Tobillo",
@@ -221,7 +279,7 @@
         ]      
     },
     {
-        "order"        : 8, 
+        "order"        : 9, 
         "type"         : "text",
         "name"         : "descripcion",
         "placeholder"  : "Descripcion del incidente",
@@ -232,7 +290,7 @@
         "validations" : []     
     },
     {
-        "order"        : 9, 
+        "order"        : 10, 
         "type"         : "text",
         "name"         : "primeros_auxilios",
         "placeholder"  : "Aplicar hielo y reposo",
@@ -243,7 +301,7 @@
         "validations" : []     
     },
         {
-        "order"        : 10,
+        "order"        : 11,
         "type"         : "selected",
         "name"         : "gravedad",
         "placeholder"  : "Leve (sin tiempo fuera)",
@@ -276,7 +334,7 @@
         ]      
     },
     {
-        "order"        : 11,
+        "order"        : 13,
         "type"         : "selected",
         "name"         : "estado",
         "placeholder"  : "Pendiente de evaluacion",

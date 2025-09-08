@@ -12,17 +12,22 @@ import {
     ButtonsForm
 } from '../../components/';
 import { UseIncidentesService } from '../services/use-incidentes.service';
+import { useContext } from 'react';
+import { LoginContext } from "../../common/context";
+
 
 export const IncidentesForm = () => {
 
+    const { user }  = useContext( LoginContext );
     const { control,handleSubmit,setValue } = useFormIncidentes();
+
 
     const onSubmit = async () => {
 
         const {  postIncidentesCreate } = await UseIncidentesService() ;
 
         const {nombres,edad,deporte,tipo_lesion,ubicacion,parte_cuerpo,descripcion,
-        primeros_auxilios,gravedad,estado,user_email} = control._formValues;
+        primeros_auxilios,gravedad,estado,club_deportivo,liga,categoria} = control._formValues;
 
         const response = await postIncidentesCreate({
             nombres,
@@ -35,7 +40,10 @@ export const IncidentesForm = () => {
             primeros_auxilios,
             gravedad,
             estado,
-            user_email
+            club_deportivo,
+            liga,
+            user_email : user.user_email,
+            categoria
         });
         if(response.status == "success"){
             Swal.fire({
