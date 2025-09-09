@@ -10,6 +10,7 @@ export const  UseIncidentesService = async () => {
     
     const postIncidentesCreate =  async (incidentes : IIncidentes)  => {
 
+        console.log(incidentes);
         const response:{status : string,message:string,data:number} = 
             await  apiAdapter.post(`${API}/incidencia-deportivos/create`,incidentes);
         return response;

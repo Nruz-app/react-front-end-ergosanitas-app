@@ -26,8 +26,10 @@ export const IncidentesForm = () => {
 
         const {  postIncidentesCreate } = await UseIncidentesService() ;
 
-        const {nombres,edad,deporte,tipo_lesion,ubicacion,parte_cuerpo,descripcion,
+        const {nombres,edad,deporte,tipo_lesion,parte_cuerpo,descripcion,
         primeros_auxilios,gravedad,estado,club_deportivo,liga,categoria} = control._formValues;
+        const ubicacion = "-";    
+
 
         const response = await postIncidentesCreate({
             nombres,
