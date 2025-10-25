@@ -10,7 +10,6 @@ export const  UseIncidentesService = async () => {
     
     const postIncidentesCreate =  async (incidentes : IIncidentes)  => {
 
-        console.log(incidentes);
         const response:{status : string,message:string,data:number} = 
             await  apiAdapter.post(`${API}/incidencia-deportivos/create`,incidentes);
         return response;
@@ -40,6 +39,18 @@ export const  UseIncidentesService = async () => {
         return response.data;
     }
 
+    const getIncidentesLesionFrecuente =  async (user_email : string)  => {
+
+        const response:{status : string,message:string,data: {tipo_lesion:string,cantidad:number}} = await  apiAdapter.get(`${API}/incidencia-deportivos/lesion-frecuente/${user_email}`,10,0)    
+        return response.data;
+    }
+
+    const getIncidentesLigaCasos =  async (user_email : string)  => {
+
+        const response:{status : string,message:string,data: {liga:string,cantidad:number}} = await  apiAdapter.get(`${API}/incidencia-deportivos/liga-casos/${user_email}`,10,0)    
+        return response.data;
+    }
+
     const SpEstadisticaLiga =  async (user_email : string)  => {
 
         const response:Liga = await  apiAdapter.get(`${API}/incidencia-deportivos/sp_estadistica_liga/${user_email}`,10,0)    
@@ -52,13 +63,38 @@ export const  UseIncidentesService = async () => {
         return response.data;
     }
 
+    const SpEstadisticaLesiones =  async (user_email : string)  => {
+
+        const response:Categoria = await  apiAdapter.get(`${API}/incidencia-deportivos/sp_estadistica_lesiones/${user_email}`,10,0)    
+        return response.data;
+    }
+
+    const SpEstadisticaParteCuerpo  =  async (user_email : string)  => {
+
+        const response:Categoria = await  apiAdapter.get(`${API}/incidencia-deportivos/sp_estadistica_parte_cuerpo/${user_email}`,10,0)    
+        return response.data;
+    }
+
+    const SpEstadisticaLesionesFechas =  async (user_email : string)  => {
+
+        const response:Categoria = await  apiAdapter.get(`${API}/incidencia-deportivos/sp_estadistica_lesiones_fechas/${user_email}`,10,0)    
+        return response.data;
+    }
+
+    
+
     return { 
         postIncidentesCreate,
         getIncidentesFindByUser,
         getIncidentesCountUser,
         getIncidentesGravedadUser,
         getIncidentesLigaUser,
+        getIncidentesLesionFrecuente,
+        getIncidentesLigaCasos,
         SpEstadisticaLiga,
-        SpEstadisticaCategoria
+        SpEstadisticaCategoria,
+        SpEstadisticaLesiones,
+        SpEstadisticaParteCuerpo,
+        SpEstadisticaLesionesFechas
     }
 }

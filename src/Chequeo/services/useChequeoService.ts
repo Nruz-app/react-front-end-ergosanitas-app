@@ -3,6 +3,7 @@ import { LikeTextState } from '../context/likeText/LikeTextProvider';
 import { IChequeo,EstadoGenerales, ResponseCargaMasica } from '../interface';
 
 import { type formData } from '../interface/';
+import { IData } from '../interface/chequeo.interface';
 
 export const  UseChequeoService = async () => {
 
@@ -122,10 +123,11 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
-    const postChequeoSearch =  async (likeTextState : LikeTextState,user_email : string) : Promise<IChequeo[]> => {
+    const postChequeoSearch =  async (likeTextState : LikeTextState,user_email : string,
+        limit : number = 20,page:number = 1) : Promise<IData> => {
 
-        const response:IChequeo[] = await  
-        apiAdapter.post(`${API}/chequeo-cardiovascular/search-chequeo`,{
+        const response:IData = await  
+        apiAdapter.post(`${API}/chequeo-cardiovascular/search-chequeo?limit=${limit}&page=${page}`,{
             ...likeTextState,user_email});
             
         return response;

@@ -4,6 +4,7 @@
 export interface IIncidentes {
     id?               : number; 
     nombres           : string;
+    rut_paciente      : string;
     edad              : string;
     deporte           : string;
     tipo_lesion       : string;

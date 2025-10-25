@@ -39,7 +39,7 @@ export const ChequeoTable = (  {
 
    const navigate = useNavigate();
 
-   const { onSetLikeText,...likeTextContext }  = useContext( LikeTextContext );
+   const { ...likeTextContext }  = useContext( LikeTextContext );
    const { user }  = useContext( LoginContext );
    const { user_email,user_perfil }  = user;
 
@@ -48,21 +48,22 @@ export const ChequeoTable = (  {
   
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [total, setTotal] = useState(0);
 
     const [rowTable,setRowTable] = useState(rows);
     const [statusTable,setStatusTable] = useState(false);
+
     
     const rowTableCache = new Map<string, IChequeo[]>([[user_email, rowTable]]);
 
-    const handleChangePage = (event:  React.MouseEvent<HTMLButtonElement>| null, newPage: number) => {
-        event?.preventDefault();
-        setPage(newPage);
+    const handleChangePage = (_: unknown, newPage: number) => {
+      setPage(newPage);
     };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    }
 
     const handleOpenModal = (rut: string, nombre : string) => {
 
@@ -169,6 +170,8 @@ export const ChequeoTable = (  {
       }
     }
 
+    
+
     const handRedictCertificado  = async (rut_paciente : string,id_paciente : number) => {
       navigate(`/certificado/${rut_paciente}/${id_paciente}`);
     } 
@@ -182,22 +185,31 @@ export const ChequeoTable = (  {
         .join(' ');    // Junta las palabras nuevamente con espacios
     };
 
-    const fetchAgendaHoras = useCallback(async (): Promise<void> => {
+    const fetchAgendaHoras = useCallback(
+      async (pageNumber = 1, limit = 10): Promise<void> => {
+        try {
+          setStatusTable(false);
+          const { postChequeoSearch } = await UseChequeoService(); 
 
-      setStatusTable(false);
-      const { postChequeoSearch } = await UseChequeoService(); 
-      const responseTable:IChequeo[] = await postChequeoSearch(likeTextContext,user_email);
-      rowTableCache.set(user_email, responseTable);
-      setRowTable([...responseTable]);
-      setStatusTable(true);
+          const response = await postChequeoSearch(likeTextContext, user_email, limit, pageNumber);
+          setRowTable(response.data); 
+          setTotal(response.total);
+         // setRowsPerPage(response.per_page);
+        } catch (error) {
+          console.error("Error al cargar chequeos:", error);
+        } finally {
+          setStatusTable(true);
+        }
+      },
+      [likeTextContext, user_email]
+    )
+
+      useEffect(() => {
+        fetchAgendaHoras(page + 1, rowsPerPage);
+      }, [page, rowsPerPage, likeTextContext.fechaCalendar,
+       likeTextContext.textoValue, likeTextContext.selectClub]);
+
       
-    }, [onSetLikeText]);
-
-    useEffect(() => {
-      fetchAgendaHoras();
-    }, [onSetLikeText]);
-
-
       return (
         <Box sx={{ flexGrow: 1 }} >
          
@@ -285,8 +297,7 @@ export const ChequeoTable = (  {
       
                 (statusTable) &&
       
-                  rowTable.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
+                  rowTable.map((row, index) => {
       
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
@@ -300,7 +311,7 @@ export const ChequeoTable = (  {
                                 <TableCell >
                                   {
                                     (user_perfil =="Administrador") 
-                                    ? row.fecha_atencion
+                                    ? row.fecha_atencion?? row.created_at
                                     : row.created_at
                                   }</TableCell>
                                 <TableCell>{row.user_email.split('@')[0]}</TableCell>
@@ -448,13 +459,13 @@ export const ChequeoTable = (  {
               </Table>      
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rowTable.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+              component="div"
+              count={total}
+               rowsPerPage={Number(rowsPerPage)}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[20]}
             />
           </Box>  
         </Box>

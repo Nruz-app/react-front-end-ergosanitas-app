@@ -59,9 +59,9 @@
         "order"        : 4,
         "type"         : "text",
         "name"         : "fechaNacimiento",
-        "placeholder"  : "20/10/2000",
-        "label"        : "Ingresa Fecha Nacimiento",
-        "helperText"   : "Ingrese el Fecha Nacimiento del usuario",
+        "placeholder"  : "20/06/2000",
+        "label"        : "Ingresa Fecha Nacimiento (dd/mm/aaaa)",
+        "helperText"   : "Ingrese el Fecha Nacimiento del usuario (dd/mm/aaaa)",
         "defaultValue" : "",
         "value"        : "",
         "validations" : [

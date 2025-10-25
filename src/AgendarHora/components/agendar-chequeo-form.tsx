@@ -43,15 +43,16 @@ export const AgendaChequeoForm = () => {
 
     const {rut_paciente,nombre_paciente,email_paciente,sexo_paciente,fechaNacimiento,user_email} = control._formValues;
 
-    const dateNacimiento = new Date(fechaNacimiento);
+    const [dia, mes, anio] = fechaNacimiento.split('/').map(Number);
+    const dateNacimiento = new Date(anio, mes - 1, dia); 
+
     const today = new Date();
 
     let edad = today.getFullYear() - dateNacimiento.getFullYear();
-    const mes = today.getMonth() - dateNacimiento.getMonth();
+    const diffMes = today.getMonth() - dateNacimiento.getMonth();
 
-    // Si la fecha de hoy es antes del cumpleaños de este año, resta 1 de la edad
-    if (mes < 0 || (mes === 0 && today.getDate() < dateNacimiento.getDate())) {
-          edad--;
+    if (diffMes < 0 || (diffMes === 0 && today.getDate() < dateNacimiento.getDate())) {
+      edad--;
     }
 
     const chequeo: IChequeo = {

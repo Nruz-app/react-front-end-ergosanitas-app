@@ -1,4 +1,11 @@
 
+export interface IData {
+    data : IChequeo[];
+    current_page: number,
+    per_page: number,
+    total: number,
+
+}
 
 export interface IChequeo {
     id?                      : number;

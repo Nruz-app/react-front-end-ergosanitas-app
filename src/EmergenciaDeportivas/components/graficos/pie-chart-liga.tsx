@@ -1,6 +1,6 @@
-import { useCallback,  useContext,  useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { LoginContext } from '../../../common/context';
-import { UseIncidentesService } from "../../../Incidentes/services/use-incidentes.service"; // Adjust the path as needed
+import { UseIncidentesService } from "../../../Incidentes/services/use-incidentes.service"; 
 import { type LigaData } from '../../interfaces/liga.interface';
 import { Pie } from 'react-chartjs-2';
 import {
@@ -11,67 +11,115 @@ import {
   ArcElement,
   CategoryScale,
   LinearScale,
-} from 'chart.js'
+  ChartOptions,
+  ChartData,
+} from 'chart.js';
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
-import { isMobile } from 'react-device-detect';
 
-const initialValues : LigaData = {
-    labels: [],
-    data: [],
+const initialValues: LigaData = {
+  labels: [],
+  data: [],
 }
 
 // Registrar los componentes de Chart.js
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
-
 export const PieChartLiga = () => {
 
-    const { user }  = useContext( LoginContext );
-    const { user_email }  = user;
-        
-    const [liga,setLiga] = useState<LigaData>(initialValues);
+  const { user } = useContext(LoginContext);
+  const { user_email } = user;
+
+  const [liga, setLiga] = useState<LigaData>(initialValues);
+
+  const fetchSpEstadisticaLiga = useCallback(async (): Promise<void> => {
+    try {
+     const {  SpEstadisticaLiga } = await UseIncidentesService() ;
+      const response = await SpEstadisticaLiga(user_email);
+      setLiga(response);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [user_email]);
+
+  useEffect(() => {
+    fetchSpEstadisticaLiga();
+  }, [fetchSpEstadisticaLiga]);
 
 
-    const fetchSpEstadisticaLiga = useCallback(async (): Promise<void> => {
-        
-            const {  SpEstadisticaLiga } = await UseIncidentesService() ;
-            const response = await SpEstadisticaLiga(user_email);
-            setLiga(response);
-    }, []);
-    
-
-    useEffect(() => {
-            fetchSpEstadisticaLiga();
-    }, [user_email]);
-
-
-    const data = {
-        labels: liga.labels, 
-        datasets: [
-          {
-            label: "# CLUB",
-            data: liga.data,
-            backgroundColor: [
+  const data: ChartData<'pie', number[], string> = {
+    labels: liga.labels,
+    datasets: [
+      {
+        label: 'Lesiones por Club',
+        data: liga.data,
+        backgroundColor: [
               "#FFCC80", 
               "#81C784",
               "#f39c12", 
               "#FF8A80",
-            ],
-            borderColor: "#ffffff",
-            borderWidth: 2,
-          },
         ],
-    };
+        borderColor: '#fff',
+        borderWidth: 3,
+        hoverOffset: 12,
+      },
+    ],
+  }
 
+  const options: ChartOptions<'pie'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom' as const,
+        labels: {
+          font: {
+            size: 13,
+            family: 'Poppins, Roboto, sans-serif',
+            weight: 800,
+          },
+          color: '#444',
+          padding: 15,
+          usePointStyle: true,
+        },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: { size: 13, weight: 'bold' },
+        bodyFont: { size: 12 },
+        cornerRadius: 8,
+        padding: 10,
+      },
+    },
+    animation: {
+      animateScale: true,
+      animateRotate: true,
+      duration: 1200,
+      easing: 'easeOutQuart' as const,
+    },
+  };
 
-    return (
-        <Box sx={{  justifyContent: "center", alignItems: "center", p: 3 }}>
+  return (
+   <Box
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 4,
+        p: 3,
+      }}
+    > 
+ {/* GRÁFICO */}
         <Card
           sx={{
-            borderRadius: 6,
-            boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
-            backgroundColor: "white",
+            borderRadius: 5,
+            boxShadow: "0 10px 28px rgba(0,0,0,0.12)",
+            background: "linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%)",
             textAlign: "center",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              transform: "translateY(-4px)",
+              boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+            },
           }}
         >
           <CardHeader
@@ -80,52 +128,41 @@ export const PieChartLiga = () => {
                 variant="h5"
                 sx={{
                   fontWeight: 700,
-                  color: "primary.main",
-                  letterSpacing: "0.5px",
+                  color: "#1565c0",
+                  letterSpacing: 0.5,
+                  fontFamily: "Poppins, Roboto, sans-serif",
                 }}
               >
-                Lesiones por Club
+              Lesiones por Club
               </Typography>
             }
           />
-          <CardContent>
+
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              p: 3,
+            }}
+          >
             <Box
               sx={{
+                height: 320,
+                width: 380,
+                p: 2,
+                backgroundColor: "#fff",
+                borderRadius: 3,
+                boxShadow: "inset 0 0 10px rgba(0,0,0,0.05)",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                p: 3,
-                backgroundColor: "#f9f9f9",
-                borderRadius: 4,
-                
               }}
             >
-              <Pie
-                data={data}
-                options={{
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: "top",
-                      labels: {
-                        font: {
-                          size: 12,
-                          family: "Roboto",
-                          weight: "bold",
-                        },
-                        color: "#333",
-                        padding: 15,
-                      },
-                    },
-                  },
-                }}
-                style={isMobile ? undefined : { width: "100%", height: "200px" } }
-              />
+              <Pie data={data} options={options} />
             </Box>
           </CardContent>
         </Card>
       </Box>
-      
-    )
-
-}
+  );
+};

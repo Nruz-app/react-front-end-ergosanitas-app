@@ -17,6 +17,22 @@
     },
     {
         "order"        : 2,
+        "type"         : "text",
+        "name"         : "rut_paciente",
+        "placeholder"  : "1111111-k",
+        "label"        : "Ingresa Rut",
+        "helperText"   : "Ingrese el RUT con guin y sin puntos",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "REGEX_RUN",
+                "message" : "El Formato de RUT no es válido"
+            }
+        ]      
+    },
+    {
+        "order"        : 3,
         "type"         : "selected",
         "name"         : "liga",
         "placeholder"  : "Magallanes Pudahuel",
@@ -49,7 +65,7 @@
         ]      
     },
     {
-        "order"        : 3, 
+        "order"        : 4, 
         "type"         : "text",
         "name"         : "nombres",
         "placeholder"  : "Luis Andres Medina",
@@ -69,7 +85,7 @@
         ]     
     },
     {
-      "order":4,
+      "order":5,
       "type":"number",
       "name":"edad",
       "placeholder":"20",
@@ -91,7 +107,7 @@
       ]
    },
    {
-        "order"        : 5,
+        "order"        : 6,
         "type"         : "selected",
         "name"         : "deporte",
         "placeholder"  : "Futbol",
@@ -136,7 +152,7 @@
         ]      
     },
     {
-        "order"        : 6,
+        "order"        : 7,
         "type"         : "selected",
         "name"         : "categoria",
         "placeholder"  : "Sub 18",
@@ -177,7 +193,7 @@
         ]      
     },
     {
-        "order"        : 7,
+        "order"        : 8,
         "type"         : "selected",
         "name"         : "tipo_lesion",
         "placeholder"  : "Esguince",
@@ -226,7 +242,7 @@
         ]      
     },
     {
-        "order"        : 8,
+        "order"        : 9,
         "type"         : "selected",
         "name"         : "parte_cuerpo",
         "placeholder"  : "Tobillo",
@@ -279,7 +295,7 @@
         ]      
     },
     {
-        "order"        : 9, 
+        "order"        : 10, 
         "type"         : "text",
         "name"         : "descripcion",
         "placeholder"  : "Descripcion del incidente",
@@ -290,7 +306,7 @@
         "validations" : []     
     },
     {
-        "order"        : 10, 
+        "order"        : 11, 
         "type"         : "text",
         "name"         : "primeros_auxilios",
         "placeholder"  : "Aplicar hielo y reposo",
@@ -301,7 +317,7 @@
         "validations" : []     
     },
         {
-        "order"        : 11,
+        "order"        : 12,
         "type"         : "selected",
         "name"         : "gravedad",
         "placeholder"  : "Leve (sin tiempo fuera)",

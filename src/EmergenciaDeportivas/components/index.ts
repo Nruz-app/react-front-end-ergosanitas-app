@@ -7,3 +7,10 @@ export { TableEm } from './table/table-em';
 export { PieChartLiga } from './graficos/pie-chart-liga';
 
 export { BarCategoria } from './graficos/bar-categoria';
+
+export { BarLesiones } from './graficos/bar-lesiones';
+
+export { PieChartParteCuerpo } from './graficos/pie-parte-cuerpo';  
+
+export { BarLesionesFecha } from './graficos/bar-lesiones-fecha';
+
