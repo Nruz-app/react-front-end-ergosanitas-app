@@ -37,5 +37,23 @@ export const  UseRegister = async () => {
         return response;
     }
 
-    return { authRegister,loadLogoUser,getUserEmail };
+    const createUser = async ( user_email:string , user_password:string,rut_paciente:string ) => {
+
+        console.log('createUser',user_email,user_password,rut_paciente);
+
+        const response:IResponseUser = await  apiAdapter.post(`${API}/login/create-user`,{
+            user_email,
+            user_password,
+            rut_paciente
+        });
+        return response;
+    }
+
+    const validaUser = async ( rut_paciente:string ) => {
+
+        const response:{status:number,message:string} = await  apiAdapter.get(`${API}/certificado/validar/${rut_paciente}`,10,0);
+        return response.status;
+    }
+
+    return { authRegister,loadLogoUser,getUserEmail,createUser,validaUser };
 }

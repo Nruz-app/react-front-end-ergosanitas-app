@@ -1,6 +1,7 @@
 [
     {
-        "order"        : 2, 
+        "order"        : 1,
+        "formMode"     : "login",
         "type"         : "text",
         "name"         : "userName",
         "placeholder"  : "ergosanitas@ergosanitas.com",
@@ -17,6 +18,7 @@
     },
     {
         "order"        : 2, 
+        "formMode"     : "login",
         "type"         : "password",
         "name"         : "password",
         "placeholder"  : "**************",
@@ -30,5 +32,64 @@
                 "message" : "La Password es Requerido"
             }
         ]     
+    },
+    {
+        "order"        : 1,
+        "formMode"     : "register",
+        "type"         : "text",
+        "name"         : "rut_paciente",
+        "placeholder"  : "1111111-k",
+        "label"        : "Ingresa Rut",
+        "helperText"   : "Ingrese el RUT con guin y sin puntos",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Rut es Requerido"
+            },
+            {
+                "type"    : "REGEX_RUN",
+                "message" : "El Formato de RUT no es válido"
+            }
+        ]      
+    },
+    {
+        "order"        : 2, 
+        "formMode"     : "register",
+        "type"         : "password",
+        "name"         : "password",
+        "placeholder"  : "**************",
+        "label"        : "Ingresa password",
+        "helperText"   : "Ingrese la contraseña",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Password es Requerido"
+            }
+        ]     
+    },
+    {
+        "order"        : 3,
+        "formMode"     : "register",
+        "type"         : "text",
+        "name"         : "userName",
+        "placeholder"  : "email@gmail.com",
+        "label"        : "Ingrese un Email",
+        "helperText"   : "Ingrese una direccion de correo electronico",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Email es Requerido"
+            },
+            {
+                "type"    : "email",
+                "message" : "El Formato de Email no es Válido"
+            }
+        ]      
     }
 ]

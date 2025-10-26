@@ -8,6 +8,7 @@ export interface IResponseUser {
 
 export interface IUser {
     user_id        : number;
+    rut_paciente?  : string;
     user_email     : string;
     user_name      : string;
     user_perfil    : string;

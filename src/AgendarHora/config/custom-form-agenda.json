@@ -88,7 +88,7 @@
         "validations" : [
             {
                 "type"    : "required",
-                "message" : "El Rut es Requerido"
+                "message" : "El Email es Requerido"
             },
             {
                 "type"    : "email",

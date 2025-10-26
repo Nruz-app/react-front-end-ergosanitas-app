@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { Box, Button, Grid, Modal, Typography } from "@mui/material"
+import { useContext, useState } from "react";
+import { Box, Button, Grid, Link, Modal, Typography } from "@mui/material"
 import { LoginContext, ModalContext } from "../../common/context";
 
 import { useUser } from '../hooks';
@@ -32,7 +32,8 @@ export const Register = () => {
   const { ValidLogin }  = useContext( LoginContext );
 
   const { isDateModalOpen,onOpenModal }  = useContext( ModalContext );
-  
+  const [formMode, setFormMode] = useState<"login" | "register">("login");  
+
   const handleClose = () => {
     onOpenModal(false);
   }
@@ -40,41 +41,46 @@ export const Register = () => {
   
   const onSubmit = async () => {
 
-      const {userName,password}  = control._formValues;
+      
       let errorLogin = false;
-      const {  authRegister } = await UseRegister() ;
-
+      
       try {
 
+        const {  authRegister,createUser,validaUser } = await UseRegister() ;
+        const {userName,password,rut_paciente}  = control._formValues;
         onOpenModal(false);
+        let responseUser:IResponseUser;
 
-        const responseUser:IResponseUser = await authRegister(userName,password);
-    
-        if(responseUser.success){
-    
-          const user:IUser = responseUser.user;
-    
-          ValidLogin (true,user);
-        
+        const statusExiste = await validaUser(rut_paciente);
+          
+        if(formMode === "register" && statusExiste == 200) {
+
+           responseUser = await createUser(userName,password,rut_paciente);
         }
         else {
-          errorLogin = true;
-          ValidLogin (false,{
-            user_id        : 0,
-            user_email     : '',
-            user_name      : '',
-            user_perfil    : '',
-            user_logo      : ''
+          responseUser = await authRegister(userName,password);
+    
+        }
+
+        if(responseUser.success){
+      
+            const user:IUser = responseUser.user;
+            setFormMode("login");
+            ValidLogin (true,user);
+          
+          }
+          else {
+            errorLogin = true;
+            ValidLogin (false,{
+              user_id        : 0,
+              user_email     : '',
+              user_name      : '',
+              user_perfil    : '',
+              user_logo      : ''
           });
         }
 
-      }
-      catch(error) {
-        console.log('Error Login',error);
-        errorLogin=true;
-      }
-
-      if(errorLogin) {
+        if(errorLogin) {
 
         Swal.fire({
           title: '⚠️ Error de Ingreso',
@@ -96,7 +102,12 @@ export const Register = () => {
         });
 
       }
-     
+      }
+      catch(error) {
+        console.log('Error Login',error);
+        errorLogin=true;
+      }
+
     }
     
   
@@ -140,12 +151,14 @@ export const Register = () => {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
-              {userForm
-                .sort((a, b) => a.order - b.order)
-                .map(({ type, name, placeholder, label, defaultValue, helperText }) => {
+              {
+              userForm
+                  .filter(field => field.formMode === formMode) // 1️⃣ filtra por el modo actual
+                  .sort((a, b) => a.order - b.order) 
+                  .map(({ type, name, placeholder, label, defaultValue, helperText }) => {
                   if (type === 'text' || type === 'password') {
                     return (
-                      <Grid item xs={12} sm={6} key={name}>
+                      <Grid item xs={12} sm={formMode === "register" ? 12 : 6 } key={name}>
                         <InputText
                           control={control}
                           type={type}
@@ -162,6 +175,25 @@ export const Register = () => {
                   throw new Error(`El Type: ${type}, NO es Soportado`);
                 })}
             </Grid>
+
+
+            {/* Enlace debajo de los campos */}
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              <Link
+                component="button" // hace que se comporte como botón
+                variant="body2"    // tamaño y estilo del texto
+                onClick={() => setFormMode(formMode === "register" ? "login" : "register")}
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'primary.main',
+                  '&:hover': { textDecoration: 'underline', color: 'primary.dark' },
+                }}
+              >
+                {formMode === "register" 
+                  ? "¿Ya tienes cuenta? Inicia sesión" 
+                  : "¿No tienes cuenta? Regístrate"}
+              </Link>
+            </Box>
 
             <Grid
               container
