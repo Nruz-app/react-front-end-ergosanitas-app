@@ -7,6 +7,13 @@ export interface IData {
 
 }
 
+export interface IDataAll {
+    data : IChequeo[];
+    status: number,
+    mensaje: string
+
+}
+
 export interface IChequeo {
     id?                      : number;
     nombre                   : string;
@@ -32,7 +39,7 @@ export interface IChequeo {
     user_email_perfil?      : string; 
     sexo_paciente           : string;
     imc_paciente?           : string;
-    status                  : string;
+    status?                 : string;
     division_paciente?      : string;
     medio_pago_paciente?    : string;
     estado_paciente?        : string;

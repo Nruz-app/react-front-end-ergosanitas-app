@@ -183,7 +183,7 @@ export const ChequeoTable = (  {
         .split(' ')    // Divide el texto en palabras
         .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
         .join(' ');    // Junta las palabras nuevamente con espacios
-    };
+    }
 
     const fetchAgendaHoras = useCallback(
       async (pageNumber = 1, limit = 10): Promise<void> => {
@@ -215,7 +215,7 @@ export const ChequeoTable = (  {
          
           <FilterTable />
 
-          <ExportExcel rowsFiles = { rowTable } />
+          <ExportExcel />
 
           <Box sx={{  padding: 2, marginBottom: 1 }}>   
           <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3,  margin: "auto" }}>
@@ -392,7 +392,7 @@ export const ChequeoTable = (  {
                                     variant="outlined"
                                     style={{ color: "primary", borderColor: "primary" }}
                                     onClick={() => handleUpdatePacienteH(row.rut,row.id!)}
-                                    title= {'Revision Medica - '+row.rut }
+                                    title= {'Revision Medica - '+row.status}
                                   >
                                     <FavoriteIcon
                                       style={{ 
