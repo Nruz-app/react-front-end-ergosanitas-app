@@ -69,8 +69,8 @@ export const StatisticsGlobal = () => {
         {/* Tarjeta con información */}
         <Card
             sx={{
-            width: "100%",
-            maxWidth: 600,
+            width: "90%",
+            //maxWidth: 600,
             boxShadow: 3,
             borderRadius: 3,
             p: 2,

@@ -5,7 +5,7 @@ import { TabPanel } from "../components/tabs/TabPanel";
 import React, { useContext, useState } from "react";
 
 import { Chequeo } from "./Chequeo";
-import { ChequeoTable,FormUpload,ChequeoView,CargaMasiva, CalculadoraImc } from "../components";
+import { ChequeoTable,FormUpload,ChequeoView,CargaMasiva, CalculadoraImc, PerfilUsuario } from "../components";
 import { IChequeo, type formData } from '../interface/';
 
 import { LikeTextProvider } from "../context";
@@ -260,6 +260,11 @@ export const AppChequeo = () => {
           {
             <Tab label={ collapsed? "CQ" : "Calculos QTc"} {...a11yProps(4) } />
           }
+          {
+            (user_perfil == "Colegios") && (
+              <Tab label={ collapsed? "PU" : "Perfil Usuario"} {...a11yProps(5) } />
+            )
+          }
           </Tabs>
           {
             (user_perfil == "Colegios") ? (
@@ -348,6 +353,9 @@ export const AppChequeo = () => {
           }
           <TabPanel value={value} index={4}>
             <CalculadoraImc />
+          </TabPanel>
+          <TabPanel value={value} index={5}>
+            <PerfilUsuario />
           </TabPanel>
         </Box>
       </Box>

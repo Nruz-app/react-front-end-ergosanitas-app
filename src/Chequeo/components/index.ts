@@ -38,3 +38,5 @@ export { LoadingTable } from './loading-table/loading-table';
 export * from './form-perfil/form-perfil';
 
 export * from './modal/modal.component';
+
+export { PerfilUsuario } from './perfil-usuario/perfil-usuario';
