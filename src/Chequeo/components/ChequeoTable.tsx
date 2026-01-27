@@ -13,6 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import { useNavigate } from "react-router-dom";
 import { type formData } from '../interface/';
@@ -118,6 +119,15 @@ export const ChequeoTable = (  {
       const {  chequeoPDF } = await UseChequeoService() ;
       await chequeoPDF(id_paciente);
           
+    }
+    const handleClickDowloadECG = (rut: string) => {
+      const url = `https://ergosanitas.com/BackEnd/public/Certificado/${rut}.pdf`;
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ECG_${rut}.pdf`;
+      link.target = '_blank';
+      link.click();
     }
 
     const handleUpdatePaciente = async(rut_paciente : string,id_paciente : number) => {
@@ -407,11 +417,27 @@ export const ChequeoTable = (  {
                               }
                               {
                                  (user_perfil != "Usuario") && (
+                                  <>
                                     <DownloadPDF
                                       handleClickDowload={handleClickDowload}
                                       id_paciente={row.id!}
                                       title= {'Descargar PDF - '+row.rut }
                                     />
+                                    <Button
+                                      variant="outlined"
+                                      style={{ color: "primary", borderColor: "primary" }}
+                                      title={`Descargar ECG - ${row.rut}`}
+                                      onClick={() => handleClickDowloadECG(row.rut!)}
+                                    >
+                                      <AssignmentTurnedInIcon
+                                        style={{
+                                          backgroundColor: 'blue',
+                                          color: 'white',
+                                          borderRadius: '50%'
+                                        }}
+                                      />
+                                    </Button>
+                                  </>
                                  )
                               }
                               {
