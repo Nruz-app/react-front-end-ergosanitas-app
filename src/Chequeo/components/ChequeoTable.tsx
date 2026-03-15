@@ -120,14 +120,23 @@ export const ChequeoTable = (  {
       await chequeoPDF(id_paciente);
           
     }
-    const handleClickDowloadECG = (rut: string) => {
-      const url = `https://ergosanitas.com/BackEnd/public/Certificado/${rut}.pdf`;
+    const handleClickDowloadECG = async (rut: string, id_paciente: number) => {
+
+      const { pathUrlCertificado } = await UseChequeoService();
+      const response = await pathUrlCertificado(rut, id_paciente);
+
+      if (!response || response.status !== 200 || !response.url_pdf) {
+        alert("No se encontró el certificado");
+        return;
+      }
 
       const link = document.createElement('a');
-      link.href = url;
-      link.download = `ECG_${rut}.pdf`;
+      link.href = response.url_pdf;
+      link.download = `ECG_${response.titulo}.pdf`;
       link.target = '_blank';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     }
 
     const handleUpdatePaciente = async(rut_paciente : string,id_paciente : number) => {
@@ -427,7 +436,7 @@ export const ChequeoTable = (  {
                                       variant="outlined"
                                       style={{ color: "primary", borderColor: "primary" }}
                                       title={`Descargar ECG - ${row.rut}`}
-                                      onClick={() => handleClickDowloadECG(row.rut!)}
+                                      onClick={() => handleClickDowloadECG(row.rut!,row.id!)}
                                     >
                                       <AssignmentTurnedInIcon
                                         style={{

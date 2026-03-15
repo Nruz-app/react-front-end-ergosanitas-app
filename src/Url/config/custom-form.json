@@ -30,5 +30,30 @@
                 "message" : "El Nombre es Requerido"
             }
         ]     
+    },
+    {
+        "order"        : 3,
+        "type"         : "derivado_medico",
+        "name"         : "Derivado Medico",
+        "placeholder"  : "NO",
+        "label"        : "Seleccion el derivado medico",
+        "helperText"   : "Seleccione algun tipo de Derivado Medico",
+        "defaultValue" : "NO",
+        "values"       : [
+            {
+                "value" : "NO",
+                "nombre" : "NO"
+            },
+            {
+                "value" : "SI",
+                "nombre" : "SI"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Derivado Medico es Requerido"
+            }
+        ]      
     }
-]
+]   

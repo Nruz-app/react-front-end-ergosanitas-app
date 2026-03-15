@@ -1,6 +1,6 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
 import { LikeTextState } from '../context/likeText/LikeTextProvider';
-import { IChequeo,EstadoGenerales, ResponseCargaMasica } from '../interface';
+import { IChequeo,EstadoGenerales, ResponseCargaMasica, IUrlCertificado } from '../interface';
 
 import { type formData } from '../interface/';
 import { IData, IDataAll } from '../interface/chequeo.interface';
@@ -140,6 +140,16 @@ export const  UseChequeoService = async () => {
             
         return response.data;
     }
+
+    const pathUrlCertificado = async (rut?: string, id_paciente?: number) : Promise<IUrlCertificado> => {
+        const response:IUrlCertificado = await apiAdapter.post(`${API}/certificado/path-url`, {
+            rut_paciente: rut,
+            id_paciente: id_paciente
+        });
+
+        return response;
+    }
+
    
     return { 
         getChequeo,
@@ -159,7 +169,8 @@ export const  UseChequeoService = async () => {
         postCargaMasiva,
         postFilterClubDeportivo,
         postChequeoSearch,
-        postChequeoAll
+        postChequeoAll,
+        pathUrlCertificado
     };
     
 }

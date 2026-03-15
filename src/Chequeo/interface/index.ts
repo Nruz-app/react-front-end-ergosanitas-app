@@ -10,3 +10,5 @@ export type { CalculadoraIMC } from './calculadora-imc';
 export type { EstadoGenerales } from './estado-generales.interface';
 
 export type { ResponseCargaMasica } from './response-carga-masiva';
+
+export type { IUrlCertificado} from './url-certificado';

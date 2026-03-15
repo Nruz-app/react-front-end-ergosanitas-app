@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Stack } from "@mui/material"
-import { InputText } from '../../components/';
+import { InputSelect, InputText } from '../../components/';
 import certificadoJson from '../config/custom-form.json';
 
 import { UseCertificadoService } from '../services/UseCertificadoService';
@@ -32,14 +32,14 @@ export const CertificadoForm = () => {
 
         if (!selectedFile) return false;
 
-        const { rut_paciente,nombre_paciente } = control._formValues;
+        const { rut_paciente,nombre_paciente,derivado_medico } = control._formValues;
 
        const {  postCerticadoSave } = await UseCertificadoService() ;
 
 
        const response =  await postCerticadoSave(
               selectedFile!,
-              {rut_paciente,id_paciente,nombre_paciente});
+              {rut_paciente,id_paciente,nombre_paciente,derivado_medico});
 
        if(response) {
 
@@ -67,7 +67,7 @@ export const CertificadoForm = () => {
       <Grid container justifyContent="center" spacing={3}>
         {
             certificadoJson.sort((a, b) => a.order - b.order)
-            .map(({ type, name, placeholder, label, defaultValue, helperText }) => {
+            .map(({ type, name, placeholder, label, defaultValue, helperText,values }) => {
                 if (type === 'text' || type === 'number') {
 
                     if(name =="rut_paciente") {
@@ -88,6 +88,26 @@ export const CertificadoForm = () => {
                             />
                         </Grid>
                     );
+                }
+                else if (type === 'selected') {
+                
+                    return ( 
+                        <Grid item xs={12} sm={6} key={name} >
+                          <InputSelect
+                              control={control}
+                              type={type}
+                              name={name}
+                              placeholder={placeholder}
+                              label={label}
+                              defaultValue={defaultValue}
+                              helperText={helperText} 
+                              values = { values! }
+                              disabled = { false }
+                              setValue= { () => {} }
+                          />
+                        </Grid>
+                    )
+                  
                 }
                 
 
