@@ -28,6 +28,7 @@ const initial_view: IChequeo = {
 export const AppChequeo = () => {
   const { user } = useContext(LoginContext);
   const { user_perfil } = user;
+
   const [value, setValue] = useState(0);
   const [{ status, rut_paciente, id_paciente, url_pdf }, statusSet] = useState(initial_status);
   const [formData, formDataSet] = useState(initial_value);
@@ -37,7 +38,7 @@ export const AppChequeo = () => {
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
 
-    // CORRECCIÓN: Si es Tab "Agregar Deportista" (index 2) se muestra Chequeo
+    // Ajuste de status según perfil y tab seleccionado
     if (user_perfil === "Colegios" && newValue === 2) {
       statusSet({ status: 1, rut_paciente: '', id_paciente: 0, url_pdf: '' });
     } else {
@@ -99,6 +100,7 @@ export const AppChequeo = () => {
               }
             }}
           >
+            {/* Tabs según perfil */}
             {user_perfil === "Colegios" && [
               <Tab key={0} label={menuOpen ? "Home" : "H"} {...a11yProps(0)} />,
               <Tab key={1} label={menuOpen ? "Lista de Deportista" : "L"} {...a11yProps(1)} />,
@@ -107,12 +109,8 @@ export const AppChequeo = () => {
             ]}
 
             {user_perfil === "Medicos" && [
-              <Tab
-                key={0}
-                label={menuOpen ? "Lista de Deportista" : "L"}
-                {...a11yProps(0)}
-                onClick={() => { if (status === 3) statusSet({ status: 0, rut_paciente, id_paciente, url_pdf }); }}
-              />
+              <Tab key={0} label={menuOpen ? "Lista de Deportista" : "L"} {...a11yProps(0)} />,
+              <Tab key={1} label={menuOpen ? "Perfil Usuario" : "U"} {...a11yProps(1)} />
             ]}
 
             {user_perfil !== "Colegios" && user_perfil !== "Medicos" && [
@@ -128,39 +126,43 @@ export const AppChequeo = () => {
           <Box sx={{ flex: 1, padding: 2 }}>
             {/* PERFIL MEDICOS */}
             {user_perfil === "Medicos" && (
-              <TabPanel value={value} index={0}>
-                {status === 3 ? (
-                  <ElectroCardiograma rut_paciente={rut_paciente} id_paciente={id_paciente} url_pdf={url_pdf} handleUpdateStatus={handleUpdateStatus} />
-                ) : (
-                  <LikeTextProvider>
-                    <ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} />
-                  </LikeTextProvider>
-                )}
-              </TabPanel>
+              <>
+                <TabPanel value={value} index={0}>
+                  {status === 3 ? (
+                    <ElectroCardiograma rut_paciente={rut_paciente} id_paciente={id_paciente} url_pdf={url_pdf} handleUpdateStatus={handleUpdateStatus} />
+                  ) : (
+                    <LikeTextProvider>
+                      <ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} />
+                    </LikeTextProvider>
+                  )}
+                </TabPanel>
+                <TabPanel value={value} index={1}><PerfilUsuario /></TabPanel>
+              </>
             )}
 
             {/* PERFIL COLEGIOS */}
-            {user_perfil === "Colegios" && <>
-              <TabPanel value={value} index={0}><ModalBarProvider><HomePage /></ModalBarProvider></TabPanel>
-              <TabPanel value={value} index={1}><LikeTextProvider><ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} /></LikeTextProvider></TabPanel>
-              <TabPanel value={value} index={2}>
-                <Chequeo rut_paciente={rut_paciente} id_paciente={id_paciente} handleUpdateStatus={handleUpdateStatus} />
-              </TabPanel>
-              <TabPanel value={value} index={3}><CargaMasiva /></TabPanel>
-            </>}
+            {user_perfil === "Colegios" && (
+              <>
+                <TabPanel value={value} index={0}><ModalBarProvider><HomePage /></ModalBarProvider></TabPanel>
+                <TabPanel value={value} index={1}><LikeTextProvider><ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} /></LikeTextProvider></TabPanel>
+                <TabPanel value={value} index={2}><Chequeo rut_paciente={rut_paciente} id_paciente={id_paciente} handleUpdateStatus={handleUpdateStatus} /></TabPanel>
+                <TabPanel value={value} index={3}><CargaMasiva /></TabPanel>
+              </>
+            )}
 
             {/* OTROS PERFILES */}
-            {user_perfil !== "Colegios" && user_perfil !== "Medicos" && <>
-              <TabPanel value={value} index={0}><LikeTextProvider><ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} /></LikeTextProvider></TabPanel>
-              <TabPanel value={value} index={1}>
-                {status !== 3 ? <Chequeo rut_paciente={rut_paciente} id_paciente={id_paciente} handleUpdateStatus={handleUpdateStatus} /> : <ElectroCardiograma rut_paciente={rut_paciente} id_paciente={id_paciente} url_pdf={url_pdf} handleUpdateStatus={handleUpdateStatus} />}
-              </TabPanel>
-              <TabPanel value={value} index={2}><CargaMasiva /></TabPanel>
-              <TabPanel value={value} index={3}><FormUser /></TabPanel>
-            </>}
-
-            <TabPanel value={value} index={4}><CalculadoraImc /></TabPanel>
-            <TabPanel value={value} index={5}><PerfilUsuario /></TabPanel>
+            {user_perfil !== "Colegios" && user_perfil !== "Medicos" && (
+              <>
+                <TabPanel value={value} index={0}><LikeTextProvider><ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} /></LikeTextProvider></TabPanel>
+                <TabPanel value={value} index={1}>
+                  {status !== 3 ? <Chequeo rut_paciente={rut_paciente} id_paciente={id_paciente} handleUpdateStatus={handleUpdateStatus} /> : <ElectroCardiograma rut_paciente={rut_paciente} id_paciente={id_paciente} url_pdf={url_pdf} handleUpdateStatus={handleUpdateStatus} />}
+                </TabPanel>
+                <TabPanel value={value} index={2}><CargaMasiva /></TabPanel>
+                <TabPanel value={value} index={3}><FormUser /></TabPanel>
+                <TabPanel value={4} index={4}><CalculadoraImc /></TabPanel>
+                <TabPanel value={5} index={5}><PerfilUsuario /></TabPanel>
+              </>
+            )}
           </Box>
 
         </Box>

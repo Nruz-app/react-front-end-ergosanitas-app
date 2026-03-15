@@ -93,8 +93,8 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
                 {Object.entries({
                   Nombre: response.nombre,
                   Edad: response.edad,
-                  "Presión Arterial": `${response.presionArterial}/${response.presion_sistolica}`,
-                  "Glicemia Capilar": response.gradoIncidenciaPosterio,
+                  "Presión Arterial": `${response.presion_sistolica}/${response.presionArterial}`,
+                  "Glicemia Capilar": response.hemoglucotest,
                   Peso: `${response.peso} kg`,
                   Altura: `${response.estatura} cm`,
                   IMC: response.imc_paciente,

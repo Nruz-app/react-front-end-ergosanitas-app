@@ -145,6 +145,7 @@ export const ChequeoTable = ({
         const { postChequeoSearch } = await UseChequeoService(); 
 
         const response = await postChequeoSearch(likeTextContext, user_email, limit, pageNumber);
+        console.log(response.data);
         setRowTable(response.data); 
         setTotal(response.total);
 
@@ -192,9 +193,12 @@ export const ChequeoTable = ({
               <TableCell sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
                 { isAdmin ? 'Fech Aten' : 'Fech Crea'}
               </TableCell>
-              <TableCell sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
-                User
-              </TableCell>
+              {!isMedico && (
+                <TableCell sx={{ color: "white", bgcolor: "#1976d2", fontSize: "20px" }}>
+                  User
+                </TableCell>
+              )}
+              
               </>
             )}
 
@@ -226,12 +230,16 @@ export const ChequeoTable = ({
 
               {!isColegio && (
                 <>
-                <TableCell>
-                  {(isAdmin || isMedico) 
-                    ? (row.fecha_atencion ?? row.created_at)
-                    : row.created_at}
-                </TableCell>
-                <TableCell>{row.user_email.split('@')[0]}</TableCell>
+                  {/* Fecha */}
+                  <TableCell>
+                    {(isAdmin || isMedico) 
+                      ? (row.fecha_atencion ?? row.created_at)
+                      : row.created_at}
+                  </TableCell>
+
+                  {!isMedico && (
+                    <TableCell>{row.user_email.split('@')[0]}</TableCell>
+                  )}
                 </>
               )}
 
@@ -266,7 +274,7 @@ export const ChequeoTable = ({
               )}
 
               {/* PDF */}
-              {!isUsuario && (
+              {!isUsuario && !isMedico && (
                 <>
                   <DownloadPDF
                     handleClickDowload={handleClickDowload}
