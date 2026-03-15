@@ -33,7 +33,7 @@
     },
     {
         "order"        : 3,
-        "type"         : "derivado_medico",
+        "type"         : "selected",
         "name"         : "Derivado Medico",
         "placeholder"  : "NO",
         "label"        : "Seleccion el derivado medico",
