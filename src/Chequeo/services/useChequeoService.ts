@@ -86,7 +86,7 @@ export const  UseChequeoService = async () => {
         return response;
     }
     const getDeleteById =  async (id : number)  => {
-        
+        alert(id)
         const response = await  apiAdapter.delete(`${API}/chequeo-cardiovascular/${id}`)
         return response;
     }

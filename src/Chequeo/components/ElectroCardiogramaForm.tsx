@@ -1,198 +1,209 @@
-import { Box, Grid } from "@mui/material"
-
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import electroCardiogramaJson from '../config/electro-form.json';
 import { ButtonsForm, InputSelect, InputText } from "../../components";
 import useElectroCardiograma from "../hooks/useElectroCardiograma";
-
 import Swal from 'sweetalert2';
 import { UseElectroCardiogranaService } from "../services/useElectroCardiogranaService";
+import { useEffect, useState } from "react";
 
 interface Props {
-  rut_paciente : string;
-  id_paciente  : number;
-  url_pdf?     : string; 
-  handleUpdateStatus : (status : number, rut_paciente : string,id_paciente : number) => void;
+  rut_paciente: string;
+  id_paciente: number;
+  url_pdf?: string;
+  handleUpdateStatus: (status: number, rut_paciente: string, id_paciente: number) => void;
 }
 
+export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, handleUpdateStatus }: Props) => {
+  const { control, handleSubmit, setValue, errors } = useElectroCardiograma();
+  const [response, setResponse] = useState<any>(null);
 
-export const ElectroCardiogramaForm = ({rut_paciente,url_pdf,id_paciente,handleUpdateStatus}:Props) => {
-
-  const { control,handleSubmit,setValue,errors } = useElectroCardiograma(); 
-  let extension = 'jpg'  
-
+  let extension = 'jpg';
   if (url_pdf) {
     const path = url_pdf.split('.');
-    extension = path[path.length - 1]; // Accede al último elemento del array 
+    extension = path[path.length - 1].toLowerCase();
   }
- 
+
+  useEffect(() => {
+    if (!id_paciente) return;
+
+    const fetchChequeoCardiovascular = async () => {
+      try {
+        const { getChequeoCardiovascular } = await UseElectroCardiogranaService();
+        const resp = await getChequeoCardiovascular(id_paciente);
+        setResponse(resp);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchChequeoCardiovascular();
+  }, [id_paciente]);
+
   const onSubmit = async () => {
-
-    let existeError = false;
-
-    if(errors) {
-
-        const { estado_paciente,
-            frecuencia_cardiaca_paciente,
-            derivacion_paciente,
-            observacion_paciente,
-            imc_paciente } = errors;
-  
-        if(estado_paciente && frecuencia_cardiaca_paciente 
-            && derivacion_paciente && observacion_paciente && imc_paciente ){
-            existeError = true;  
-        }
-    }
-    if(existeError) {
-    
-          Swal.fire({
-            // Tipo de alerta (puede ser 'success', 'error', 'warning', 'info', 'question')
-            icon: 'error',  
-            title: 'Error Al Ingresar Electrocardiograma',
-            text: 'Por Favor Ingrese todos los valores del formularios',
-            timer: 3000,
-            timerProgressBar: true,
-          });
-          return;
-    
+    const hasErrors = errors && Object.values(errors).some(Boolean);
+    if (hasErrors) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al ingresar Electrocardiograma',
+        text: 'Por favor ingrese todos los valores del formulario',
+        timer: 3000,
+        timerProgressBar: true,
+      });
+      return;
     }
 
+    const { postCreateElectroCardiograma } = await UseElectroCardiogranaService();
+    const { estado_paciente, frecuencia_cardiaca_paciente, derivacion_paciente, observacion_paciente, imc_paciente } = control._formValues || {};
 
-    const {  postCreateElectroCardiograma } = await UseElectroCardiogranaService() ;
-
-    const { estado_paciente,
-        frecuencia_cardiaca_paciente,
-        derivacion_paciente,
-        observacion_paciente,
-        imc_paciente } = control._formValues || {};
-
-    const response = await postCreateElectroCardiograma({
-        rut_paciente,
-        id_paciente,
-        estado_paciente,
-        frecuencia_cardiaca_paciente,
-        derivacion_paciente,
-        observacion_paciente,
-        imc_paciente
+    const resp = await postCreateElectroCardiograma({
+      rut_paciente,
+      id_paciente,
+      estado_paciente,
+      frecuencia_cardiaca_paciente,
+      derivacion_paciente,
+      observacion_paciente,
+      imc_paciente
     });
 
-    if(response) {
-               
-             Swal.fire(
-               'Paciente Listo Para el Chequeo',
-               `El Paciente ${rut_paciente} Fue Creado con Exito!!!`,
-               'success');
-   
-             control._reset();  
-             //navigate('/chequeo');
-             handleUpdateStatus(0,'',0);
-    }    
-  }
-
+    if (resp) {
+      Swal.fire('Paciente Listo', `El paciente ${rut_paciente} fue ingresado con éxito`, 'success');
+      control._reset();
+      handleUpdateStatus(0, '', 0);
+    }
+  };
 
   return (
-    <Box sx={ { flexGrow: 1, py: 4,  maxWidth: "95%" } }>
-        <Grid container spacing={4} alignItems="center"> 
-        
-        {/* Imagen a la izquierda */}
+    <Box sx={{ flexGrow: 1, maxWidth: "100%" }}>
+
+      {/* CABECERA PACIENTE */}
+      {response && (
+        <Paper
+          elevation={3}
+          sx={{
+            mb: 4,
+            p: 3,
+            borderRadius: 3,
+            background: "linear-gradient(135deg,#f5f7fa 0%,#e4ecf7 100%)",
+          }}
+        >
+          <Grid container spacing={2} alignItems="center">
+            {/** Datos principales en filas responsivas */}
+            <Grid item xs={12}>
+              <Grid container spacing={2}>
+                {Object.entries({
+                  Nombre: response.nombre,
+                  Edad: response.edad,
+                  "Presión Arterial": `${response.presionArterial}/${response.presion_sistolica}`,
+                  "Glicemia Capilar": response.gradoIncidenciaPosterio,
+                  Peso: `${response.peso} kg`,
+                  Altura: `${response.estatura} cm`,
+                  IMC: response.imc_paciente,
+                  "Enfermedades Crónicas": response.enfermedadesCronicas,
+                  Medicamentos: response.medicamentosDiarios
+                }).map(([label, value]) => (
+                  <Grid item xs={12} sm={6} md={3} key={label}>
+                    <Typography variant="caption" color="textSecondary">{label}</Typography>
+                    <Typography variant="subtitle1" fontWeight="bold" noWrap>{value}</Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Paper>
+      )}
+
+      <Grid container spacing={4} alignItems="flex-start" justifyContent="center">
+        {/* PDF / Imagen */}
         <Grid item xs={12} md={8} sx={{ textAlign: "center" }}>
-        {
-            (extension =='pdf') ? (
-                <iframe 
-                    src={url_pdf} 
-                    style={{
-                        width: '100%',
-                        height: '500px', 
-                        border: 'none', 
-                        borderRadius: '10px', 
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                        display: 'block', // Esto asegura que el iframe se comporte como un bloque
-                        marginLeft: '0', // Alinea el iframe a la izquierda
-                        marginRight: 'auto', // Elimina margen a la derecha
-                    }} 
-                    title="Vista previa del PDF"
-                />)
-            : (
-                <img 
-                    src={url_pdf} 
-                    alt="Vista previa" 
-                    style={{ 
-                        maxWidth: "100%", 
-                        height: "auto", 
-                        borderRadius: "15px", // Borde más redondeado para un look más suave
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Sombra más sutil y difusa
-                        transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out", // Transición para un efecto suave al pasar el mouse
-                        cursor: "pointer", // Cambia el cursor para indicar que la imagen es interactiva
-                        margin: "20px 0", // Añade un poco de espacio alrededor de la imagen
-                    }} 
-                />
-   
-            )
-        }  
+          <Paper
+            elevation={3}
+            sx={{
+              borderRadius: 3,
+              overflow: 'hidden',
+              height: '80vh',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+            }}
+          >
+            {extension === 'pdf' ? (
+              <iframe
+                src={url_pdf}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                }}
+                title="Vista previa del PDF"
+              />
+            ) : (
+              <img
+                src={url_pdf}
+                alt="Vista previa"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain',
+                }}
+              />
+            )}
+          </Paper>
         </Grid>
 
-        {/* Formulario a la derecha */}
+        {/* FORMULARIO */}
         <Grid item xs={12} md={4}>
-            <form onSubmit={handleSubmit(onSubmit) }> 
-            <Grid container justifyContent="center" spacing={3}>
-                {
-                    electroCardiogramaJson.sort((a, b) => a.order - b.order)
-                    .map(({ type, name, placeholder, label, defaultValue, helperText,values,multiline }) => {
-
-                        if (type === 'text' || type === 'number') {
-
-
-                            return (
-                                <Grid item xs={12} sm={12} key={name}>
-                                    <InputText
-                                        control={control}
-                                        type={type}
-                                        name={name}
-                                        placeholder={placeholder}
-                                        label={label}
-                                        defaultValue={defaultValue}
-                                        helperText={helperText}
-                                        disabled = {false}
-                                        multiline = { multiline }
-                                    />
-                                </Grid>
-                            );
-                        }
-                        else if (type === 'selected') {
-        
-                            return ( 
-                                <Grid item xs={12} sm={12} key={name} >
-                                    <InputSelect
-                                        control={control}
-                                        type={type}
-                                        name={name}
-                                        placeholder={placeholder}
-                                        label={label}
-                                        defaultValue={defaultValue}
-                                        helperText={helperText} 
-                                        values = { values! }
-                                        setValue = { setValue }
-                                        disabled = { false }
-                                    />
-                                </Grid>
-                            )
-                        }
-                        throw new Error(`El Type: ${type}, NO es Soportado`);
-                    })
-                }
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={3}>
+              {electroCardiogramaJson
+                .sort((a, b) => a.order - b.order)
+                .map(({ type, name, placeholder, label, defaultValue, helperText, values, multiline }) => {
+                  if (type === 'text' || type === 'number') {
+                    return (
+                      <Grid item xs={12} key={name}>
+                        <InputText
+                          control={control}
+                          type={type}
+                          name={name}
+                          placeholder={placeholder}
+                          label={label}
+                          defaultValue={defaultValue}
+                          helperText={helperText}
+                          disabled={false}
+                          multiline={multiline}
+                        />
+                      </Grid>
+                    );
+                  } else if (type === 'selected') {
+                    return (
+                      <Grid item xs={12} key={name}>
+                        <InputSelect
+                          control={control}
+                          type={type}
+                          name={name}
+                          placeholder={placeholder}
+                          label={label}
+                          defaultValue={defaultValue}
+                          helperText={helperText}
+                          values={values!}
+                          setValue={setValue}
+                          disabled={false}
+                        />
+                      </Grid>
+                    );
+                  }
+                  throw new Error(`El type: ${type} no es soportado`);
+                })}
             </Grid>
-            <Grid container justifyContent="center">
-                <Grid item xs={12} sm={6}  >
-                    <ButtonsForm 
-                        onSubmit = { onSubmit }
-                        title = "Ingresar"
-                        btnStatus = { false }
-                    />
-                </Grid>
 
+            <Grid container justifyContent="center" sx={{ mt: 3 }}>
+              <Grid item xs={12} sm={6}>
+                <ButtonsForm onSubmit={onSubmit} title="Ingresar" btnStatus={false} />
+              </Grid>
             </Grid>
-            </form>
+          </form>
         </Grid>
-        </Grid>
+      </Grid>
     </Box>
-  )
-}
+  );
+};

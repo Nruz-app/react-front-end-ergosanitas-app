@@ -1,5 +1,5 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
-import { IElectroCardiograma } from '../interface';
+import { IChequeo, IElectroCardiograma } from '../interface';
 
 export const  UseElectroCardiogranaService = async () => {
 
@@ -15,7 +15,12 @@ export const  UseElectroCardiogranaService = async () => {
 
     }
 
+    const getChequeoCardiovascular = async (id_paciente: number): Promise<IChequeo> => {
+        const response: IChequeo = await apiAdapter.get(`${API}/chequeo-cardiovascular/${id_paciente}`, 10, 0);
+        return response;
+    }
+
     return {
-        postCreateElectroCardiograma
+        postCreateElectroCardiograma,getChequeoCardiovascular
     }
 }
