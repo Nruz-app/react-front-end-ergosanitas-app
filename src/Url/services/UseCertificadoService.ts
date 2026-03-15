@@ -18,7 +18,7 @@ export const  UseCertificadoService = async () => {
         uploadData.append('id_paciente', certificado.id_paciente!);
         uploadData.append('nombre_paciente', certificado.nombre_paciente);
         uploadData.append('derivado_medico', certificado.derivado_medico);
-        console.log('Upload Data:', uploadData);
+        console.log('certificado:', certificado.derivado_medico);
         const response = await  apiAdapter.post(`${API}/certificado/save-url`,uploadData);
         return response;
     }

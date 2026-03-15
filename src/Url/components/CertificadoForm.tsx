@@ -33,10 +33,8 @@ export const CertificadoForm = () => {
         if (!selectedFile) return false;
 
         const { rut_paciente,nombre_paciente,derivado_medico } = control._formValues;
+        const {  postCerticadoSave } = await UseCertificadoService() ;
 
-       const {  postCerticadoSave } = await UseCertificadoService() ;
-
-        
        const response =  await postCerticadoSave(
               selectedFile!,
               {rut_paciente,id_paciente,nombre_paciente,derivado_medico});
