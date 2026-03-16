@@ -4,8 +4,8 @@ import { LazyExoticComponent } from 'react';
 import { HomePage } from '../Home/pages';
 import { AppCertificadoPage } from '../Certificados/pages/';
 import { AppAgendarHoraPage } from '../AgendarHora/pages/';
-import { AppAsistenteVirtualPage } from '../AsistenteVirtual/pages';
-import { MapsPage } from '../Maps/pages';
+//import { AppAsistenteVirtualPage } from '../AsistenteVirtual/pages';
+//import { MapsPage } from '../Maps/pages';
 //import { AppServiciosPage } from '../Servicios/pages';
 
 
@@ -37,27 +37,5 @@ export const routes:Route[] = [
         to        : '/certificados',
         path      : '/certificados/*',
         Component : AppCertificadoPage
-    },
-    {
-        name      : 'Asistente',
-        to        : '/asistenteVirtual',
-        path      : '/asistenteVirtual/*',
-        Component : AppAsistenteVirtualPage
-    },
-    {
-        name      : 'Mapas',
-        to        : '/maps',
-        path      : '/maps/*',
-        Component : MapsPage
     }
 ]
-/*
-export const routes:Route[] = [
-    {
-        name      : 'Servicios',
-        to        : '/servicios',
-        path      : '/servicios/*',
-        Component : AppServiciosPage
-    }
-]
-*/
