@@ -153,14 +153,20 @@ export const AppChequeo = () => {
             {/* OTROS PERFILES */}
             {user_perfil !== "Colegios" && user_perfil !== "Medicos" && (
               <>
-                <TabPanel value={value} index={0}><LikeTextProvider><ChequeoTable handleFormData={handleFormData} handleUpdateStatus={handleUpdateStatus} handleViewData={handleViewData} /></LikeTextProvider></TabPanel>
+                <TabPanel value={value} index={0}>
+                  <LikeTextProvider>
+                    <ChequeoTable handleFormData={handleFormData} 
+                    handleUpdateStatus={handleUpdateStatus} 
+                    handleViewData={handleViewData} />
+                    </LikeTextProvider>
+                  </TabPanel>
                 <TabPanel value={value} index={1}>
                   {status !== 3 ? <Chequeo rut_paciente={rut_paciente} id_paciente={id_paciente} handleUpdateStatus={handleUpdateStatus} /> : <ElectroCardiograma rut_paciente={rut_paciente} id_paciente={id_paciente} url_pdf={url_pdf} handleUpdateStatus={handleUpdateStatus} />}
                 </TabPanel>
                 <TabPanel value={value} index={2}><CargaMasiva /></TabPanel>
                 <TabPanel value={value} index={3}><FormUser /></TabPanel>
-                <TabPanel value={4} index={4}><CalculadoraImc /></TabPanel>
-                <TabPanel value={5} index={5}><PerfilUsuario /></TabPanel>
+                <TabPanel value={value} index={4}><CalculadoraImc /></TabPanel>
+                <TabPanel value={value} index={5}><PerfilUsuario /></TabPanel>
               </>
             )}
           </Box>
