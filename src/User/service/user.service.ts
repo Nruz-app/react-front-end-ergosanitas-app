@@ -24,9 +24,18 @@ export const  UserService = async () => {
         return response;
     }
 
+    const PostUserErgoPass = async (ergo_pass : string,email_user : string)  => {
+
+        const response : {success: boolean, message: string}  = 
+            await  apiAdapter.put(`${API}/user-update-ergo-pass`,{ergo_pass,email_user})
+
+        return response;
+    }
+
     return { 
         PostUserSave,
-        PostUserPassword
+        PostUserPassword,
+        PostUserErgoPass
     }
 
 }

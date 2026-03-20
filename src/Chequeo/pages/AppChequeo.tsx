@@ -14,7 +14,13 @@ import { HomePage } from "./Home-page";
 import { ModalBarProvider } from "../context/modal-bar/Modal-bar-Provider";
 import { FormUser } from "../../User";
 
+import HomeIcon from '@mui/icons-material/Home';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 
 const initial_status = { status: 0, rut_paciente: '', id_paciente: 0, url_pdf: '' };
@@ -36,7 +42,6 @@ export const AppChequeo = () => {
   const [{ status, rut_paciente, id_paciente, url_pdf }, statusSet] = useState(initial_status);
   const [formData, formDataSet] = useState(initial_value);
   const [chequeoView, setChequeoView] = useState<IChequeo>(initial_view);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -90,19 +95,17 @@ const handleUpdateStatus = async (status: number, rut_paciente: string, id_pacie
             variant="scrollable"
             value={value}
             onChange={handleChange}
-            onMouseEnter={() => setMenuOpen(true)}
-            onMouseLeave={() => setMenuOpen(false)}
             sx={{
-              width: menuOpen ? 400 : 60,
-              transition: "width 0.3s ease",
+              width: 70,
               borderRight: 1,
               borderColor: 'divider',
               bgcolor: '#ffffff',
               '& .MuiTab-root': {
                 minHeight: 60,
-                fontSize: 14,
-                justifyContent: menuOpen ? 'flex-start' : 'center',
-                paddingLeft: menuOpen ? 3 : 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                paddingLeft: 0,
                 transition: "all 0.2s",
                 '&:hover': { background: "#1976d2", color: "white" }
               }
@@ -110,24 +113,24 @@ const handleUpdateStatus = async (status: number, rut_paciente: string, id_pacie
           >
             {/* Tabs según perfil */}
             {user_perfil === "Colegios" && [
-              <Tab key={0} label={menuOpen ? "Home" : "H"} {...a11yProps(0)} />,
-              <Tab key={1} label={menuOpen ? "Lista de Deportista" : "L"} {...a11yProps(1)} />,
-              <Tab key={2} label={menuOpen ? "Agregar Deportista" : "A"} {...a11yProps(2)} />,
-              <Tab key={3} label={menuOpen ? "Carga Masiva" : "C"} {...a11yProps(3)} />
+              <Tab key={0} icon={<HomeIcon />} title="Home" {...a11yProps(0)} />,
+              <Tab key={1} icon={<ListAltIcon />} title="Lista de Deportista" {...a11yProps(1)} />,
+              <Tab key={2} icon={<PersonAddIcon />} title="Agregar Deportista" {...a11yProps(2)} />,
+              <Tab key={3} icon={<CloudUploadIcon />} title="Carga Masiva" {...a11yProps(3)} />
             ]}
 
             {user_perfil === "Medicos" && [
-              <Tab key={0} label={menuOpen ? "Lista de Deportista" : "L"} {...a11yProps(0)} />,
-              <Tab key={1} label={menuOpen ? "Perfil Usuario" : "U"} {...a11yProps(1)} />
+              <Tab key={0} icon={<ListAltIcon />} title="Lista de Deportista" {...a11yProps(0)} />,
+              <Tab key={1} icon={<ManageAccountsIcon />} title="Perfil Usuario" {...a11yProps(1)} />
             ]}
 
             {user_perfil !== "Colegios" && user_perfil !== "Medicos" && [
-              <Tab key={0} label={menuOpen ? "Lista de Deportista" : "L"} {...a11yProps(0)} />,
-              <Tab key={1} label={menuOpen ? "Agregar Deportista" : "A"} {...a11yProps(1)} />,
-              <Tab key={2} label={menuOpen ? "Carga Masiva" : "C"} {...a11yProps(2)} />,
-              <Tab key={3} label={menuOpen ? "Agregar Perfil" : "P"} {...a11yProps(3)} />,
-              <Tab key={4} label={menuOpen ? "Calculos QTc" : "Q"} {...a11yProps(4)} />,
-              <Tab key={5} label={menuOpen ? "Perfil Usuario" : "U"} {...a11yProps(5)} />
+              <Tab key={0} icon={<ListAltIcon />} title="Lista de Deportista" {...a11yProps(0)} />,
+              <Tab key={1} icon={<PersonAddIcon />} title="Agregar Deportista" {...a11yProps(1)} />,
+              <Tab key={2} icon={<CloudUploadIcon />} title="Carga Masiva" {...a11yProps(2)} />,
+              <Tab key={3} icon={<GroupAddIcon />} title="Agregar Perfil" {...a11yProps(3)} />,
+              <Tab key={4} icon={<CalculateIcon />} title="Calculos QTC" {...a11yProps(4)} />,
+              <Tab key={5} icon={<ManageAccountsIcon />} title="Perfil Usuario" {...a11yProps(5)} />
             ]}
           </Tabs>
 

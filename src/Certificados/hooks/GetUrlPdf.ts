@@ -12,7 +12,7 @@ export const GetUrlPdf = async (rutUser: string)  => {
     const {status,mensaje}  = await getCertificadoExiste(rutUser);
 
     if(status == 200) {
-        const {url_pdf,name_pdf,titulo}  = await getCertificadoRut(rutUser);
+        const {url_pdf='',name_pdf='',titulo=''}  = await getCertificadoRut(rutUser) || {};
 
         return {
             url_pdf,

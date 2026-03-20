@@ -5,6 +5,7 @@ import useElectroCardiograma from "../hooks/useElectroCardiograma";
 import Swal from 'sweetalert2';
 import { UseElectroCardiogranaService } from "../services/useElectroCardiogranaService";
 import { useEffect, useState } from "react";
+import { ValidateDialog } from "./modal/validate-dialog";
 
 interface Props {
   rut_paciente: string;
@@ -17,6 +18,8 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
   const { control, handleSubmit, setValue, errors } = useElectroCardiograma();
   const [response, setResponse] = useState<any>(null);
 
+  const [openDialog, setOpenDialog] = useState(false);
+  
   let extension = 'jpg';
   if (url_pdf) {
     const path = url_pdf.split('.');
@@ -39,7 +42,36 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
     fetchChequeoCardiovascular();
   }, [id_paciente]);
 
+
+  const handleValidate = async (ergoPass: string) => {
+    try {
+      const { userUpdateErgoPass } = await UseElectroCardiogranaService();
+
+      const resp = await userUpdateErgoPass(ergoPass);
+
+      if (!resp) {
+        Swal.fire({
+          icon: "error",
+          title: "Validación Ergo Pass",
+          text: "Ingrese un Ergo Pass válido para continuar",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+
+      setOpenDialog(false);
+      await onSubmit();
+
+    } 
+    catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Error en validación", "error");
+    }
+  }
+
   const onSubmit = async () => {
+
     const hasErrors = errors && Object.values(errors).some(Boolean);
     if (hasErrors) {
       Swal.fire({
@@ -70,9 +102,10 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
       control._reset();
       handleUpdateStatus(0, '', 0);
     }
-  };
+  }
 
   return (
+  <>  
     <Box sx={{ flexGrow: 1, maxWidth: "100%" }}>
 
       {/* CABECERA PACIENTE */}
@@ -198,12 +231,22 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
 
             <Grid container justifyContent="center" sx={{ mt: 3 }}>
               <Grid item xs={12} sm={6}>
-                <ButtonsForm onSubmit={onSubmit} title="Confimar" btnStatus={false} />
+                <ButtonsForm
+                  onSubmit={() => setOpenDialog(true)}
+                  title="Confirmar"
+                  btnStatus={false}
+                />
               </Grid>
             </Grid>
           </form>
         </Grid>
       </Grid>
     </Box>
+    <ValidateDialog
+      open={openDialog}
+      onClose={() => setOpenDialog(false)}
+      onConfirm={handleValidate}
+    />
+    </>
   );
-};
+}

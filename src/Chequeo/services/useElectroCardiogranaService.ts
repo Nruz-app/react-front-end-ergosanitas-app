@@ -10,17 +10,18 @@ export const  UseElectroCardiogranaService = async () => {
     const postCreateElectroCardiograma = async (electroCardiograma : IElectroCardiograma) => {
            
         const response = await  apiAdapter.post(`${API}/electro-cardiograma/save`,electroCardiograma);
-        
         return response;
-
     }
 
     const getChequeoCardiovascular = async (id_paciente: number): Promise<IChequeo> => {
         const response: IChequeo = await apiAdapter.get(`${API}/chequeo-cardiovascular/${id_paciente}`, 10, 0);
         return response;
     }
-
+    const userUpdateErgoPass = async (ergoPass : string) => {
+        const response = await  apiAdapter.post(`${API}/user-first-ergo-pass`,ergoPass);
+        return response;
+    }
     return {
-        postCreateElectroCardiograma,getChequeoCardiovascular
+        postCreateElectroCardiograma,getChequeoCardiovascular,userUpdateErgoPass
     }
 }

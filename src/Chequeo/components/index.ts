@@ -39,4 +39,6 @@ export * from './form-perfil/form-perfil';
 
 export * from './modal/modal.component';
 
+export * from './modal/validate-dialog';
+
 export { PerfilUsuario } from './perfil-usuario/perfil-usuario';

@@ -7,10 +7,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 interface Props {
   newPassword : string;
   setNewPassword : (value: string) => void;
+  label : string;
 }
 
 
-export const InputPassword = ({newPassword,setNewPassword } : Props) => {
+
+export const InputPassword = ({newPassword,setNewPassword, label } : Props) => {
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,7 +32,7 @@ export const InputPassword = ({newPassword,setNewPassword } : Props) => {
       name= "newPassword"
       value = {newPassword}
       onChange={(e) => setNewPassword(e.target.value)}
-      label="Modificar Contraseña"
+      label={label}
       variant="filled"
       type={showPassword ? 'text' : 'password'}
       InputProps={{

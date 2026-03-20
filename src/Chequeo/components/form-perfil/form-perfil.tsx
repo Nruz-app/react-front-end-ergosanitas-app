@@ -13,11 +13,12 @@ interface Props {
 export const FormPerfil = ({user_email} : Props) => {
 
   const [newPassword, setNewPassword] = useState<string>('');
+  const [ergoPass, setErgoPass] = useState<string>('');
 
 
   const handleUpdatePassword = async () => {
 
-    const { PostUserPassword } = await UserService();
+    const { PostUserPassword, } = await UserService();
 
     const confirmUpdate = await Swal.fire({
       title: '❓ ¿Modificar Contraseña?',
@@ -46,6 +47,37 @@ export const FormPerfil = ({user_email} : Props) => {
     }
   }
 
+  const handleUpdateErgoPass = async () => {
+
+    const { PostUserErgoPass, } = await UserService();
+
+    const confirmUpdate = await Swal.fire({
+      title: '❓ ¿Modificar Ergo Pass?',
+      html: `¿Está seguro de Modficar el Ergo Pass  </strong>?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (confirmUpdate.isConfirmed) {
+      
+      const response = await PostUserErgoPass(ergoPass,user_email);
+    
+      if(response.success) {
+          Swal.fire({
+            title: '✅ ¡Modificar Ergo Pass!',
+            html: `El Ergo Pass se ha modificado con éxito.`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            timer: 3000,
+            timerProgressBar: true,
+          });
+      }
+
+    }
+  }
+
   return (
     <Box sx={{  justifyContent: "center", alignItems: "center", p: 3, }}>
       <Paper
@@ -61,6 +93,7 @@ export const FormPerfil = ({user_email} : Props) => {
             <InputPassword
               newPassword={ newPassword }
               setNewPassword={ setNewPassword } 
+              label="Modificar Contraseña"
             />
           </Grid>
           <Grid item xs={12} sm={4} md={4}>
@@ -72,12 +105,48 @@ export const FormPerfil = ({user_email} : Props) => {
                     sx={{
                     color: '#66bb6a',
                     '&:hover': {
-                        backgroundColor: '#81c784', // Verde un poco más oscuro en hover
+                        backgroundColor: '#81c784', 
                         transform: 'scale(1.05)',
                         color: '#FFFFFF',
                     },
                     '&:active': {
-                      backgroundColor: '#4caf50', // Verde más oscuro al hacer clic
+                      backgroundColor: '#4caf50', 
+                      transform: 'scale(1)',
+                    },
+                    transition: '0.3s',
+                    }}
+                >
+                    <EditIcon fontSize="large" />
+                </IconButton>
+                </Tooltip>
+
+              
+            </Box>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} alignItems="center" mt={4}>
+          <Grid item xs={12} sm={8} md={8}>
+            <InputPassword
+              newPassword={ ergoPass }
+              setNewPassword={ setErgoPass } 
+              label="Modificar Ergo Pass"
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={4}>
+            <Box display="flex" justifyContent="center">
+            <Tooltip title="Modificar Ergo Pass" arrow>
+                <IconButton
+                    onClick={handleUpdateErgoPass}
+                    aria-label="editar"
+                    sx={{
+                    color: '#66bb6a',
+                    '&:hover': {
+                        backgroundColor: '#81c784', 
+                        transform: 'scale(1.05)',
+                        color: '#FFFFFF',
+                    },
+                    '&:active': {
+                      backgroundColor: '#4caf50', 
                       transform: 'scale(1)',
                     },
                     transition: '0.3s',
