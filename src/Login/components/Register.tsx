@@ -103,10 +103,32 @@ export const Register = () => {
 
       }
       }
-      catch(error) {
-        console.log('Error Login',error);
-        errorLogin=true;
-      }
+      catch (error) {
+        console.log('Error Login', error);
+        errorLogin = true;
+
+        Swal.fire({
+            title: '🚫 Fallo en el ingreso',
+            html: `
+                <p style="font-size: 16px; color: #d32f2f; line-height: 1.5;">
+                    Lo sentimos, el usuario o la contraseña son incorrectos.<br>
+                    Por favor verifica tus credenciales e intenta nuevamente.
+                </p>
+            `,
+            icon: 'error',
+            iconColor: '#d32f2f',
+            confirmButtonText: 'Intentar de nuevo',
+            confirmButtonColor: '#d32f2f',
+            timer: 4000,
+            timerProgressBar: true,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        });
+    }
 
     }
     

@@ -198,7 +198,7 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
 
             <Grid container justifyContent="center" sx={{ mt: 3 }}>
               <Grid item xs={12} sm={6}>
-                <ButtonsForm onSubmit={onSubmit} title="Ingresar" btnStatus={false} />
+                <ButtonsForm onSubmit={onSubmit} title="Confimar" btnStatus={false} />
               </Grid>
             </Grid>
           </form>

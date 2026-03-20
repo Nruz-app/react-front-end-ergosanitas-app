@@ -18,9 +18,14 @@ export const  UseCertificadoService = async () => {
 
     const getCertificadoRut =  async (rut_paciente : string)  => {
 
-        const response:ICertificadoUrl = await  apiAdapter.get(`${API}/certificado/${rut_paciente}`,10,0)
-        return response;
+        try {
+            const response:ICertificadoUrl = await  apiAdapter.get(`${API}/certificado/${rut_paciente}`,10,0)
+            return response;
+        }
+        catch(error){
+            console.error(error);
+            return null;
+        }
     }
-
     return { getCertificadoRut,getCertificadoExiste }
 }

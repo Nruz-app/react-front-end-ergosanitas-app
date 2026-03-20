@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IColumnsTable } from "../../common/table/interface/table.interface";
 import { UseChequeoService } from "../services/useChequeoService";
 import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow  } from "@mui/material";
-//import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { IChequeo } from '../interface';
 import { DownloadPDF, LoadingTable } from "./";
 
@@ -126,6 +126,44 @@ export const ChequeoTable = ({
     handleUpdateStatus(3,rut_paciente,id_paciente)
   }
 
+  const handleDeletePaciente = async (id: number) => {
+    const { getDeleteById } = await UseChequeoService();
+
+    // Confirmación antes de eliminar
+    const result = await Swal.fire({
+      title: '⚠️ ¿Estás seguro?',
+      text: 'Esta acción eliminará al paciente permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d32f2f',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await getDeleteById(id);
+        Swal.fire({
+          title: '✅ Eliminado',
+          text: 'El paciente ha sido eliminado correctamente.',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        fetchAgendaHoras(); // Actualiza la agenda
+      } catch (error) {
+        console.error('Error al eliminar paciente:', error);
+        Swal.fire({
+          title: '❌ Error',
+          text: 'No se pudo eliminar el paciente. Intenta nuevamente.',
+          icon: 'error'
+        });
+      }
+    }
+  }
+  
   const handRedictCertificado  = async (rut_paciente : string,id_paciente : number) => {
     navigate(`/certificado/${rut_paciente}/${id_paciente}`);
   } 
@@ -145,7 +183,6 @@ export const ChequeoTable = ({
         const { postChequeoSearch } = await UseChequeoService(); 
 
         const response = await postChequeoSearch(likeTextContext, user_email, limit, pageNumber);
-        console.log(response.data);
         setRowTable(response.data); 
         setTotal(response.total);
 
@@ -294,8 +331,19 @@ export const ChequeoTable = ({
                   <Button onClick={() => handleOpenModal(row.rut, row.nombre)}>
                     <CloudUploadIcon style={{backgroundColor:'blue',color:'white',borderRadius:'50%'}}/>
                   </Button>
-                  <Button>
-                    <DeleteIcon style={{backgroundColor:'red',color:'white',borderRadius:'50%'}}/>
+                   <Button
+                      variant="outlined"
+                      style={{ color: "error", borderColor: "error" }}
+                      title= {'Borrar - '+ row.rut }
+                      onClick={() => handleDeletePaciente(row.id!)}
+                    >
+                      <DeleteIcon
+                        style={{ 
+                          backgroundColor: 'blue',
+                          color: 'white',  // Puedes ajustar el color del ícono también
+                          borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
+                        }} 
+                      />
                   </Button>
                 </>
               )}

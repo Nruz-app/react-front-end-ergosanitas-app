@@ -14,6 +14,9 @@ import { HomePage } from "./Home-page";
 import { ModalBarProvider } from "../context/modal-bar/Modal-bar-Provider";
 import { FormUser } from "../../User";
 
+import ListAltIcon from '@mui/icons-material/ListAlt';
+
+
 const initial_status = { status: 0, rut_paciente: '', id_paciente: 0, url_pdf: '' };
 const initial_value: formData = { rut: '', nombre: '', url_pdf: '' };
 const initial_view: IChequeo = {
@@ -46,22 +49,27 @@ export const AppChequeo = () => {
     }
   };
 
-  const handleUpdateStatus = async (status: number, rut_paciente: string, id_paciente: number) => {
-    try {
-      const { getCertificadoRut } = await UseCertificadoService();
-      const { url_pdf } = await getCertificadoRut(rut_paciente);
-      statusSet({ status, rut_paciente, id_paciente, url_pdf });
+const handleUpdateStatus = async (status: number, rut_paciente: string, id_paciente: number) => {
+  try {
+    const { getCertificadoRut } = await UseCertificadoService();
+    const { url_pdf = '' } = await getCertificadoRut(rut_paciente) || {};
 
-      if (user_perfil === "Colegios") {
-        setValue(status === 1 ? 2 : 0);
-      } else if (user_perfil !== "Medicos") {
-        setValue(status === 0 ? 0 : 1);
-      }
-    } catch {
-      statusSet({ status, rut_paciente, id_paciente, url_pdf: '' });
-      if (user_perfil !== "Medicos") setValue(0);
+    // Primero actualiza status
+    statusSet({ status, rut_paciente, id_paciente, url_pdf });
+
+    // Luego cambia la tab según perfil
+    if (user_perfil === "Colegios") {
+      setValue((prev) => (prev === 2 ? prev : 2));
+    } else if (user_perfil !== "Medicos") {
+      setValue(1);
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    statusSet({ status, rut_paciente, id_paciente, url_pdf: '' });
+    if (user_perfil !== "Medicos") setValue(0);
+  }
+};
 
   const handleFormData = async (formData: formData) => { formDataSet(formData); };
   const handleViewData = async (id_paciente: number) => {
@@ -85,7 +93,7 @@ export const AppChequeo = () => {
             onMouseEnter={() => setMenuOpen(true)}
             onMouseLeave={() => setMenuOpen(false)}
             sx={{
-              width: menuOpen ? 180 : 60,
+              width: menuOpen ? 400 : 60,
               transition: "width 0.3s ease",
               borderRight: 1,
               borderColor: 'divider',
