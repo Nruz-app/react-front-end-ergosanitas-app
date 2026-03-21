@@ -27,7 +27,7 @@ export const NavigationPA = () => {
     
     const { ValidLogin,user }  = useContext( LoginContext );
     
-    const { user_perfil }  = user;
+    const { user_perfil,user_logo }  = user;
 
     const { SubMenuActive,active }  = useContext( SubMenuContext );
     
@@ -268,45 +268,70 @@ export const NavigationPA = () => {
                         }
                         </Box>
                         <Box
-                            onClick={ handleCloseLogin }
-                            title={'Ingresa Ergosanitas'}
+                            onClick={handleCloseLogin}
+                            title="Cerrar sesión"
                             sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: '#66BB6A    ', // Azul más vibrante
-                                padding: { xs: '12px 16px', sm: '16px 24px' }, // Espaciado adaptado a diferentes tamaños
-                                borderRadius: '30px', // Bordes más redondeados
-                                boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Sombra más pronunciada y elegante
-                                maxWidth: '400px', // Tamaño más definido
-                                color: 'white',
-                                textAlign: 'center',
-                                transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Transiciones suaves
-                                margin: '0 auto', // Centra el botón en la pantalla
-                                '&:hover': {
-                                transform: 'scale(1.05)', // Efecto de hover para aumentar ligeramente el tamaño
-                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.4)', // Sombra más profunda al hacer hover
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1.5,
+                                px: { xs: 1.5, sm: 2 },
+                                py: { xs: 1, sm: 1.2 },
+                                borderRadius: "50px",
+                                background: "linear-gradient(135deg, #66BB6A, #43A047)",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                                cursor: "pointer",
+                                transition: "all 0.25s ease",
+                                "&:hover": {
+                                transform: "translateY(-2px) scale(1.03)",
+                                boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
                                 },
                             }}
                             >
-                            <PersonOffIcon
-                                className="pointer"
+                            {/* AVATAR / ICONO */}
+                            <Box
                                 sx={{
-                                fontSize: { xs: '2rem', sm: '2.5rem' }, // Tamaño del ícono adaptado a diferentes tamaños
-                                marginRight: { xs: '8px', sm: '16px' }, // Margen adaptado
-                                }}
-                            />
-                            <Typography
-                                sx={{
-                                fontWeight: 'bold',
-                                fontSize: { xs: '1.1rem', sm: '1.3rem' }, // Texto adaptado a diferentes tamaños
-                                letterSpacing: '0.08em',
-                                lineHeight: '1.3',
+                                width: { xs: 36, sm: 42 },
+                                height: { xs: 36, sm: 42 },
+                                borderRadius: "50%",
+                                overflow: "hidden",
+                                backgroundColor: "rgba(255,255,255,0.2)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                                 }}
                             >
-                                { user.user_name }
-                            </Typography>
+                                {user_logo ? (
+                                <img
+                                    src={user_logo}
+                                    alt="user"
+                                    style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    }}
+                                />
+                                ) : (
+                                <PersonOffIcon
+                                    sx={{
+                                    color: "white",
+                                    fontSize: { xs: "1.5rem", sm: "1.8rem" },
+                                    }}
+                                />
+                                )}
                             </Box>
+
+                            {/* NOMBRE */}
+                            <Typography
+                                sx={{
+                                color: "white",
+                                fontWeight: 600,
+                                fontSize: { xs: "0.9rem", sm: "1.1rem" },
+                                whiteSpace: "nowrap",
+                                }}
+                            >
+                                {user.user_name}
+                            </Typography>
+                        </Box>
 
                     </Toolbar>
                 </Container>

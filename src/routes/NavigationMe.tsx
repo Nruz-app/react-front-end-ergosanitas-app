@@ -287,7 +287,7 @@ export const NavigationMe = () => {
                                 },
                             }}
                             >
-                            {/* 🔹 AVATAR / ICONO */}
+                            {/* AVATAR / ICONO */}
                             <Box
                                 sx={{
                                 width: { xs: 36, sm: 42 },
@@ -320,7 +320,7 @@ export const NavigationMe = () => {
                                 )}
                             </Box>
 
-                            {/* 🔹 NOMBRE */}
+                            {/* NOMBRE */}
                             <Typography
                                 sx={{
                                 color: "white",
@@ -331,7 +331,7 @@ export const NavigationMe = () => {
                             >
                                 {user.user_name}
                             </Typography>
-                            </Box>
+                        </Box>
 
                     </Toolbar>
                 </Container>
