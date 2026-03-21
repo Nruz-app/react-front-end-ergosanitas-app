@@ -269,7 +269,6 @@ export const NavigationErgo = () => {
                         </Box>
                         <Box
                             onClick={handleCloseLogin}
-                            title="Cerrar sesión"
                             sx={{
                                 display: "flex",
                                 alignItems: "center",
@@ -281,33 +280,42 @@ export const NavigationErgo = () => {
                                 boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                                 cursor: "pointer",
                                 transition: "all 0.25s ease",
+
                                 "&:hover": {
-                                transform: "translateY(-2px) scale(1.03)",
-                                boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                                },
+
+                                // efecto SOLO en avatar
+                                "&:hover .avatar-img": {
+                                transform: "scale(1.12)",
                                 },
                             }}
                             >
-                            {/* AVATAR / ICONO */}
+                            {/* AVATAR */}
                             <Box
                                 sx={{
                                 width: { xs: 36, sm: 42 },
                                 height: { xs: 36, sm: 42 },
                                 borderRadius: "50%",
                                 overflow: "hidden",
-                                backgroundColor: "rgba(255,255,255,0.2)",
+                                backgroundColor: "rgba(255,255,255,0.25)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
+                                flexShrink: 0,
                                 }}
                             >
                                 {user_logo ? (
                                 <img
                                     src={user_logo}
                                     alt="user"
+                                    className="avatar-img"
                                     style={{
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "cover",
+                                    transition: "transform 0.25s ease",
                                     }}
                                 />
                                 ) : (
@@ -320,19 +328,39 @@ export const NavigationErgo = () => {
                                 )}
                             </Box>
 
-                            {/* NOMBRE */}
-                            <Typography
+                            {/* TEXTO */}
+                            <Box
                                 sx={{
-                                color: "white",
-                                fontWeight: 600,
-                                fontSize: { xs: "0.9rem", sm: "1.1rem" },
-                                whiteSpace: "nowrap",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                lineHeight: 1.1,
                                 }}
                             >
+                                {/* NOMBRE */}
+                                <Typography
+                                sx={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    fontSize: { xs: "0.9rem", sm: "1.05rem" },
+                                }}
+                                >
                                 {user.user_name}
-                            </Typography>
-                        </Box>
+                                </Typography>
 
+                                {/* PERFIL (sutil y elegante) */}
+                                <Typography
+                                sx={{
+                                    color: "rgba(255,255,255,0.8)",
+                                    fontSize: "0.7rem",
+                                    fontWeight: 400,
+                                    letterSpacing: "0.4px",
+                                }}
+                                >
+                                {user.user_perfil}
+                                </Typography>
+                            </Box>
+                        </Box>
                     </Toolbar>
                 </Container>
             </AppBar>

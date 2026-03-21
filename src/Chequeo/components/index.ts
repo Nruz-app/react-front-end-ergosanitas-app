@@ -41,4 +41,6 @@ export * from './modal/modal.component';
 
 export * from './modal/validate-dialog';
 
+export * from './modal/preview-file';
+
 export { PerfilUsuario } from './perfil-usuario/perfil-usuario';

@@ -37,103 +37,100 @@ export const Register = () => {
   const handleClose = () => {
     onOpenModal(false);
   }
-
-  
   const onSubmit = async () => {
+    try {
 
-      
-      let errorLogin = false;
-      
-      try {
+      const { authRegister, createUser, validaUser } = await UseRegister();
+      const { userName, password, rut_paciente } = control._formValues;
 
-        const {  authRegister,createUser,validaUser } = await UseRegister() ;
-        const {userName,password,rut_paciente}  = control._formValues;
-        onOpenModal(false);
-        let responseUser:IResponseUser;
+      onOpenModal(false);
 
-        const statusExiste = await validaUser(rut_paciente);
-          
-        if(formMode === "register" && statusExiste == 200) {
-
-           responseUser = await createUser(userName,password,rut_paciente);
+      //LOADING
+      Swal.fire({
+        title: 'Validando...',
+        text: 'Por favor espera',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
         }
-        else {
-          responseUser = await authRegister(userName,password);
-    
-        }
+      });
 
-        if(responseUser.success){
-      
-            const user:IUser = responseUser.user;
-            setFormMode("login");
-            ValidLogin (true,user);
-          
-          }
-          else {
-            errorLogin = true;
-            ValidLogin (false,{
-              user_id        : 0,
-              user_email     : '',
-              user_name      : '',
-              user_perfil    : '',
-              user_logo      : ''
-          });
-        }
+      let responseUser: IResponseUser;
 
-        if(errorLogin) {
+      const statusExiste = await validaUser(rut_paciente);
+
+      //LOGICA CLARA
+      if (formMode === "register" && statusExiste === 200) {
+        responseUser = await createUser(userName, password, rut_paciente);
+      } else {
+        responseUser = await authRegister(userName, password);
+      }
+
+      Swal.close(); //cerrar loading
+
+      //LOGIN OK
+      if (responseUser.success) {
+
+        const user: IUser = responseUser.user;
+
+        setFormMode("login");
+        ValidLogin(true, user);
 
         Swal.fire({
-          title: '⚠️ Error de Ingreso',
-          html: `<p style="font-size: 16px; color: #d32f2f;">
-               Usuario <b>${userName}</b> incorrecto.
-            </p>`,
-          icon: 'error',
-          iconColor: '#d32f2f',
-          confirmButtonText: 'Reintentar',
-          confirmButtonColor: '#d32f2f',
-          timer: 3000,
-          timerProgressBar: true,
-          showClass: {
-              popup: 'animate__animated animate__fadeInDown'
-          },
-          hideClass: {
-              popup: 'animate__animated animate__fadeOutUp'
-          }
+          icon: 'success',
+          title: 'Ergosanitas SPA.',
+          text: `Bienvenido a Ergosanitas ${user.user_name}`,
+          timer: 2000,
+          showConfirmButton: false
         });
 
+        return;
       }
-      }
-      catch (error) {
-        console.log('Error Login', error);
-        errorLogin = true;
 
-        Swal.fire({
-            title: '🚫 Fallo en el ingreso',
-            html: `
-                <p style="font-size: 16px; color: #d32f2f; line-height: 1.5;">
-                    Lo sentimos, el usuario o la contraseña son incorrectos.<br>
-                    Por favor verifica tus credenciales e intenta nuevamente.
-                </p>
-            `,
-            icon: 'error',
-            iconColor: '#d32f2f',
-            confirmButtonText: 'Intentar de nuevo',
-            confirmButtonColor: '#d32f2f',
-            timer: 4000,
-            timerProgressBar: true,
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
-        });
-    }
+      // LOGIN FAIL
+      ValidLogin(false, {
+        user_id: 0,
+        user_email: '',
+        user_name: '',
+        user_perfil: '',
+        user_logo: ''
+      });
 
+      Swal.fire({
+        title: '⚠️ Error de Ingreso',
+        html: `<p style="font-size: 16px; color: #d32f2f;">
+              Usuario <b>${userName}</b> incorrecto.
+              </p>`,
+        icon: 'error',
+        confirmButtonText: 'Reintentar',
+        confirmButtonColor: '#d32f2f',
+        timer: 3000,
+        timerProgressBar: true
+      });
+
+    } catch (error) {
+
+      console.error('Error Login', error);
+
+      Swal.close(); // por si quedó loading abierto
+
+      Swal.fire({
+        title: '🚫 Fallo en el ingreso',
+        html: `
+          <p style="font-size: 16px; color: #d32f2f; line-height: 1.5;">
+            Lo sentimos, el usuario o la contraseña son incorrectos.<br>
+            Por favor verifica tus credenciales e intenta nuevamente.
+          </p>
+        `,
+        icon: 'error',
+        confirmButtonText: 'Intentar de nuevo',
+        confirmButtonColor: '#d32f2f',
+        timer: 4000,
+        timerProgressBar: true
+      });
     }
-    
+  }
   
-
   return (
     <Modal
         keepMounted

@@ -369,7 +369,6 @@ export const ChequeoTable = ({
                    <Button
                       variant="outlined"
                       style={{ color: "error", borderColor: "error" }}
-                      title= {'Borrar - '+ row.rut }
                       onClick={() => handleDeletePaciente(row.id!)}
                     >
                       <DeleteIcon

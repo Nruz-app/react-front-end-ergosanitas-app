@@ -22,7 +22,6 @@ export const DownloadPDF = ({handleClickDowload,id_paciente,title}:Props) => {
             variant="outlined"
             style={{ color: "primary", borderColor: "primary" }}
             onClick={handleClick}
-            title={title}
         >
             <SimCardDownloadIcon 
                 style={{ 

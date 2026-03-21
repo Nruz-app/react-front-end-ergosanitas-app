@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import { UseElectroCardiogranaService } from "../services/useElectroCardiogranaService";
 import { useEffect, useState } from "react";
 import { ValidateDialog } from "./modal/validate-dialog";
+import { PreviewFileDialog } from "./modal/preview-file";
+
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
 interface Props {
   rut_paciente: string;
@@ -17,7 +20,7 @@ interface Props {
 export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, handleUpdateStatus }: Props) => {
   const { control, handleSubmit, setValue, errors } = useElectroCardiograma();
   const [response, setResponse] = useState<any>(null);
-
+  const [openPreview, setOpenPreview] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   
   let extension = 'jpg';
@@ -42,7 +45,6 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
     fetchChequeoCardiovascular();
   }, [id_paciente]);
 
-
   const handleValidate = async (ergoPass: string) => {
     try {
       const { userUpdateErgoPass } = await UseElectroCardiogranaService();
@@ -63,8 +65,7 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
       setOpenDialog(false);
       await onSubmit();
 
-    } 
-    catch (error) {
+    } catch (error) {
       console.error(error);
       Swal.fire("Error", "Error en validación", "error");
     }
@@ -117,10 +118,13 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
             p: 3,
             borderRadius: 3,
             background: "linear-gradient(135deg,#f5f7fa 0%,#e4ecf7 100%)",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+            }
           }}
         >
           <Grid container spacing={2} alignItems="center">
-            {/** Datos principales en filas responsivas */}
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 {Object.entries({
@@ -135,7 +139,7 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
                   Medicamentos: response.medicamentosDiarios
                 }).map(([label, value]) => (
                   <Grid item xs={12} sm={6} md={3} key={label}>
-                    <Typography variant="caption" color="textSecondary">{label}</Typography>
+                    <Typography variant="caption" color="text.secondary">{label}</Typography>
                     <Typography variant="subtitle1" fontWeight="bold" noWrap>{value}</Typography>
                   </Grid>
                 ))}
@@ -146,20 +150,33 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
       )}
 
       <Grid container spacing={4} alignItems="flex-start" justifyContent="center">
-        {/* PDF / Imagen */}
-        <Grid item xs={12} md={8} sx={{ textAlign: "center" }}>
+
+        {/* VISOR PDF / IMAGEN */}
+        <Grid item xs={12} md={8}>
           <Paper
-            elevation={3}
+            elevation={4}
+            onClick={() => setOpenPreview(true)}
             sx={{
+              position: "relative",
+              cursor: "zoom-in",
               borderRadius: 3,
               overflow: 'hidden',
               height: '80vh',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.01)",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+              },
+              "&:hover .overlay": {
+                opacity: 1,
+              }
             }}
           >
+
+            {/* CONTENIDO */}
             {extension === 'pdf' ? (
               <iframe
                 src={url_pdf}
@@ -181,6 +198,33 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
                 }}
               />
             )}
+
+            {/* OVERLAY */}
+            <Box
+              className="overlay"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "rgba(0,0,0,0.45)",
+                opacity: 0,
+                transition: "opacity 0.3s ease",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "#fff",
+                flexDirection: "column",
+                gap: 1
+              }}
+            >
+              <ZoomInIcon sx={{ fontSize: 55 }} />
+              <Typography variant="h6">
+                Ver en pantalla completa
+              </Typography>
+            </Box>
+
           </Paper>
         </Grid>
 
@@ -242,11 +286,18 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
         </Grid>
       </Grid>
     </Box>
+
     <ValidateDialog
       open={openDialog}
       onClose={() => setOpenDialog(false)}
       onConfirm={handleValidate}
     />
-    </>
+
+    <PreviewFileDialog
+      open={openPreview}
+      onClose={() => setOpenPreview(false)}
+      url_pdf={url_pdf}
+    />
+  </>
   );
 }
