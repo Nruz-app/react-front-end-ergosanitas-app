@@ -265,10 +265,10 @@ export const ChequeoTable = ({
             </TableRow>
           )}
 
-          {statusTable && rowTable.map((row, index) => (
+          {statusTable && rowTable.map((row) => (
 
             <TableRow 
-              key={index}
+              key={row.id}
               hover
               sx={{
                 "&:nth-of-type(odd)": {

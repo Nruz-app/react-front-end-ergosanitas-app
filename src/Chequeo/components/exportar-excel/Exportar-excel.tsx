@@ -23,13 +23,11 @@ export const ExportExcel = () => {
       const currentDate = new Date().toLocaleString("es-CL", {
         year: "numeric",
         month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
+        day: "2-digit"
       });
 
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet(`Chqueos Deportivos - ${currentDate}`);
+      const worksheet = workbook.addWorksheet(`Chequeos Deportivos - ${currentDate}`);
 
       // Crear encabezados dinámicos desde el response
       const sample = response[0];

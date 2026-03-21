@@ -163,26 +163,26 @@ export const AppChequeo = () => {
 
             {/* COLEGIOS */}
             {user_perfil === "Colegios" && [
-              <Tooltip title="Home" placement="right"><Tab key={0} icon={<HomeIcon />} {...a11yProps(0)} /></Tooltip>,
-              <Tooltip title="Lista Deportista" placement="right"><Tab key={1} icon={<ListAltIcon />} {...a11yProps(1)} /></Tooltip>,
-              <Tooltip title="Agregar Deportista" placement="right"><Tab key={2} icon={<PersonAddIcon />} {...a11yProps(2)} /></Tooltip>,
-              <Tooltip title="Carga Masiva" placement="right"><Tab key={3} icon={<CloudUploadIcon />} {...a11yProps(3)} /></Tooltip>
+              <Tooltip key="Home" title="Home" placement="right"><Tab key={0} icon={<HomeIcon />} {...a11yProps(0)} /></Tooltip>,
+              <Tooltip key="Lista Deportista" title="Lista Deportista" placement="right"><Tab key={1} icon={<ListAltIcon />} {...a11yProps(1)} /></Tooltip>,
+              <Tooltip key="Agregar Deportista" title="Agregar Deportista" placement="right"><Tab key={2} icon={<PersonAddIcon />} {...a11yProps(2)} /></Tooltip>,
+              <Tooltip key="Carga Masiva" title="Carga Masiva" placement="right"><Tab key={3} icon={<CloudUploadIcon />} {...a11yProps(3)} /></Tooltip>
             ]}
 
             {/* MEDICOS */}
             {user_perfil === "Medicos" && [
-              <Tooltip title="Lista Deportista" placement="right"><Tab key={0} icon={<ListAltIcon />} {...a11yProps(0)} /></Tooltip>,
-              <Tooltip title="Perfil Usuario" placement="right"><Tab key={1} icon={<ManageAccountsIcon />} {...a11yProps(1)} /></Tooltip>
+              <Tooltip key="Lista Deportista" title="Lista Deportista" placement="right"><Tab key={0} icon={<ListAltIcon />} {...a11yProps(0)} /></Tooltip>,
+              <Tooltip key="Perfil Usuario"  title="Perfil Usuario" placement="right"><Tab key={1} icon={<ManageAccountsIcon />} {...a11yProps(1)} /></Tooltip>
             ]}
 
             {/* OTROS */}
             {user_perfil !== "Colegios" && user_perfil !== "Medicos" && [
-              <Tooltip title="Lista Deportista" placement="right"><Tab key={0} icon={<ListAltIcon />} {...a11yProps(0)} /></Tooltip>,
-              <Tooltip title="Agregar Deportista" placement="right"><Tab key={1} icon={<PersonAddIcon />} {...a11yProps(1)} /></Tooltip>,
-              <Tooltip title="Carga Masiva" placement="right"><Tab key={2} icon={<CloudUploadIcon />} {...a11yProps(2)} /></Tooltip>,
-              <Tooltip title="Agregar Perfil" placement="right"><Tab key={3} icon={<GroupAddIcon />} {...a11yProps(3)} /></Tooltip>,
-              <Tooltip title="Calculos QTC" placement="right"><Tab key={4} icon={<CalculateIcon />} {...a11yProps(4)} /></Tooltip>,
-              <Tooltip title="Perfil Usuario" placement="right"><Tab key={5} icon={<ManageAccountsIcon />} {...a11yProps(5)} /></Tooltip>
+              <Tooltip key="Lista Deportista" title="Lista Deportista" placement="right"><Tab key={0} icon={<ListAltIcon />} {...a11yProps(0)} /></Tooltip>,
+              <Tooltip key="Agregar Deportista" title="Agregar Deportista" placement="right"><Tab key={1} icon={<PersonAddIcon />} {...a11yProps(1)} /></Tooltip>,
+              <Tooltip key="Carga Masiva" title="Carga Masiva" placement="right"><Tab key={2} icon={<CloudUploadIcon />} {...a11yProps(2)} /></Tooltip>,
+              <Tooltip key="Agregar Perfil" title="Agregar Perfil" placement="right"><Tab key={3} icon={<GroupAddIcon />} {...a11yProps(3)} /></Tooltip>,
+              <Tooltip key="Calculos QTC" title="Calculos QTC" placement="right"><Tab key={4} icon={<CalculateIcon />} {...a11yProps(4)} /></Tooltip>,
+              <Tooltip key="Perfil Usuario" title="Perfil Usuario" placement="right"><Tab key={5} icon={<ManageAccountsIcon />} {...a11yProps(5)} /></Tooltip>
             ]}
           </Tabs>
 
