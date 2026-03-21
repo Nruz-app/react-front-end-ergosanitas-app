@@ -1,6 +1,6 @@
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
-import { Button} from "@mui/material";
+import { Button, Tooltip} from "@mui/material";
 
 
 interface Props { 
@@ -17,6 +17,7 @@ export const DownloadPDF = ({handleClickDowload,id_paciente,title}:Props) => {
     }
 
     return (
+        <Tooltip title={title} key={title}>
         <Button
             variant="outlined"
             style={{ color: "primary", borderColor: "primary" }}
@@ -30,5 +31,6 @@ export const DownloadPDF = ({handleClickDowload,id_paciente,title}:Props) => {
                     borderRadius: '50%' // Esto hace que el fondo sea circular (opcional)
                   }}/>
         </Button>
+        </Tooltip>
     )
 }

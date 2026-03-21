@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IColumnsTable } from "../../common/table/interface/table.interface";
 import { UseChequeoService } from "../services/useChequeoService";
-import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow  } from "@mui/material";
+import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow, Tooltip  } from "@mui/material";
 import Swal from 'sweetalert2';
 import { IChequeo } from '../interface';
 import { DownloadPDF, LoadingTable } from "./";
@@ -207,31 +207,40 @@ export const ChequeoTable = ({
       <ExportExcel />
 
       <Box sx={{  padding: 2, marginBottom: 1 }}>   
-      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3,  margin: "auto" }}>
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          borderRadius: 3,
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          overflow: "hidden"
+        }}
+      >
           <Table stickyHeader aria-label="sticky table">
 
           <TableHead>
-          <TableRow >
-            {columnsTable.map((column) => (
-              <TableCell 
-                key={column.id} 
-                sx={{ 
-                  color: "white",
-                  bgcolor: "#1976d2", 
-                  fontFamily: "'UnifrakturMaguntia', serif",
-                  fontSize: "20px"
-                }}> 
-                { column.displayName } 
-              </TableCell>
-            ))}
+          <TableRow>
+          {columnsTable.map((column) => (
+            <TableCell align="center"
+              key={column.id}
+              sx={{ 
+                background: "linear-gradient(45deg, #1976d2, #42a5f5)",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "14px",
+                letterSpacing: "0.5px"
+              }}
+            >
+              {column.displayName}
+            </TableCell>
+          ))}
 
             {!isColegio && (
               <>
-              <TableCell sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
+              <TableCell align="center" sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
                 { isAdmin ? 'Fech Aten' : 'Fech Crea'}
               </TableCell>
               {!isMedico && (
-                <TableCell sx={{ color: "white", bgcolor: "#1976d2", fontSize: "20px" }}>
+                <TableCell align="center" sx={{ color: "white", bgcolor: "#1976d2", fontSize: "20px" }}>
                   User
                 </TableCell>
               )}
@@ -239,7 +248,7 @@ export const ChequeoTable = ({
               </>
             )}
 
-            <TableCell colSpan={6} sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
+            <TableCell colSpan={6} align="center" sx={{color:"white",bgcolor:"#1976d2",fontSize:"20px"}}>
               Accion
             </TableCell>
 
@@ -258,9 +267,21 @@ export const ChequeoTable = ({
 
           {statusTable && rowTable.map((row, index) => (
 
-            <TableRow key={index}>
+            <TableRow 
+              key={index}
+              hover
+              sx={{
+                "&:nth-of-type(odd)": {
+                  backgroundColor: "#fafafa",
+                },
+                "&:hover": {
+                  backgroundColor: "#e3f2fd",
+                  transition: "0.2s"
+                }
+              }}
+            >
 
-              <TableCell>{ capitalizeWords(row.nombre) }</TableCell>
+              <TableCell sx={{ fontSize: "13px" }}>{ capitalizeWords(row.nombre) }</TableCell>
               <TableCell>{row.rut}</TableCell>
               <TableCell>{row.edad}</TableCell>
               <TableCell>{row.estado_paciente}</TableCell>
@@ -284,53 +305,67 @@ export const ChequeoTable = ({
 
               {/* VISUALIZAR */}
               {(isAdmin || isMedico || isColegio) && (
+                <Tooltip title="Ver" key={`ver-${row.id}`}>
                 <Button onClick={() => handleOpenModalView(row.id!)}>
                   <VisibilityIcon style={{backgroundColor:'green',color:'white',borderRadius:'50%'}}/>
                 </Button>
+                </Tooltip>
               )}
 
               {/* EDITAR */}
               {(isAdmin || (!isColegio && row.status === 'ingresado')) && (
+                <Tooltip title="Editar" key={`editar-${row.id}`}>
                 <Button onClick={() => handleUpdatePaciente(row.rut,row.id!)}>
                   <EditIcon style={{backgroundColor:'green',color:'white',borderRadius:'50%'}}/>
                 </Button>
+                </Tooltip>
+
               )}
 
               {/* ECG FOTO */}
               {isAdmin && (
+                <Tooltip title="ECG Foto" key={`ecg-${row.id}`}>
                 <Button onClick={() => handRedictCertificado(row.rut,row.id!)}>
                   <MonitorHeartIcon style={{backgroundColor:'green',color:'white',borderRadius:'50%'}}/>
                 </Button>
+                </Tooltip>
               )}
 
               {/* REVISION MEDICA */}
               {(isAdmin || isMedico) && (
+                <Tooltip title="Revisión Médica" key={`revision-${row.id}`}>
                 <Button onClick={() => handleUpdatePacienteH(row.rut,row.id!)}>
                   <FavoriteIcon style={{backgroundColor:'green',color:'white',borderRadius:'50%'}}/>
                 </Button>
+                </Tooltip>
               )}
 
               {/* PDF */}
               {!isUsuario && !isMedico && (
                 <>
+
                   <DownloadPDF
                     handleClickDowload={handleClickDowload}
                     id_paciente={row.id!}
                     title={'Descargar PDF - '+row.rut }
                   />
-
+                  <Tooltip title={'Descargar ECG - '+row.rut } key={`ecg-${row.id}`}>
                   <Button onClick={() => handleClickDowloadECG(row.rut,row.id!)}>
                     <AssignmentTurnedInIcon style={{backgroundColor:'blue',color:'white',borderRadius:'50%'}}/>
                   </Button>
+                  </Tooltip>
                 </>
               )}
 
               {/* ADMIN EXTRA */}
               {isAdmin && (
                 <>
+                  <Tooltip title="Subir Archivo" key={`subir-${row.id}`}>
                   <Button onClick={() => handleOpenModal(row.rut, row.nombre)}>
                     <CloudUploadIcon style={{backgroundColor:'blue',color:'white',borderRadius:'50%'}}/>
                   </Button>
+                  </Tooltip>
+                  < Tooltip title={'Borrar - '+ row.rut } key={`borrar-${row.id}`}>
                    <Button
                       variant="outlined"
                       style={{ color: "error", borderColor: "error" }}
@@ -345,6 +380,7 @@ export const ChequeoTable = ({
                         }} 
                       />
                   </Button>
+                  </Tooltip>
                 </>
               )}
 
@@ -365,7 +401,17 @@ export const ChequeoTable = ({
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[20]}
+        rowsPerPageOptions={[10, 20, 50]}
+        
+        labelRowsPerPage="Filas por página:"
+        
+        labelDisplayedRows={({ from, to, count }) =>
+          `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
+        }
+
+        sx={{
+          borderTop: "1px solid #eee"
+        }}
       />
 
       </Box>  

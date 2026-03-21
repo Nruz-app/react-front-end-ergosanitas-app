@@ -19,17 +19,19 @@ export const ExportExcel = () => {
         return;
       }
 
-      // 🔹 Crear libro y hoja Excel
-      const currentDate = new Date().toLocaleDateString("es-CL", {
+      // Crear libro y hoja Excel
+      const currentDate = new Date().toLocaleString("es-CL", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
       });
 
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet(`Chequeos ${currentDate}`);
+      const worksheet = workbook.addWorksheet(`Chqueos Deportivos - ${currentDate}`);
 
-      // 🔹 Crear encabezados dinámicos desde el response
+      // Crear encabezados dinámicos desde el response
       const sample = response[0];
       const dynamicColumns = Object.keys(sample)
       .filter((key) => key !== "id") 
@@ -43,7 +45,7 @@ export const ExportExcel = () => {
 
       worksheet.columns = dynamicColumns;
 
-      // 🔹 Estilos de encabezado
+      //Estilos de encabezado
       const headerRow = worksheet.getRow(1);
       headerRow.height = 25;
       headerRow.eachCell((cell) => {
@@ -107,7 +109,7 @@ export const ExportExcel = () => {
       <Link
         component="button"
         variant="body2"
-        onClick={() => ExportToExcel("Lista de Deportistas")}
+        onClick={() => ExportToExcel(`Listado de Chequeos Realizados - ${user_email} -`)}
         sx={{
           textDecoration: "none",
           fontWeight: "bold",
