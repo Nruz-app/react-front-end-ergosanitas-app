@@ -177,15 +177,8 @@ export const ChequeoTable = ({
   }
 
   const getEstadoProps = (estado: string): { label: string; color: ChipProps["color"] } => {
+
     if (!estado) return { label: "-", color: "default" };
-
-    if (estado.includes("Diag. Card")) {
-      return { label: estado, color: "success" };
-    }
-
-    if (estado === "En Rev. Cardio") {
-      return { label: estado, color: "warning" };
-    }
 
     switch (estado) {
       case "ingresado":
@@ -199,6 +192,16 @@ export const ChequeoTable = ({
 
       case "REVISION MEDICA":
         return { label: estado, color: "info" };
+
+      // 👇 AQUÍ LA MEJORA CLAVE
+      case "En Rev. Cardio":
+        return { label: estado, color: "info" }; 
+
+      case "Diag. Card. - Normal":
+        return { label: estado, color: "success" }; 
+
+      case "Diag. Card. - Alterado":
+        return { label: estado, color: "error" }; 
 
       default:
         return { label: estado, color: "default" };
