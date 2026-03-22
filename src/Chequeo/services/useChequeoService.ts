@@ -125,6 +125,8 @@ export const  UseChequeoService = async () => {
     const postChequeoSearch =  async (likeTextState : LikeTextState,user_email : string,
         limit : number = 20,page:number = 1) : Promise<IData> => {
 
+            console.log({...likeTextState,user_email,limit,page});
+
         const response:IData = await  
         apiAdapter.post(`${API}/chequeo-cardiovascular/search-chequeo?limit=${limit}&page=${page}`,{
             ...likeTextState,user_email});

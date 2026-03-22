@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IColumnsTable } from "../../common/table/interface/table.interface";
 import { UseChequeoService } from "../services/useChequeoService";
-import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow, Tooltip  } from "@mui/material";
+import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHead, TablePagination, TableRow, Tooltip, Chip  } from "@mui/material";
 import Swal from 'sweetalert2';
 import { IChequeo } from '../interface';
 import { DownloadPDF, LoadingTable } from "./";
@@ -22,7 +22,7 @@ import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import { FilterTable } from "./filters/FilterTable";
 import { ExportExcel } from "./exportar-excel/Exportar-excel";
 import { LikeTextContext } from "../context";
-
+import { ChipProps } from "@mui/material";
 const rows:IChequeo[] = [];
 
 interface Props {
@@ -176,6 +176,34 @@ export const ChequeoTable = ({
       .join(' ');
   }
 
+  const getEstadoProps = (estado: string): { label: string; color: ChipProps["color"] } => {
+    if (!estado) return { label: "-", color: "default" };
+
+    if (estado.includes("Diag. Card")) {
+      return { label: estado, color: "success" };
+    }
+
+    if (estado === "En Rev. Cardio") {
+      return { label: estado, color: "warning" };
+    }
+
+    switch (estado) {
+      case "ingresado":
+        return { label: estado, color: "default" };
+
+      case "Testiado":
+        return { label: estado, color: "primary" };
+
+      case "ECG FOTO":
+        return { label: estado, color: "secondary" };
+
+      case "REVISION MEDICA":
+        return { label: estado, color: "info" };
+
+      default:
+        return { label: estado, color: "default" };
+    }
+  }
   const fetchAgendaHoras = useCallback(
     async (pageNumber = 1, limit = 10): Promise<void> => {
       try {
@@ -284,7 +312,18 @@ export const ChequeoTable = ({
               <TableCell sx={{ fontSize: "13px" }}>{ capitalizeWords(row.nombre) }</TableCell>
               <TableCell>{row.rut}</TableCell>
               <TableCell>{row.edad}</TableCell>
-              <TableCell>{row.estado_paciente}</TableCell>
+              <TableCell>
+                <Chip
+                  {...getEstadoProps(row.estado_paciente??'')}
+                  size="small"
+                  
+                  sx={{
+                    fontWeight: 500,
+                    textTransform: "uppercase" 
+                  }}
+                />
+
+              </TableCell>
 
               {!isColegio && (
                 <>
