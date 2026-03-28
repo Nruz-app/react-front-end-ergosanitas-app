@@ -19,7 +19,7 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 
 import { LoginContext, SubMenuContext } from '../common/context';
 
-import { routesDe } from './routesDE';
+import { routesMe } from './routesME';
 import { Loading } from './Loading';
 
 export const NavigationMe = () => {
@@ -110,7 +110,7 @@ export const NavigationMe = () => {
                             >
                             {
                                 // Filtra solo los que tienen status: true
-                                routesDe.filter(({ status }) => status) 
+                                routesMe.filter(({ status }) => status) 
                                 .map(({ to, name, perfil }) => (
                                     <MenuItem key={ name } >
                                         {
@@ -182,7 +182,7 @@ export const NavigationMe = () => {
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {
                            // Filtra solo los que tienen status: true  
-                           routesDe.filter(({ status }) => status) 
+                           routesMe.filter(({ status }) => status) 
                            .map(({ to, name, perfil }) => (
            
                                 (user_perfil == perfil) ? (
@@ -367,7 +367,7 @@ export const NavigationMe = () => {
 
             <Routes>
              {
-                routesDe.map( ({ path, Component  }) => (
+                routesMe.map( ({ path, Component  }) => (
                     <Route 
                         key={ path }
                         path={ path }
@@ -375,7 +375,7 @@ export const NavigationMe = () => {
                     />
                 ))
              }  
-                <Route path='/*' element={ <Navigate to ={ routesDe[0].to }  replace /> } />   
+                <Route path='/*' element={ <Navigate to ={ routesMe[0].to }  replace /> } />   
             </Routes>            
 
 

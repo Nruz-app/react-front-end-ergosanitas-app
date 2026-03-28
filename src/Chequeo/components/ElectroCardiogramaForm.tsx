@@ -4,11 +4,12 @@ import { ButtonsForm, InputSelect, InputText } from "../../components";
 import useElectroCardiograma from "../hooks/useElectroCardiograma";
 import Swal from 'sweetalert2';
 import { UseElectroCardiogranaService } from "../services/useElectroCardiogranaService";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ValidateDialog } from "./modal/validate-dialog";
 import { PreviewFileDialog } from "./modal/preview-file";
 
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { LoginContext } from "../../common/context";
 
 interface Props {
   rut_paciente: string;
@@ -18,6 +19,12 @@ interface Props {
 }
 
 export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, handleUpdateStatus }: Props) => {
+  
+  const { user }  = useContext( LoginContext );
+  const { user_perfil }  = user;
+  
+  
+  
   const { control, handleSubmit, setValue, errors } = useElectroCardiograma();
   const [response, setResponse] = useState<any>(null);
   const [openPreview, setOpenPreview] = useState(false);
@@ -276,7 +283,7 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
             <Grid container justifyContent="center" sx={{ mt: 3 }}>
               <Grid item xs={12} sm={6}>
                 <ButtonsForm
-                  onSubmit={() => setOpenDialog(true)}
+                  onSubmit={user_perfil === "Medicos" ? () => setOpenDialog(true) : onSubmit}
                   title="Confirmar"
                   btnStatus={false}
                 />
