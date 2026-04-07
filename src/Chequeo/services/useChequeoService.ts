@@ -151,6 +151,13 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
+    const validaCertificado = async (rut_paciente: string) : Promise<IUrlCertificado> => {
+        const response:IUrlCertificado = await apiAdapter.
+        post(`${API}/certificado/valida-certificado`, { rut_paciente });
+        console.log('Respuesta de validaCertificado:', response);
+        return response;
+    }
+
    
     return { 
         getChequeo,
@@ -171,7 +178,8 @@ export const  UseChequeoService = async () => {
         postFilterClubDeportivo,
         postChequeoSearch,
         postChequeoAll,
-        pathUrlCertificado
+        pathUrlCertificado,
+        validaCertificado
     };
     
 }
