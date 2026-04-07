@@ -48,7 +48,9 @@ export const Footer = () => {
       © {currentDateTime.getFullYear()} Ergosanitas SPA. Todos los derechos reservados.
     </Typography>
     
-    <Typography
+    {
+      /*
+      <Typography
       variant="subtitle1"
       sx={{
         fontStyle: 'italic',
@@ -58,6 +60,8 @@ export const Footer = () => {
     >
       Desarrollado por Nicolas Ruz Figueroa
     </Typography>
+      */ 
+    }
     
     <Typography
       variant="subtitle2"
