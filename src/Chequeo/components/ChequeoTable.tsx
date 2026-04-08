@@ -208,13 +208,18 @@ export const ChequeoTable = ({
     }
   }
 
-  const isRecent = (fecha: string | undefined) => {
-    if (!fecha) return false;
+  const isRecent = (fecha: string | undefined, estado: string | undefined) => {
+    if (!fecha || !estado) return false;
+
+    // Solo aplica si el estado es "ECG FOTO"
+    if (estado !== "ECG FOTO") return false;
+
     const fechaCreacion = dayjs(fecha);
     const hoy = dayjs();
+
+    // Retorna true si la fecha es menor a 3 días
     return hoy.diff(fechaCreacion, "day") < 3;
   }
-
 
   const fetchAgendaHoras = useCallback(
     async (pageNumber = 1, limit = 10): Promise<void> => {
@@ -311,13 +316,13 @@ export const ChequeoTable = ({
               key={row.id}
               hover
               sx={{
-                backgroundColor: isRecent(row.created_at) ? "red" : undefined,
-                color: isRecent(row.created_at) ? "white" : undefined,
+                backgroundColor: isRecent(row.created_at, row.estado_paciente) ? "red" : undefined,
+                color: isRecent(row.created_at, row.estado_paciente) ? "white" : undefined,
                 "&:nth-of-type(odd)": {
-                  backgroundColor: isRecent(row.created_at) ? "red" : "#fafafa",
+                  backgroundColor: isRecent(row.created_at, row.estado_paciente) ? "red" : "#fafafa",
                 },
                 "&:hover": {
-                  backgroundColor: isRecent(row.created_at) ? "darkred" : "#e3f2fd",
+                  backgroundColor: isRecent(row.created_at, row.estado_paciente) ? "darkred" : "#e3f2fd",
                   transition: "0.2s"
                 }
               }}
