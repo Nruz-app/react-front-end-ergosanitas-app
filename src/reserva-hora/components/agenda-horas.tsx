@@ -1,6 +1,7 @@
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+//import esLocale from '@fullcalendar/core/locales/es';
 import esLocale from '@fullcalendar/core/locales/es';
 
 import { Box, Paper, useTheme, useMediaQuery } from '@mui/material';
