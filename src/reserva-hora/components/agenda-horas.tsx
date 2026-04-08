@@ -2,7 +2,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 //import esLocale from '@fullcalendar/core/locales/es';
-import esLocale from '@fullcalendar/core/locales/es';
+import allLocales from '@fullcalendar/core/locales-all';
 
 import { Box, Paper, useTheme, useMediaQuery } from '@mui/material';
 import { useState } from 'react';
@@ -61,7 +61,7 @@ export const AgendaHoras = () => {
           // Responsive real
           initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
 
-          locales={[esLocale]}
+          locales={allLocales}
           locale="es"
           firstDay={1}
 
