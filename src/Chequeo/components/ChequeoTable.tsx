@@ -5,7 +5,7 @@ import { Box, Button,Table, TableBody, TableCell, TableContainer, Paper,TableHea
 import Swal from 'sweetalert2';
 import { IChequeo } from '../interface';
 import { DownloadPDF, LoadingTable } from "./";
-
+import dayjs from "dayjs";
 import { LoginContext, ModalContext } from '../../common/context';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -207,6 +207,15 @@ export const ChequeoTable = ({
         return { label: estado, color: "default" };
     }
   }
+
+  const isRecent = (fecha: string | undefined) => {
+    if (!fecha) return false;
+    const fechaCreacion = dayjs(fecha);
+    const hoy = dayjs();
+    return hoy.diff(fechaCreacion, "day") < 3;
+  }
+
+
   const fetchAgendaHoras = useCallback(
     async (pageNumber = 1, limit = 10): Promise<void> => {
       try {
@@ -302,16 +311,17 @@ export const ChequeoTable = ({
               key={row.id}
               hover
               sx={{
+                backgroundColor: isRecent(row.created_at) ? "red" : undefined,
+                color: isRecent(row.created_at) ? "white" : undefined,
                 "&:nth-of-type(odd)": {
-                  backgroundColor: "#fafafa",
+                  backgroundColor: isRecent(row.created_at) ? "red" : "#fafafa",
                 },
                 "&:hover": {
-                  backgroundColor: "#e3f2fd",
+                  backgroundColor: isRecent(row.created_at) ? "darkred" : "#e3f2fd",
                   transition: "0.2s"
                 }
               }}
             >
-
               <TableCell sx={{ fontSize: "13px" }}>{ capitalizeWords(row.nombre) }</TableCell>
               <TableCell>{row.rut}</TableCell>
               <TableCell>{row.edad}</TableCell>
