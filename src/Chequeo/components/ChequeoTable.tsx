@@ -208,7 +208,11 @@ export const ChequeoTable = ({
     }
   }
 
-  const isRecent = (fecha: string | undefined, estado: string | undefined) => {
+  const isRecent = (
+    fecha: string | undefined, 
+    estado: string | undefined, 
+    dias: number = 3
+  ): boolean => {
     if (!fecha || !estado) return false;
 
     // Solo aplica si el estado es "ECG FOTO"
@@ -217,8 +221,11 @@ export const ChequeoTable = ({
     const fechaCreacion = dayjs(fecha);
     const hoy = dayjs();
 
-    // Retorna true si la fecha es menor a 3 días
-    return hoy.diff(fechaCreacion, "day") < 3;
+    // Calcula la diferencia en días exactos
+    const diferencia = hoy.diff(fechaCreacion, "day");
+
+    // Retorna true si la diferencia es menor o igual al límite
+    return diferencia <= dias;
   }
 
   const fetchAgendaHoras = useCallback(
@@ -312,7 +319,7 @@ export const ChequeoTable = ({
 
           {statusTable && rowTable.map((row) => (
 
-            <TableRow 
+            <TableRow
               key={row.id}
               hover
               sx={{
