@@ -2,9 +2,6 @@ import { LazyExoticComponent } from 'react';
 
 
 import { AppChequeo } from '../Chequeo/pages';
-import { AppReservaHora } from '../reserva-hora';
-
-
 
 type JSXComponent = () => JSX.Element;
 
@@ -25,13 +22,5 @@ export const routesMe:Route[] = [
         perfil    : 'Medicos',
         status    : true,  
         Component : AppChequeo
-    },
-    {
-        name      : 'Reserva Horas',
-        to        : '/reserva-hora',
-        path      : '/reserva-hora/*',
-        perfil    : 'Medicos',
-        status    : true,  
-        Component : AppReservaHora
     }
 ]

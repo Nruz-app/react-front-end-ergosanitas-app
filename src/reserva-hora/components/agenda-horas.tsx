@@ -21,8 +21,8 @@ export const AgendaHoras = () => {
     {
         id: "1",
         title: "Paciente: Juan Pérez",
-        start: "2026-03-28T10:00:00",
-        end: "2026-03-28T11:00:00",
+        start: "2026-04-09T10:00:00",
+        end: "2026-04-09T11:00:00",
         roomName: "consulta-juan-20260328-1000",
         paciente: "Juan Pérez",
         medico: "Dr. Ruz",
@@ -31,8 +31,8 @@ export const AgendaHoras = () => {
     {
         id: "2",
         title: "Paciente: María Gómez",
-        start: "2026-03-29T10:00:00",
-        end: "2026-03-29T11:00:00",
+        start: "2026-04-10T10:00:00",
+        end: "2026-04-10T11:00:00",
         roomName: "consulta-maria-20260329-1000",
         paciente: "María Gómez",
         medico: "Dr. Ruz"
