@@ -23,27 +23,10 @@ interface Props {
     setValue      : UseFormSetValue<any>;     
 }
 
-export const InputSelect = ( { control,setValue,...props } : Props ) => {
+export const InputSelect = ( { control,...props } : Props ) => {
 
 
-    const updateObservacionValue = async (estadoValue : string) =>  {
 
-        if(estadoValue === 'Normal') {
-
-            const valueDefault = `- Ritmo regular de origen Sinusal
-- Intervalo PR dentro de rangos normales
-- Eje Electrico normal
-- Sin presencia de onda Q patologica ni alteracion del segmento ST`
-
-            setValue('observacion_paciente',valueDefault);
-        }
-        else 
-            setValue('observacion_paciente','');
-        
-    }
-
-
-  
     return (
         <Controller
         name={props.name}
@@ -61,7 +44,6 @@ export const InputSelect = ( { control,setValue,...props } : Props ) => {
                 //onChange={onChange}
                 onChange={(event) => {
                     onChange(event);
-                    updateObservacionValue(event.target.value)
                 }}
                 error={!!error}
                 fullWidth

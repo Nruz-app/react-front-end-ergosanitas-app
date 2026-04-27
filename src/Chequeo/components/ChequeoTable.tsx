@@ -52,7 +52,7 @@ export const ChequeoTable = ({
   const isUsuario = user_perfil === "Usuario";
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [total, setTotal] = useState(0);
 
   const [rowTable,setRowTable] = useState(rows);
@@ -354,9 +354,13 @@ export const ChequeoTable = ({
                 <>
                   {/* Fecha */}
                   <TableCell>
-                    {(isAdmin || isMedico) 
-                      ? (row.fecha_atencion ?? row.created_at)
-                      : row.created_at}
+                   {(() => {
+                      const fecha = (isAdmin || isMedico)
+                        ? (row.fecha_atencion ?? row.created_at)
+                        : row.created_at;
+
+                      return fecha ? new Date(fecha).toISOString().split("T")[0] : "";
+                    })()}
                   </TableCell>
 
                   {!isMedico && (
