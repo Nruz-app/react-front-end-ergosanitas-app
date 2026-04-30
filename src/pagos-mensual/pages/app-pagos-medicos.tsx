@@ -25,6 +25,7 @@ const AppPagosMedicosPage = () => {
     const handleUpdatePrecio = async (club: string, valor_cgc: string, periodo: string) => {
         const {  postPagoMensual } = await PagoMensualService();
         await postPagoMensual(club, valor_cgc, periodo );
+        fetchPagoMensual();
     }
     const onDelete = async (club: string, periodo: string) => {
         const {  deletePagoMensual } = await PagoMensualService();
