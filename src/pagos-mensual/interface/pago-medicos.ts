@@ -16,6 +16,7 @@ export interface PagoMedico {
   monto_total: number;
   descuento_total: number;
   monto_total_final : number;
+  cantidad_total : number;
   estado: string;
   data: PagoDetalle[];
 }

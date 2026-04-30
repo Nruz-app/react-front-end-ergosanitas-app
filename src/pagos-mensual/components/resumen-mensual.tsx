@@ -143,7 +143,14 @@ export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete }: Props) 
                         <Typography fontWeight="bold"> ${mes.monto_total.toLocaleString()}</Typography>
                       </Grid>
 
-                      <Grid item xs={12}>
+                      <Grid item xs={6}>
+                        <Typography variant="caption">CANTIDAD TOTAL</Typography>
+                        <Typography fontWeight="bold" fontSize={18}>
+                          {mes.cantidad_total.toLocaleString()}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item xs={6}>
                         <Typography variant="caption">TOTAL FINAL </Typography>
                         <Typography fontWeight="bold" fontSize={18}>
                           ${mes.monto_total_final.toLocaleString()}
