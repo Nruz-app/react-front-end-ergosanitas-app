@@ -9,7 +9,7 @@ import { AppUrlPage } from '../Url/page';
 
 import { AppIncidentesPages } from '../Incidentes/';
 
-import { AppPagosMedicosPage } from '../pagos-medicos';
+import { AppPagosMedicosPage } from '../pagos-mensual';
 
 
 type JSXComponent = () => JSX.Element;
@@ -65,9 +65,9 @@ export const routesErgo:Route[] = [
         Component : AppReservaHora
     },
     {
-        name      : 'Pagos Médicos',
-        to        : '/pagos-medicos',
-        path      : '/pagos-medicos/*',
+        name      : 'Pagos Mensual',
+        to        : '/pagos-mensual',
+        path      : '/pagos-mensual/*',
         perfil    : 'All',
         status    : true,  
         Component : AppPagosMedicosPage
