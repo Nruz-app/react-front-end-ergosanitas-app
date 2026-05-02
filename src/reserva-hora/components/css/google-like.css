@@ -1,0 +1,35 @@
+.day-cell {
+  padding: 2px;
+}
+
+.day-number {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.day-content {
+  margin-top: 4px;
+}
+
+.day-total {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.event-chip {
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 0.65rem;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more {
+  font-size: 0.65rem;
+  color: #666;
+}

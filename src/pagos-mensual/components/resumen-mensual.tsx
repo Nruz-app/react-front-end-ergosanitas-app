@@ -183,7 +183,7 @@ export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete }: Props) 
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                               <Box>
                                 <Typography variant="body2" fontWeight={600}>
-                                  {item.club}
+                                  { item.club.split("@")[0] }
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
                                   Cant: {item.cantidad}

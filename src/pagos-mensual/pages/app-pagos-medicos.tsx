@@ -49,7 +49,7 @@ const AppPagosMedicosPage = () => {
                 animation: 'fadeInDownBig 1s ease-out'
                 }}
             >
-                Pagos Médicos {new Date().getFullYear()}
+                Pagos Mensual {new Date().getFullYear()}
             </Typography>
         </Box>
         <ResumenMensual 
