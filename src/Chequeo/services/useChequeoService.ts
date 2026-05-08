@@ -160,7 +160,8 @@ export const  UseChequeoService = async () => {
   
     const cargaMasivaECG = async(derivado_medico:string, formData : FormData) : Promise<ICargaMasivaECG> => {
 
-        const response:ICargaMasivaECG = await  apiAdapter.post(`${API}/carga-masiva-ecg`,{derivado_medico,formData});        
+        formData.append("derivado_medico", derivado_medico);
+        const response:ICargaMasivaECG = await  apiAdapter.post(`${API}/carga-masiva-ecg`,formData);        
         return response;
     }
 

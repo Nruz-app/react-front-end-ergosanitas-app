@@ -132,7 +132,7 @@ export const CargaMasivaECG = () => {
             const formData = new FormData();
 
             archivos.forEach((file) => {
-                formData.append("files[]", file);
+                formData.append("files", file);
             });
 
             const { cargaMasivaECG } =
