@@ -12,3 +12,5 @@ export type { EstadoGenerales } from './estado-generales.interface';
 export type { ResponseCargaMasica } from './response-carga-masiva';
 
 export type { IUrlCertificado} from './url-certificado';
+
+export  type { ICargaMasivaECG, ÏProcesados } from './carga-masiva-ecg';

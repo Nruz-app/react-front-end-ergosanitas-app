@@ -4,7 +4,15 @@ import { TabPanel } from "../components/tabs/TabPanel";
 import React, { useContext, useState } from "react";
 
 import { Chequeo } from "./Chequeo";
-import { ChequeoTable, FormUpload, ChequeoView, CargaMasiva, CalculadoraImc, PerfilUsuario } from "../components";
+import { 
+  ChequeoTable, 
+  FormUpload, 
+  ChequeoView, 
+  CargaMasiva, 
+  CalculadoraImc, 
+  PerfilUsuario,
+  CargaMasivaECG 
+} from "../components";
 import { IChequeo, type formData } from '../interface/';
 import { LikeTextProvider } from "../context";
 import { UseChequeoService } from "../services/useChequeoService";
@@ -21,6 +29,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
 const initial_status = { status: 0, rut_paciente: '', id_paciente: 0, url_pdf: '' };
 const initial_value: formData = { rut: '', nombre: '', url_pdf: '' };
@@ -182,7 +191,8 @@ export const AppChequeo = () => {
               <Tooltip key="Carga Masiva" title="Carga Masiva" placement="right"><Tab key={2} icon={<CloudUploadIcon />} {...a11yProps(2)} /></Tooltip>,
               <Tooltip key="Agregar Perfil" title="Agregar Perfil" placement="right"><Tab key={3} icon={<GroupAddIcon />} {...a11yProps(3)} /></Tooltip>,
               <Tooltip key="Calculos QTC" title="Calculos QTC" placement="right"><Tab key={4} icon={<CalculateIcon />} {...a11yProps(4)} /></Tooltip>,
-              <Tooltip key="Perfil Usuario" title="Perfil Usuario" placement="right"><Tab key={5} icon={<ManageAccountsIcon />} {...a11yProps(5)} /></Tooltip>
+              <Tooltip key="Perfil Usuario" title="Perfil Usuario" placement="right"><Tab key={5} icon={<ManageAccountsIcon />} {...a11yProps(5)} /></Tooltip>,
+              <Tooltip key="Carga Masiva ECG" title="Carga Masiva ECG" placement="right"><Tab key={6} icon={<DriveFolderUploadIcon />} {...a11yProps(6)} /></Tooltip>
             ]}
           </Tabs>
 
@@ -229,6 +239,7 @@ export const AppChequeo = () => {
                 <TabPanel value={value} index={3}><FormUser /></TabPanel>
                 <TabPanel value={value} index={4}><CalculadoraImc /></TabPanel>
                 <TabPanel value={value} index={5}><PerfilUsuario /></TabPanel>
+                <TabPanel value={value} index={6}><CargaMasivaECG /></TabPanel>
               </>
             )}
 

@@ -1,6 +1,6 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
 import { LikeTextState } from '../context/likeText/LikeTextProvider';
-import { IChequeo,EstadoGenerales, ResponseCargaMasica, IUrlCertificado } from '../interface';
+import { IChequeo,EstadoGenerales, ResponseCargaMasica, IUrlCertificado, ICargaMasivaECG } from '../interface';
 
 import { type formData } from '../interface/';
 import { IData, IDataAll } from '../interface/chequeo.interface';
@@ -157,6 +157,13 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
+  
+    const cargaMasivaECG = async(derivado_medico:string, formData : FormData) : Promise<ICargaMasivaECG> => {
+
+        const response:ICargaMasivaECG = await  apiAdapter.post(`${API}/carga-masiva-ecg`,{derivado_medico,formData});        
+        return response;
+    }
+
    
     return { 
         getChequeo,
@@ -178,7 +185,8 @@ export const  UseChequeoService = async () => {
         postChequeoSearch,
         postChequeoAll,
         pathUrlCertificado,
-        validaCertificado
-    };
+        validaCertificado,
+        cargaMasivaECG
+    }
     
 }

@@ -44,3 +44,5 @@ export * from './modal/validate-dialog';
 export * from './modal/preview-file';
 
 export { PerfilUsuario } from './perfil-usuario/perfil-usuario';
+
+export { CargaMasivaECG } from './carga-masiva-ecg/carga-masiva-ecg';
