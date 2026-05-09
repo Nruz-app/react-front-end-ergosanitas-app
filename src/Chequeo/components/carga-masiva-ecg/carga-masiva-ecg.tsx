@@ -163,7 +163,7 @@ export const CargaMasivaECG = ({handleReloadTable}: Props) => {
       const formData = new FormData();
 
       archivos.forEach((file) => {
-        formData.append("files", file);
+        formData.append("files[]", file);
       });
 
       const { cargaMasivaECG } = await UseChequeoService();
