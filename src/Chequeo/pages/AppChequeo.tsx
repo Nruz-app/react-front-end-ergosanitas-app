@@ -51,6 +51,9 @@ export const AppChequeo = () => {
   const [formData, formDataSet] = useState(initial_value);
   const [chequeoView, setChequeoView] = useState<IChequeo>(initial_view);
 
+  const [reloadTable, setReloadTable] = useState(false);
+
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
 
@@ -59,7 +62,7 @@ export const AppChequeo = () => {
     } else {
       statusSet({ status: 0, rut_paciente: '', id_paciente: 0, url_pdf: '' });
     }
-  };
+  }
 
   const handleUpdateStatus = async (status: number, rut_paciente: string, id_paciente: number) => {
     try {
@@ -87,7 +90,11 @@ export const AppChequeo = () => {
     const { getChequeoRut } = await UseChequeoService();
     const resChequeo: IChequeo = await getChequeoRut(id_paciente);
     setChequeoView(resChequeo);
-  };
+  }
+
+  const handleReloadTable = () => {
+    setReloadTable(prev => !prev);
+  }
 
   const a11yProps = (index: number) => ({
     id: `vertical-tab-${index}`,
@@ -206,7 +213,7 @@ export const AppChequeo = () => {
                     <ElectroCardiograma {...{ rut_paciente, id_paciente, url_pdf, handleUpdateStatus }} />
                   ) : (
                     <LikeTextProvider>
-                      <ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData }} />
+                      <ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData,reloadTable, handleReloadTable }} />
                     </LikeTextProvider>
                   )}
                 </TabPanel>
@@ -217,7 +224,7 @@ export const AppChequeo = () => {
             {user_perfil === "Colegios" && (
               <>
                 <TabPanel value={value} index={0}><ModalBarProvider><HomePage /></ModalBarProvider></TabPanel>
-                <TabPanel value={value} index={1}><LikeTextProvider><ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData }} /></LikeTextProvider></TabPanel>
+                <TabPanel value={value} index={1}><LikeTextProvider><ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData,reloadTable, handleReloadTable }} /></LikeTextProvider></TabPanel>
                 <TabPanel value={value} index={2}><Chequeo {...{ rut_paciente, id_paciente, handleUpdateStatus }} /></TabPanel>
                 <TabPanel value={value} index={3}><CargaMasiva /></TabPanel>
               </>
@@ -227,7 +234,7 @@ export const AppChequeo = () => {
               <>
                 <TabPanel value={value} index={0}>
                   <LikeTextProvider>
-                    <ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData }} />
+                    <ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData,reloadTable, handleReloadTable }} />
                   </LikeTextProvider>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
@@ -239,7 +246,7 @@ export const AppChequeo = () => {
                 <TabPanel value={value} index={3}><FormUser /></TabPanel>
                 <TabPanel value={value} index={4}><CalculadoraImc /></TabPanel>
                 <TabPanel value={value} index={5}><PerfilUsuario /></TabPanel>
-                <TabPanel value={value} index={6}><CargaMasivaECG /></TabPanel>
+                <TabPanel value={value} index={6}><CargaMasivaECG  handleReloadTable={handleReloadTable} /></TabPanel>
               </>
             )}
 

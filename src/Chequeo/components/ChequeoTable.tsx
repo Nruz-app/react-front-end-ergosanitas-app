@@ -29,13 +29,11 @@ interface Props {
   handleFormData : (formData : formData) => void;
   handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
   handleViewData : (id_paciente : number) => void;
+  reloadTable:boolean;
+  handleReloadTable:() => void;
 }
 
-export const ChequeoTable = ({
-  handleFormData,
-  handleUpdateStatus,
-  handleViewData
-}: Props ) => {
+export const ChequeoTable = ({handleFormData,handleUpdateStatus,handleViewData,reloadTable,handleReloadTable}: Props ) => {
 
   const navigate = useNavigate();
 
@@ -119,11 +117,13 @@ export const ChequeoTable = ({
   }
 
   const handleUpdatePaciente = async(rut_paciente : string,id_paciente : number) => {
-    handleUpdateStatus(1,rut_paciente,id_paciente)
+    await handleUpdateStatus(1,rut_paciente,id_paciente)
+    handleReloadTable();
   }
 
   const handleUpdatePacienteH = async(rut_paciente : string,id_paciente : number) => {
-    handleUpdateStatus(3,rut_paciente,id_paciente)
+    await handleUpdateStatus(3,rut_paciente,id_paciente)
+    handleReloadTable();
   }
 
   const handleDeletePaciente = async (id: number) => {
@@ -152,7 +152,7 @@ export const ChequeoTable = ({
           timer: 2000,
           showConfirmButton: false
         });
-        fetchAgendaHoras(); // Actualiza la agenda
+        handleReloadTable(); // Actualiza la agenda
       } catch (error) {
         console.error('Error al eliminar paciente:', error);
         Swal.fire({
@@ -162,6 +162,7 @@ export const ChequeoTable = ({
         });
       }
     }
+    handleReloadTable();
   }
   
   const handRedictCertificado  = async (rut_paciente : string,id_paciente : number) => {
@@ -249,8 +250,14 @@ export const ChequeoTable = ({
 
   useEffect(() => {
     fetchAgendaHoras(page + 1, rowsPerPage);
-  }, [page, rowsPerPage, likeTextContext.fechaCalendar,
-    likeTextContext.textoValue, likeTextContext.selectClub]);
+  }, [
+    page,
+    rowsPerPage,
+    reloadTable,
+    likeTextContext.fechaCalendar,
+    likeTextContext.textoValue,
+    likeTextContext.selectClub
+  ]);  
 
   return (
     <Box sx={{ flexGrow: 1 }} >
