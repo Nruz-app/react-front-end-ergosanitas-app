@@ -210,7 +210,7 @@ export const AppChequeo = () => {
               <>
                 <TabPanel value={value} index={0}>
                   {status === 3 ? (
-                    <ElectroCardiograma {...{ rut_paciente, id_paciente, url_pdf, handleUpdateStatus }} />
+                    <ElectroCardiograma {...{ rut_paciente, id_paciente, url_pdf, handleUpdateStatus,handleReloadTable }} />
                   ) : (
                     <LikeTextProvider>
                       <ChequeoTable {...{ handleFormData, handleUpdateStatus, handleViewData,reloadTable, handleReloadTable }} />
@@ -240,7 +240,7 @@ export const AppChequeo = () => {
                 <TabPanel value={value} index={1}>
                   {status !== 3
                     ? <Chequeo {...{ rut_paciente, id_paciente, handleUpdateStatus }} />
-                    : <ElectroCardiograma {...{ rut_paciente, id_paciente, url_pdf, handleUpdateStatus }} />}
+                    : <ElectroCardiograma {...{ rut_paciente, id_paciente, url_pdf, handleUpdateStatus,handleReloadTable }} />}
                 </TabPanel>
                 <TabPanel value={value} index={2}><CargaMasiva /></TabPanel>
                 <TabPanel value={value} index={3}><FormUser /></TabPanel>

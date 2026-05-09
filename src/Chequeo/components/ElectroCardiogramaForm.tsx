@@ -16,9 +16,10 @@ interface Props {
   id_paciente: number;
   url_pdf?: string;
   handleUpdateStatus: (status: number, rut_paciente: string, id_paciente: number) => void;
+  handleReloadTable: () => void;
 }
 
-export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, handleUpdateStatus }: Props) => {
+export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, handleUpdateStatus, handleReloadTable }: Props) => {
   
   const { user }  = useContext( LoginContext );
   const { user_perfil }  = user;
@@ -109,6 +110,7 @@ export const ElectroCardiogramaForm = ({ rut_paciente, url_pdf, id_paciente, han
       Swal.fire('Paciente Listo', `El paciente ${rut_paciente} fue ingresado con éxito`, 'success');
       control._reset();
       handleUpdateStatus(0, '', 0);
+      handleReloadTable();
     }
   }
 

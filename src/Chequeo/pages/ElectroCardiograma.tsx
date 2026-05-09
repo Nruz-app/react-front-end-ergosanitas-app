@@ -6,9 +6,10 @@ interface Props {
     id_paciente : number;
     url_pdf : string;
     handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
+    handleReloadTable: () => void;
 }
 
-export const ElectroCardiograma = ({ rut_paciente,id_paciente,url_pdf,handleUpdateStatus }: Props) => {
+export const ElectroCardiograma = ({ rut_paciente,id_paciente,url_pdf,handleUpdateStatus,handleReloadTable }: Props) => {
 
 
     return (
@@ -34,6 +35,7 @@ export const ElectroCardiograma = ({ rut_paciente,id_paciente,url_pdf,handleUpda
                   id_paciente = {id_paciente}
                   url_pdf = { url_pdf }
                   handleUpdateStatus = { handleUpdateStatus } 
+                  handleReloadTable = { handleReloadTable }
                 />
             }
             
