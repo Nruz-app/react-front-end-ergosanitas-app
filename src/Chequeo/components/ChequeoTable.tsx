@@ -323,6 +323,13 @@ export const ChequeoTable = ({handleFormData,handleUpdateStatus,handleViewData,r
               </TableCell>
             </TableRow>
           )}
+          {statusTable && rowTable.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                No se encontraron pacientes Vigentes.
+              </TableCell>
+            </TableRow>
+          )}
 
           {statusTable && rowTable.map((row) => (
 
