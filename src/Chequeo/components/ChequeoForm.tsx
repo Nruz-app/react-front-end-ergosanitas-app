@@ -16,12 +16,13 @@ import { SelectUser } from "./";
 interface Props {
   chequeo?:IChequeo;
   handleUpdateStatus : (status : number, rut_paciente : string,id_paciente : number) => void;
+  handleReloadTable: () => void;
 }
 
 
 
 
-export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
+export const ChequeoForm = ({chequeo,handleUpdateStatus, handleReloadTable }:Props) => {
   
  //const navigate = useNavigate();
 
@@ -88,6 +89,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
           control._reset();  
           //navigate('/chequeo');
           handleUpdateStatus(0,'',0);
+          handleReloadTable();
       }    
       setBtnStatus(false);
   }
@@ -149,6 +151,7 @@ export const ChequeoForm = ({chequeo,handleUpdateStatus}:Props) => {
           control._reset();  
           //navigate('/chequeo?status=1');
           handleUpdateStatus(0,'',0);
+          handleReloadTable();
       }   
       setBtnStatus(false); 
   }

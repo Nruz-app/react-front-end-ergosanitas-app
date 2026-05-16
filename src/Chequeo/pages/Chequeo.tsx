@@ -5,10 +5,11 @@ interface Props  {
   rut_paciente : string;
   id_paciente  : number;
   handleUpdateStatus : (status : number, rut_paciente : string, id_paciente : number) => void;
+  handleReloadTable: () => void;
 }
 
 
-export const Chequeo = ({ rut_paciente,id_paciente,handleUpdateStatus }: Props) => {
+export const Chequeo = ({ rut_paciente,id_paciente,handleUpdateStatus, handleReloadTable }: Props) => {
 
   return (
     <Box ml={ 15 } mt={ 8 } sx={{ flexGrow: 1 }} >
@@ -31,12 +32,14 @@ export const Chequeo = ({ rut_paciente,id_paciente,handleUpdateStatus }: Props) 
           (!rut_paciente) ?
             <ChequeoForm
               handleUpdateStatus = { handleUpdateStatus } 
+              handleReloadTable = { handleReloadTable }
             />
           :
             <ChequeoFormUpdate 
               rut_paciente = { rut_paciente }
               id_paciente = { id_paciente }
               handleUpdateStatus = { handleUpdateStatus } 
+              handleReloadTable = { handleReloadTable }
             />
         }
         

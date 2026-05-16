@@ -8,10 +8,11 @@ interface Props {
     rut_paciente : string;
     id_paciente : number;
     handleUpdateStatus : (status : number, rut_paciente : string,id_paciente : number) => void;
+    handleReloadTable: () => void;
 }
 
 
-export const ChequeoFormUpdate = ({id_paciente,handleUpdateStatus}: Props) => {
+export const ChequeoFormUpdate = ({id_paciente,handleUpdateStatus, handleReloadTable}: Props) => {
   
  const { chequeo }: { 
     chequeo: IChequeo | undefined;
@@ -23,6 +24,7 @@ export const ChequeoFormUpdate = ({id_paciente,handleUpdateStatus}: Props) => {
     <ChequeoForm
         chequeo = { chequeo } 
         handleUpdateStatus = { handleUpdateStatus }
+        handleReloadTable = { handleReloadTable }
     />
   )
 }
