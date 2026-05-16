@@ -49,7 +49,7 @@ export const Footer = () => {
     </Typography>
     
     {
-      /*
+      
       <Typography
       variant="subtitle1"
       sx={{
@@ -60,7 +60,7 @@ export const Footer = () => {
     >
       Desarrollado por Nicolas Ruz Figueroa
     </Typography>
-      */ 
+      
     }
     
     <Typography

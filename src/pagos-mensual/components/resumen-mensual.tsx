@@ -244,7 +244,7 @@ export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete }: Props) 
                               <Box>
                                 <Typography variant="caption" color="text.secondary">MDC </Typography>
                                 <Typography variant="caption" fontWeight={600}>
-                                  ${item.monto_mdc_pen.toLocaleString()+item.monto_mdc_rev.toLocaleString()}
+                                  ${(item.monto_mdc_pen + item.monto_mdc_rev).toLocaleString()}
                                 </Typography>
                               </Box>
 
