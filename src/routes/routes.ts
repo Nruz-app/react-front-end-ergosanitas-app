@@ -6,7 +6,7 @@ import { AppCertificadoPage } from '../Certificados/pages/';
 import { AppAgendarHoraPage } from '../AgendarHora/pages/';
 //import { AppAsistenteVirtualPage } from '../AsistenteVirtual/pages';
 //import { MapsPage } from '../Maps/pages';
-//import { AppServiciosPage } from '../Servicios/pages';
+import { AppServiciosPage } from '../Servicios/pages';
 
 
 type JSXComponent = () => JSX.Element;
@@ -37,5 +37,11 @@ export const routes:Route[] = [
         to        : '/certificados',
         path      : '/certificados/*',
         Component : AppCertificadoPage
+    },
+    {
+        name      : 'Servicios',
+        to        : '/servicios',
+        path      : '/servicios/*',
+        Component : AppServiciosPage
     }
 ]
