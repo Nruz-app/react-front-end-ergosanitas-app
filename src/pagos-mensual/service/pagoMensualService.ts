@@ -1,4 +1,5 @@
 import { HttpAdapter, ApiAdapter } from '../../common/api/api.adapter';
+import { IPagoMedicoMDC } from '../interface/pago-medico-mdc';
 import { PagoMedico } from '../interface/pago-medicos';
 
 
@@ -37,10 +38,17 @@ export const  PagoMensualService = async () => {
         return response;
     }
 
+    const getEstadisticaPagoMensualMDC =  async () : Promise<IPagoMedicoMDC[]> => {
+        const response:IPagoMedicoMDC[] = await  apiAdapter.get(`${API}/estadisticas/estadistica-pago-mdc`,10,0)
+        console.log(response);
+        return response;
+    }
+
     return { 
         getEstadisticaPagoMensual,
         postPagoMensual,
-        deletePagoMensual
+        deletePagoMensual,
+        getEstadisticaPagoMensualMDC
     }
 
 }

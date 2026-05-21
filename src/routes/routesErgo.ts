@@ -10,17 +10,25 @@ import { AppUrlPage } from '../Url/page';
 import { AppIncidentesPages } from '../Incidentes/';
 
 import { AppPagosMedicosPage } from '../pagos-mensual';
-
+import { AppHomeMedico } from '../pagos-mensual';
 
 type JSXComponent = () => JSX.Element;
+
+interface RouteChild {
+    name      : string,
+    to        : string,
+    path      : string,
+    Component : LazyExoticComponent<JSXComponent> | JSXComponent
+}
 
 interface Route {
     name      : string,
     to        : string,
     path      : string,
     perfil    : string,
-    status    : boolean
-    Component : LazyExoticComponent<JSXComponent> | JSXComponent
+    status    : boolean,
+    Component?: LazyExoticComponent<JSXComponent> | JSXComponent,
+    children? : RouteChild[]
 }
 
 export const routesErgo:Route[] = [
@@ -57,12 +65,25 @@ export const routesErgo:Route[] = [
         Component : AppReservaHora
     },
     {
-        name      : 'Pagos Mensual',
-        to        : '/pagos-mensual',
-        path      : '/pagos-mensual/*',
-        perfil    : 'All',
-        status    : true,  
-        Component : AppPagosMedicosPage
+    name      : 'Pagos Mensual',
+    to        : '/pagos-mensual',
+    path      : '/pagos-mensual/*',
+    perfil    : 'All',
+    status    : true,
+    children  : [
+            {
+                name      : 'Resumen Mensual',
+                to        : 'resumen',
+                path      : 'resumen',
+                Component : AppPagosMedicosPage
+            },
+            {
+                name      : 'Resumen Mensual MDC',
+                to        : 'resumenMDC',
+                path      : 'resumenMDC',
+                Component : AppHomeMedico
+            }
+        ]
     }
 ]
 /*

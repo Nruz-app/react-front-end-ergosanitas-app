@@ -3,6 +3,8 @@ import { LazyExoticComponent } from 'react';
 
 import { AppChequeo } from '../Chequeo/pages';
 
+import { AppHomeMedico } from '../pagos-mensual';
+
 type JSXComponent = () => JSX.Element;
 
 interface Route {
@@ -16,9 +18,17 @@ interface Route {
 
 export const routesMe:Route[] = [
     {
-        name      : 'Chequeos',
+        name      : 'Home',
         to        : '/',
         path      : '/*',
+        perfil    : 'Medicos',
+        status    : true,  
+        Component : AppHomeMedico
+    },
+    {
+        name      : 'Chequeos',
+        to        : '/chequeos',
+        path      : '/chequeos/*',
         perfil    : 'Medicos',
         status    : true,  
         Component : AppChequeo
