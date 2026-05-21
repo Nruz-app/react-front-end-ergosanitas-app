@@ -32,7 +32,7 @@ interface Props {
 }
 
 
-export const InputAutoComplete = ( { control,...props } : Props ) => {
+export const InputAutoCompleteComuna = ( { control,...props } : Props ) => {
   return (
     <Controller
         name= { props.name }
