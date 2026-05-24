@@ -20,6 +20,7 @@ import { ModalContext, SubMenuContext } from '../common/context';
 import { routes } from './routes';
 
 import { Loading } from './Loading';
+import { AppAsistenteVirtualPage } from '../AsistenteVirtual/pages';
 
 
 export const Navigation = () => {
@@ -234,7 +235,9 @@ export const Navigation = () => {
                     <Route key={path} path={path} element={<Component />} />
                 ))}
                 <Route path="/*" element={<Navigate to={routes[0].to} replace />} />
+                <Route path="/asistente-virtual"element={<AppAsistenteVirtualPage />} />
             </Routes>
+            
         </BrowserRouter>
         { /* <BrowserRouter> */ }
     </Suspense>

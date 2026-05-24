@@ -21,9 +21,14 @@ export const TypingLoaderTer = ({className}:props) => {
       <img
             src="/terminator.gif"
             alt="Cargando"
+            style={{
+              width: '300px',
+              height: '300px',
+              objectFit: 'contain',
+              display: 'block',
+            }}
         />
     </Box>
-    
   )
 }
 

@@ -27,16 +27,28 @@ export const MyMessage = ({text}:Props) => {
             >
                 U
             </Avatar>
-            <Box 
+            <Box
                 sx={{
-                    marginLeft: 2,
-                    padding: '12px 16px',  // Aumentar el padding para más espacio
+                    marginRight: 2,
+                    padding: '12px 16px',
                     backgroundColor: 'indigo.700',
                     borderRadius: '12px',
                     boxShadow: 2,
-                    transition: 'background-color 0.3s ease',  // Efecto de transición
+
+                    maxWidth: {
+                        xs: '75%',
+                        sm: '70%',
+                        md: '60%',
+                    },
+
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                    whiteSpace: 'pre-wrap',
+
+                    transition: 'background-color 0.3s ease',
+
                     '&:hover': {
-                        backgroundColor: 'indigo.800',  // Color más oscuro en hover
+                        backgroundColor: 'indigo.800',
                     },
                 }}
             >

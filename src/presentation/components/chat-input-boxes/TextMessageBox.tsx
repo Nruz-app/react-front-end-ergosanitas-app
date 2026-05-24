@@ -33,8 +33,8 @@ export const TextMessageBox = ({onSendMessage,placeholder,disableCorrections=fal
         onSubmit={handleSendMessage}
         style={{
             display: 'flex',
-            alignItems: 'center',
-            height: '64px',
+            minHeight: '64px',
+            alignItems: 'flex-end',
             backgroundColor: '#fff', // Color de fondo más limpio
             borderRadius: '16px',
             padding: '0 16px',
@@ -45,6 +45,9 @@ export const TextMessageBox = ({onSendMessage,placeholder,disableCorrections=fal
             <TextField
                 variant="outlined"
                 fullWidth
+                multiline
+                minRows={1}
+                maxRows={4}
                 autoFocus
                 name="message"
                 placeholder={placeholder}
@@ -57,13 +60,18 @@ export const TextMessageBox = ({onSendMessage,placeholder,disableCorrections=fal
                 }}
                 sx={{
                     borderRadius: '16px',
+
                     '& .MuiOutlinedInput-root': {
+                        alignItems: 'flex-start',
+
                         '& fieldset': {
                             borderColor: 'grey.400',
                         },
+
                         '&:hover fieldset': {
                             borderColor: 'indigo.300',
                         },
+
                         '&.Mui-focused fieldset': {
                             borderColor: 'indigo.500',
                         },
