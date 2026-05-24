@@ -8,7 +8,7 @@ interface Props {
   pagoMensualMDC: IPagoMedicoMDC[];
 }
 
-export const ResumenMensualMDC = ({pagoMensualMDC}: Props) => {
+export const ResumenMensualAllMDC = ({pagoMensualMDC}: Props) => {
 
   const periodosOrdenados = [...(pagoMensualMDC ?? [])]
     .sort((a, b) => b.periodo.localeCompare(a.periodo));

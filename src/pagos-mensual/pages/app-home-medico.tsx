@@ -1,12 +1,18 @@
 import { Box, Typography } from "@mui/material";
 import { ResumenMensualMDC } from "../components/resumen-mensual-mdc";
 import { IPagoMedicoMDC } from "../interface/pago-medico-mdc";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { PagoMensualService } from "../service/pagoMensualService";
+import { LoginContext } from "../../common/context";
+import { ResumenMensualAllMDC } from "../components/resumen-mensual-mdc-all";
 
 
 
 const AppHomeMedico = () => {
+
+
+    const { user } = useContext(LoginContext);
+    const { user_perfil } = user;
 
     const [pagoMensualMDC, setPagoMensualMDC] = useState<IPagoMedicoMDC[]>([]);
 
@@ -42,9 +48,17 @@ const AppHomeMedico = () => {
                 Pagos Mensual {new Date().getFullYear()}
             </Typography>
         </Box>
-        <ResumenMensualMDC 
-            pagoMensualMDC={pagoMensualMDC}
-        />
+        {
+            user_perfil === "Medicos" ? (
+                <ResumenMensualMDC 
+                    pagoMensualMDC={pagoMensualMDC}
+                />
+            ) : (
+                <ResumenMensualAllMDC 
+                    pagoMensualMDC={pagoMensualMDC}
+                />
+            )
+        }        
         </>
     )
 
