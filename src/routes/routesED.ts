@@ -19,7 +19,7 @@ export const routesED:Route[] = [
         name      : 'Home',
         to        : '/',
         path      : '/*',
-        perfil    : 'All',
+        perfil    : 'Emergencia Deportiva',
         status    : true,  
         Component : AppHomePage
     }

@@ -36,7 +36,7 @@ export const routesErgo:Route[] = [
         name      : 'Chequeos',
         to        : '/',
         path      : '/*',
-        perfil    : 'Testing',
+        perfil    : 'Administrador',
         status    : true,  
         Component : AppChequeo
     },
@@ -44,7 +44,7 @@ export const routesErgo:Route[] = [
         name      : 'Certifiado',
         to        : '/certificado',
         path      : '/certificado/:rut_paciente/:id_paciente',
-        perfil    : 'All', 
+        perfil    : 'Administrador', 
         status    : false,  
         Component : AppUrlPage
     },
@@ -52,7 +52,7 @@ export const routesErgo:Route[] = [
         name      : 'Incidentes',
         to        : '/Incidentes',
         path      : '/incidentes/*',
-        perfil    : 'All', 
+        perfil    : 'Administrador', 
         status    : true,  
         Component : AppIncidentesPages
     },
@@ -60,7 +60,7 @@ export const routesErgo:Route[] = [
         name      : 'Agenda Mensual',
         to        : '/reserva-hora',
         path      : '/reserva-hora/*',
-        perfil    : 'All',
+        perfil    : 'Administrador',
         status    : true,  
         Component : AppReservaHora
     },
@@ -68,7 +68,7 @@ export const routesErgo:Route[] = [
     name      : 'Pagos Mensual',
     to        : '/pagos-mensual',
     path      : '/pagos-mensual/*',
-    perfil    : 'All',
+    perfil    : 'Administrador',
     status    : true,
     children  : [
             {

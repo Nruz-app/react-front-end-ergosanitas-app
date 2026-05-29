@@ -18,7 +18,7 @@ export const routesPA:Route[] = [
         name      : 'Home',
         to        : '/',
         path      : '/*',
-        perfil    : 'All', 
+        perfil    : 'Paciente', 
         status    : true,  
         Component : AppPacientePages
     }
