@@ -12,6 +12,9 @@ import { AppIncidentesPages } from '../Incidentes/';
 import { AppPagosMedicosPage } from '../pagos-mensual';
 import { AppHomeMedico } from '../pagos-mensual';
 
+import { AppAsistenteVozPage } from '../asistente-voz';
+
+
 type JSXComponent = () => JSX.Element;
 
 interface RouteChild {
@@ -34,9 +37,9 @@ interface Route {
 export const routesErgo:Route[] = [
     {
         name      : 'Chequeos',
-        to        : '/',
-        path      : '/*',
-        perfil    : 'Administrador',
+        to        : '/Chequeos',
+        path      : '/Chequeos/*',
+        perfil    : 'All',
         status    : true,  
         Component : AppChequeo
     },
@@ -84,7 +87,15 @@ export const routesErgo:Route[] = [
                 Component : AppHomeMedico
             }
         ]
-    }
+    },
+    {
+        name      : 'Asistente-voz',
+        to        : '/asistente-voz',
+        path      : '/asistente-voz/*',
+        perfil    : 'Usuario',
+        status    : true,  
+        Component : AppAsistenteVozPage
+    },
 ]
 /*
 {
