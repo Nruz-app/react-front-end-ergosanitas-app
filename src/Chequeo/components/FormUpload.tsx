@@ -62,27 +62,49 @@ export const FormUpload = ({ formData }: Props) => {
         try {
 
             const { postUploadFile } = await UseChequeoService();
-            const response = await postUploadFile(selectedFile,formData);
 
-            console.log('Respuesta OpenAI:',response);
+            const response:any = await postUploadFile(selectedFile,formData);
+
+            const ecg = response.analisis;
 
             setSelectedFile(null);
             onOpenModal(false);
 
             Swal.fire({
-                title: '🫀 Análisis ECG',
+                icon: 'success',
+                title: '🫀 Informe Electrocardiograma',
+                width: 900,
                 html: `
-                    <div style="text-align:left;max-height:400px;overflow:auto">
-                        <pre>
-    ${JSON.stringify(response, null, 2)}
-                        </pre>
+                    <div style="text-align:left;font-size:14px">
+                        <h3>📋 Resumen</h3>
+                        <p><b>Conclusión:</b><br>${ecg.conclusion}</p>
+                        <p><b>Nivel de Urgencia:</b>${ecg.nivel_urgencia}</p>
+                        <hr>
+                        <h3>❤️ Ritmo y Frecuencia</h3>
+                        <p><b>Ritmo:</b> ${ecg.ritmo}</p>
+                        <p><b>Frecuencia:</b> ${ecg.frecuencia_cardiaca}</p>
+                        <p><b>Eje Eléctrico:</b> ${ecg.eje_electrico}</p>
+                        <hr>
+                        <h3>📈 Intervalos</h3>
+                        <p><b>PR:</b> ${ecg.intervalo_pr}</p>
+                        <p><b>QRS:</b> ${ecg.complejo_qrs}</p>
+                        <p><b>QT:</b> ${ecg.qt}</p>
+                        <p><b>QTc:</b> ${ecg.qtc}</p>
+                        <hr>
+                        <h3>🔍 Hallazgos</h3>
+                        <p><b>Onda P:</b> ${ecg.onda_p}</p>
+                        <p><b>Segmento ST:</b> ${ecg.segmento_st}</p>
+                        <p><b>Onda T:</b> ${ecg.onda_t}</p>
+                        <p><b>Hipertrofias:</b> ${ecg.hipertrofias}</p>
+                        <p><b>Bloqueos:</b> ${ecg.bloqueos}</p>
+                        <p><b>Arritmias:</b> ${ecg.arritmias}</p>
+                        <hr>
+                        <h3>📝 Observaciones</h3>
+                        <p>${ecg.hallazgos}</p>
                     </div>
                 `,
-                width: 900,
-                icon: 'success',
                 confirmButtonText: 'Aceptar'
             });
-
         }
         catch (error: any) {
             console.error('Error al subir el archivo:',error);
@@ -105,17 +127,14 @@ export const FormUpload = ({ formData }: Props) => {
         aria-describedby="keep-mounted-modal-description"
     >
          <Box sx={style} >
-
-
             <Grid item xs={12} sm={6} md={6}>
 
                 <InputFileUpload 
                     onFileSelect={handleFileSelect} 
                     typeAccept="image/*, .pdf" 
                 />
-            
+    
             </Grid>   
-
             <Grid item sx={{ textAlign: 'center' }}>
                 <Button
                     variant="contained"
@@ -160,7 +179,6 @@ export const FormUpload = ({ formData }: Props) => {
                     Cerrar
                 </Button>
                 </Grid>
-
          </Box>
     </Modal>
     )
