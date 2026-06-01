@@ -44,42 +44,55 @@ export const FormUpload = ({ formData }: Props) => {
 
     const handleFileSelect = (file: File | null) => {
         setSelectedFile(file);
-    };
-
+    }
 
     const onSubmit = async () => {
 
-        if (selectedFile) {
+        if (!selectedFile) {
 
-            try {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Archivo requerido',
+                text: 'Por favor selecciona una imagen.'
+            });
 
-                const {  postUploadFile } = await UseChequeoService() ;
+            return;
+        }
 
-                await postUploadFile(selectedFile,formData);
-                
-                setSelectedFile(null);
-                onOpenModal(false);
-                
-                Swal.fire({
-                    title: '✅ ¡Archivos Cargado Servidor!',
-                    html: `La Imagen Se ha subido con éxito.`,
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar',
-                    timer: 3000,
-                    timerProgressBar: true,
-                });     
-                    
+        try {
 
-            } 
-            catch (error) {
-                console.error('Error al subir el archivo:', error);
-                alert('Error al subir el archivo');
-                setSelectedFile(null);
-                onOpenModal(false);
-            }
-        } 
-        else {
-            alert('Por favor, selecciona un archivo');
+            const { postUploadFile } = await UseChequeoService();
+            const response = await postUploadFile(selectedFile,formData);
+
+            console.log('Respuesta OpenAI:',response);
+
+            setSelectedFile(null);
+            onOpenModal(false);
+
+            Swal.fire({
+                title: '🫀 Análisis ECG',
+                html: `
+                    <div style="text-align:left;max-height:400px;overflow:auto">
+                        <pre>
+    ${JSON.stringify(response, null, 2)}
+                        </pre>
+                    </div>
+                `,
+                width: 900,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+
+        }
+        catch (error: any) {
+            console.error('Error al subir el archivo:',error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text:
+                    error?.response?.data?.message ??
+                    'Error al procesar el ECG'
+            });
         }
     }
 

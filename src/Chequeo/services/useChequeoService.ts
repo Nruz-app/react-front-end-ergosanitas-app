@@ -47,7 +47,8 @@ export const  UseChequeoService = async () => {
         uploadData.append('rut', formData.rut);
         uploadData.append('nombre', formData.nombre);
 
-        const response = await  apiAdapter.post(`${API}/file-upload`,uploadData);
+        //const response = await  apiAdapter.post(`${API}/file-upload`,uploadData);
+        const response = await  apiAdapter.post(`${API}/GPT/analisis-ecg`,uploadData);
         
         return response;
     }

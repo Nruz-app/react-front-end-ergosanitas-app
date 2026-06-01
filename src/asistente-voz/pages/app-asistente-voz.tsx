@@ -1,6 +1,8 @@
 
 import { Box, Typography } from "@mui/material";
-import { WebSpeechApi } from "../components/web-speech";
+//import { WebSpeechApi } from "../components/web-speech";
+import { WebSpeechApiGPT } from "../components/web-speech-gpt";
+
 
 const AppAsistenteVozPage = () => {
 
@@ -23,7 +25,7 @@ const AppAsistenteVozPage = () => {
                 Asistente de Voz 
             </Typography>
         </Box> 
-        <WebSpeechApi />
+        <WebSpeechApiGPT />
         </>
     )
 }
