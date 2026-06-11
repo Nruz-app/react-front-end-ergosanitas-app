@@ -38,6 +38,16 @@ export const  PagoMensualService = async () => {
         return response;
     }
 
+    const updatePeriodoPagoMensual = async (periodo: string) => {
+           
+        const dia = "01"; 
+        const periodoCompleto = `${periodo}-${dia}`;
+        const response = await  apiAdapter.post(`
+            ${API}/estadisticas/update-pago-mensual`,{periodo: periodoCompleto });
+         console.log(response);    
+        return response;
+    }
+
     const getEstadisticaPagoMensualMDC =  async () : Promise<IPagoMedicoMDC[]> => {
         const response:IPagoMedicoMDC[] = await  apiAdapter.get(`${API}/estadisticas/estadistica-pago-mdc`,10,0)
         console.log(response);
@@ -48,6 +58,7 @@ export const  PagoMensualService = async () => {
         getEstadisticaPagoMensual,
         postPagoMensual,
         deletePagoMensual,
+        updatePeriodoPagoMensual,
         getEstadisticaPagoMensualMDC
     }
 

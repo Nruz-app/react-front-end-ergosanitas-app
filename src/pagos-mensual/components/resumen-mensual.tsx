@@ -8,20 +8,23 @@ import {
   Grid,
   Chip,
   TextField,
-  IconButton
+  IconButton,
+  Button
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PagoMedico, PagoDetalle } from "../interface/pago-medicos";
 import Swal from "sweetalert2";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 type Props = {
   pagoMensual: PagoMedico[];
   onUpdatePrecio: (club: string, valor_cgc: string, periodo: string) => void;   
   onDelete: (club: string, periodo: string) => void;
+  onUpdatePerido: (periodo: string) => void;
 }
 
-export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete }: Props) => {
+export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete, onUpdatePerido }: Props) => {
   const [editValues, setEditValues] = useState<Record<string, number>>({});
 
   const getKey = (item: PagoDetalle) => `${item.club}-${item.periodo}`;
@@ -119,6 +122,25 @@ export const ResumenMensual = ({ pagoMensual, onUpdatePrecio,onDelete }: Props) 
                         {formatMes(mes.periodo)}
                       </Typography>
                       <Chip label={styles.label} size="small" color={styles.chipColor} />
+
+                      <Button 
+                        variant="contained" 
+                        color="success" 
+                        size="small" 
+                        startIcon={<RefreshIcon />} 
+                        onClick={() => onUpdatePerido(mes.periodo)} 
+                        sx={{ 
+                          textTransform: 'none', 
+                          fontWeight: 600, 
+                          borderRadius: 2, 
+                          px: 2, 
+                          py: 0.5, 
+                          boxShadow: '0 2px 8px rgba(25,118,210,0.25)', 
+                          '&:hover': { boxShadow: '0 4px 12px rgba(25,118,210,0.35)', 
+
+                          }, }} >
+                            Refrescar
+                        </Button>
                     </Box>
 
                     {/* RESUMEN */}

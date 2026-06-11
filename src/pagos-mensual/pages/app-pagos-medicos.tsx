@@ -32,6 +32,11 @@ const AppPagosMedicosPage = () => {
         await deletePagoMensual(club, periodo);
         fetchPagoMensual();
     }
+    const onUpdatePerido = async (periodo: string) => {
+        const {  updatePeriodoPagoMensual } = await PagoMensualService();
+        await updatePeriodoPagoMensual(periodo);
+        fetchPagoMensual();
+    }
     
     return (
         <>
@@ -56,6 +61,7 @@ const AppPagosMedicosPage = () => {
             pagoMensual={pagoMensual}
             onUpdatePrecio={handleUpdatePrecio}
             onDelete={onDelete}
+            onUpdatePerido={onUpdatePerido}
         />
         </>
     )
