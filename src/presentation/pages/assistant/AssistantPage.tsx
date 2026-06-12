@@ -76,34 +76,40 @@ export const AssistantPage = () => {
     const handleResetPatient = async () => {
         try {
             setIsLoading(true);
+
             const { handleResetPatient } = await createThreadUseCase();
+
             const sessionId = localStorage.getItem("chat_session_id");
+
             if (!sessionId) return;
 
             await handleResetPatient();
+
             setInput("");
-            setMessages((prev) => [
-                ...prev,
+
+            setMessages([
                 {
                     text: "Indica el RUT o Nombre del Nuevo Paciente.",
                     isGpt: true,
                 }
             ]);
 
-        } catch (error) {
+        } 
+        catch (error) {
             console.error(error);
 
-            setMessages((prev) => [
-                ...prev,
+            setMessages([
                 {
                     text: "Error al cambiar paciente.",
                     isGpt: true,
                 }
             ]);
-        } finally {
+        } 
+        finally {
             setIsLoading(false);
         }
     }
+    
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
