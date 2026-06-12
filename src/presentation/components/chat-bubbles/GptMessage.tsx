@@ -15,15 +15,17 @@ export const GptMessage = ({text}:Props) => {
           backgroundColor: 'transparent' // Color de fondo transparente
       }}
     >
-      <Avatar 
-        sx={{ 
-            backgroundColor: 'indigo.500',
-            width: 40, 
-            height: 40 
+      <Avatar
+        src="/logoTrans.png"
+        alt="Ergosanitas Virtual"
+        sx={{
+          width: 50,
+          height: 50,
+          bgcolor: 'white',
+          border: '2px solid',
+          borderColor: 'primary.main'
         }}
-      >
-        E.G
-      </Avatar>
+      />
       <Box 
         sx={{ 
             marginLeft: 2, 

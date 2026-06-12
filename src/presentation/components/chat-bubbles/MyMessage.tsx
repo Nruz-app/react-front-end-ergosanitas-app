@@ -1,4 +1,5 @@
 import { Avatar, Box, Typography } from "@mui/material";
+import PersonIcon from '@mui/icons-material/Person';
 
 interface Props {
     text : string;
@@ -16,16 +17,15 @@ export const MyMessage = ({text}:Props) => {
                 backgroundColor: 'transparent',
             }}
         >
-            <Avatar 
-                sx={{ 
-                    backgroundColor: 'indigo.500',
+            <Avatar
+                sx={{
+                    bgcolor: 'primary.main',
                     width: 40,
                     height: 40,
-                    flexShrink: 0,
-                    fontSize: '1.25rem',  // Aumenta el tamaño de la letra en el avatar
+                    flexShrink: 0
                 }}
             >
-                U
+                <PersonIcon fontSize="small" />
             </Avatar>
             <Box
                 sx={{

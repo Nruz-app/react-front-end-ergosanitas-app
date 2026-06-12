@@ -42,7 +42,7 @@ export const TextMessageBox = ({onSendMessage,placeholder,disableCorrections=fal
         }}
     >
         <Box sx={{ flexGrow: 1 }}>
-            <TextField
+           <TextField
                 variant="outlined"
                 fullWidth
                 multiline
@@ -59,27 +59,27 @@ export const TextMessageBox = ({onSendMessage,placeholder,disableCorrections=fal
                     spellCheck: disableCorrections,
                 }}
                 sx={{
-                    borderRadius: '16px',
-
                     '& .MuiOutlinedInput-root': {
-                        alignItems: 'flex-start',
+                        borderRadius: '24px',
+                        backgroundColor: '#fff',
 
                         '& fieldset': {
-                            borderColor: 'grey.400',
+                            borderRadius: '24px',
+                            borderColor: '#e0e0e0',
                         },
 
                         '&:hover fieldset': {
-                            borderColor: 'indigo.300',
+                            borderColor: '#c7c7c7',
                         },
 
                         '&.Mui-focused fieldset': {
-                            borderColor: 'indigo.500',
-                        },
-                    },
+                            borderColor: '#1976d2',
+                        }
+                    }
                 }}
             />
         </Box>
-        <Box sx={{ marginLeft: 2 }}>
+        <Box sx={{ marginLeft: 2,marginBottom: 1 }}>
             <Button 
                 type="submit" 
                 variant="contained" 

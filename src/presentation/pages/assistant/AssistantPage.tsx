@@ -86,7 +86,9 @@ export const AssistantPage = () => {
                     {/* Mensaje de bienvenida */}
                     <Grid item xs={12}>
                         <GptMessage
-                            text="Bienvenido a Ergosanita Virtual, ¿En qué puedo ayudarte?"
+                            text="Bienvenido a Ergosanitas Virtual. Indica el RUT o 
+                            nombre del paciente para acceder a su información clínica 
+                            y responder tus consultas."
                         />
                     </Grid>
 
@@ -127,7 +129,7 @@ export const AssistantPage = () => {
             >            
                 <TextMessageBox
                     onSendMessage={handlePost}
-                    placeholder="Escribe aquí lo que deseas"
+                    placeholder="Escribe aquí lo que deseas Consultar..."
                     disableCorrections
                 />
             </Box>
