@@ -11,14 +11,14 @@ export const createThreadUseCase = async () => {
 
 
     const getSessionId = () => {
-    let sessionId = localStorage.getItem("chat_session_id");
+        let sessionId = localStorage.getItem("chat_session_id");
 
-    if (!sessionId) {
-        sessionId = crypto.randomUUID();
-        localStorage.setItem("chat_session_id", sessionId);
-    }
+        if (!sessionId) {
+            sessionId = crypto.randomUUID();
+            localStorage.setItem("chat_session_id", sessionId);
+        }
 
-    return sessionId;
+        return sessionId;
     }
 
 
@@ -33,7 +33,17 @@ export const createThreadUseCase = async () => {
         return response;
     }
 
+    const handleResetPatient  = async () => {
 
-    return { AsQuestionUseCase };
+        const sessionId = localStorage.getItem("chat_session_id");
+
+        const response  = await  apiAdapter.post(`${API}/sam-assistant/reset-patient`,{
+            sessionId: sessionId
+        });
+        return response;
+    }
+
+
+    return { AsQuestionUseCase, handleResetPatient };
 
 }
