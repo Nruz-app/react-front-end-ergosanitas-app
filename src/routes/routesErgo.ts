@@ -3,7 +3,7 @@ import { LazyExoticComponent } from 'react';
 
 import { AppChequeo } from '../Chequeo/pages';
 //import { AppAgendarHoraPage } from '../AgendarHora/pages/';
-import { AppReservaHora } from '../reserva-hora';
+//import { AppReservaHora } from '../reserva-hora';
 
 import { AppUrlPage } from '../Url/page';
 
@@ -11,6 +11,9 @@ import { AppIncidentesPages } from '../Incidentes/';
 
 import { AppPagosMedicosPage } from '../pagos-mensual';
 import { AppHomeMedico } from '../pagos-mensual';
+
+import { HomeBioimpedancia } from '../Bioimpedancia/';
+
 
 import { AppAsistenteVozPage } from '../asistente-voz';
 
@@ -44,6 +47,14 @@ export const routesErgo:Route[] = [
         Component : AppChequeo
     },
     {
+        name      : 'Bioimpedancia',
+        to        : '/bioimpedancia',
+        path      : '/bioimpedancia/*',
+        perfil    : 'Administrador',
+        status    : true,  
+        Component : HomeBioimpedancia
+    },
+    {
         name      : 'Certifiado',
         to        : '/certificado',
         path      : '/certificado/:rut_paciente/:id_paciente',
@@ -58,14 +69,6 @@ export const routesErgo:Route[] = [
         perfil    : 'Administrador', 
         status    : true,  
         Component : AppIncidentesPages
-    },
-    {
-        name      : 'Agenda Mensual',
-        to        : '/reserva-hora',
-        path      : '/reserva-hora/*',
-        perfil    : 'Administrador',
-        status    : true,  
-        Component : AppReservaHora
     },
     {
     name      : 'Pagos Mensual',
@@ -105,5 +108,13 @@ export const routesErgo:Route[] = [
         perfil    : 'All', 
         status    : true,  
         Component : AppAgendarHoraPage
-    }
+    },
+    {
+        name      : 'Agenda Mensual',
+        to        : '/reserva-hora',
+        path      : '/reserva-hora/*',
+        perfil    : 'Administrador',
+        status    : true,  
+        Component : AppReservaHora
+    },
 */
