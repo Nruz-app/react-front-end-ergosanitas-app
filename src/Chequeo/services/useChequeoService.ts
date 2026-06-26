@@ -4,6 +4,7 @@ import { IChequeo,EstadoGenerales, ResponseCargaMasica, IUrlCertificado, ICargaM
 
 import { type formData } from '../interface/';
 import { IData, IDataAll } from '../interface/chequeo.interface';
+import { IUrlBioResponse } from '../interface/url-bio.interface';
 
 export const  UseChequeoService = async () => {
 
@@ -166,6 +167,12 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
+    const getUrlBio = async (rut_paciente: string)  : Promise<IUrlBioResponse> => {
+        const response = await apiAdapter.
+        post<IUrlBioResponse>(`${API}/bioimpedancia/first-rut`, { rut_paciente });
+        return response;
+    }
+
    
     return { 
         getChequeo,
@@ -188,7 +195,8 @@ export const  UseChequeoService = async () => {
         postChequeoAll,
         pathUrlCertificado,
         validaCertificado,
-        cargaMasivaECG
+        cargaMasivaECG,
+        getUrlBio
     }
     
 }
