@@ -16,12 +16,21 @@ export const  UseChequeoService = async () => {
 
     const chequeoPDFRut =  async (rut_paciente : string) => {
  
-        window.location.href = `${API}/chequeo-cardiovascular/pdfRut/${rut_paciente}`; 
+        //window.location.href = `${API}/chequeo-cardiovascular/pdfRut/${rut_paciente}`; 
+        window.open(
+            `${API}/chequeo-cardiovascular/pdfRut/${rut_paciente}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
     }
 
     const chequeoPDF =  async (id_paciente : number) => {
  
-        window.location.href = `${API}/chequeo-cardiovascular/pdf/${id_paciente}`; 
+        window.open(
+            `${API}/chequeo-cardiovascular/pdf/${id_paciente}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
     }
 
     const getChequeo =  async () : Promise<IChequeo[]> => {
@@ -173,6 +182,15 @@ export const  UseChequeoService = async () => {
         return response;
     }
 
+    const bioPDFRut =  async (rut_paciente : string) => {
+ 
+        window.open(
+            `${API}/bioimpedancia/pdfRut/${rut_paciente}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    }
+
    
     return { 
         getChequeo,
@@ -196,7 +214,8 @@ export const  UseChequeoService = async () => {
         pathUrlCertificado,
         validaCertificado,
         cargaMasivaECG,
-        getUrlBio
+        getUrlBio,
+        bioPDFRut
     }
     
 }

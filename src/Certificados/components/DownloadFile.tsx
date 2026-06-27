@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Grid,
   Typography,
 } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
@@ -143,7 +144,17 @@ export const DownloadFile = () => {
     } catch (error) {
       console.error("Error al generar PDF:", error);
     }
-  };
+  }
+
+  const handleClickBio = async () => {
+    try {
+      const { bioPDFRut } = await UseChequeoService();
+      await bioPDFRut(rutUser);
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+    }
+  }
+
 
   return (
     <Box
@@ -157,28 +168,51 @@ export const DownloadFile = () => {
     >
       {/* CERTIFICADO */}
       {certificado && (
-        <>
-          <Button
-            variant="contained"
-            onClick={handleClick}
-            startIcon={<CloudDownloadIcon />}
-            sx={{
-              borderRadius: "12px",
-              textTransform: "none",
-              padding: "14px 28px",
-              fontSize: "18px",
-              fontWeight: 600,
-              letterSpacing: "0.8px",
-              backgroundColor: "#4CAF50",
-              color: "#fff",
-              boxShadow: "0px 4px 10px rgba(0,0,0,.2)",
-              "&:hover": {
-                backgroundColor: "#388E3C",
-              },
-            }}
-          >
-            Certificado - {certificado.titulo}
-          </Button>
+        
+        <Box
+      component="fieldset"
+      sx={{
+        border: "1px solid",
+        borderColor: "grey.400",
+        borderRadius: 2,
+        p: 2,
+      }}
+    >
+      <Typography
+        component="legend"
+        sx={{
+          px: 1,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
+        Certificado Electrocardiograma
+      </Typography>
+       <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={handleClick}
+                startIcon={<CloudDownloadIcon />}
+                sx={{
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  padding: "14px 28px",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  letterSpacing: "0.8px",
+                  backgroundColor: "#4CAF50",
+                  color: "#fff",
+                  boxShadow: "0px 4px 10px rgba(0,0,0,.2)",
+                  "&:hover": {
+                    backgroundColor: "#388E3C",
+                  },
+                }}
+              >
+              Certificado - {certificado.titulo}
+            </Button>
+          </Grid>
+          <Grid item>
 
           <Button
             variant="contained"
@@ -203,34 +237,80 @@ export const DownloadFile = () => {
           >
             Electro Cardiograma
           </Button>
-        </>
+          </Grid>
+        </Grid>
+        </Box>
       )}
 
       {/* BIOIMPEDANCIA */}
       {userBio && (
-        <Button
-          variant="contained"
-          href={userBio.archivo}
-          target="_blank"
-          download
-          startIcon={<CloudDownloadIcon />}
+        <Box
+          component="fieldset"
           sx={{
-            borderRadius: "12px",
-            textTransform: "none",
-            padding: "14px 28px",
-            fontSize: "18px",
-            fontWeight: 600,
-            letterSpacing: "0.8px",
-            backgroundColor: "#FF9800",
-            color: "#fff",
-            boxShadow: "0px 4px 10px rgba(0,0,0,.2)",
-            "&:hover": {
-              backgroundColor: "#F57C00",
-            },
+            border: "1px solid",
+            borderColor: "grey.400",
+            borderRadius: 2,
+            p: 2,
           }}
         >
-          Bioimpedancia - {userBio.nombre}
-        </Button>
+          <Typography
+            component="legend"
+            sx={{
+              px: 1,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            Bioimpedancia
+          </Typography>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={handleClickBio}
+                startIcon={<CloudDownloadIcon />}
+                sx={{
+                    borderRadius: 2,
+                    textTransform: "none",
+                    px: 3,
+                    py: 1.5,
+                    fontWeight: 600,
+                    backgroundColor: "#FF9800",
+                    boxShadow: 3,
+                    "&:hover": {
+                      backgroundColor: "#F57C00",
+                    },
+                  }}
+              >
+                Certificado - {userBio.nombre}
+              </Button>
+            </Grid>
+
+            <Grid item>
+              <Button
+                variant="contained"
+                href={userBio.archivo}
+                target="_blank"
+                download
+                startIcon={<CloudDownloadIcon />}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  px: 3,
+                  py: 1.5,
+                  fontWeight: 600,
+                  backgroundColor: "#FF9800",
+                  boxShadow: 3,
+                  "&:hover": {
+                    backgroundColor: "#F57C00",
+                  },
+                }}
+              >
+                Descargar Bioimpedancia
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       )}
     </Box>
   );
