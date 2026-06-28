@@ -306,7 +306,7 @@ export const DownloadFile = () => {
                   },
                 }}
               >
-                Descargar Bioimpedancia
+                Bioimpedancia
               </Button>
             </Grid>
           </Grid>

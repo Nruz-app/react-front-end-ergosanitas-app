@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import { FormBioimpedancia } from "../components/form-bioimpedancia";
 import { ListAll } from "../components/list-all";
+import { FormExamen } from "../components/form-examen";
+
 
 
 export default function HomeBioimpedancia() {
@@ -61,6 +64,11 @@ export default function HomeBioimpedancia() {
                 iconPosition="start"
                 label="Crear"
             />
+            <Tab
+                icon={<AssignmentIcon />}
+                iconPosition="start"
+                label="Examen"
+            />
         </Tabs>
 
           {/* Contenido */}
@@ -77,7 +85,18 @@ export default function HomeBioimpedancia() {
 
             {tab === 1 && (
               <Box>
+                <Typography variant="h6" mb={2}>
+                  Crear Bioimpedancia
+                </Typography>
                 <FormBioimpedancia />
+              </Box>
+            )}
+            {tab === 2 && (
+              <Box>
+                <Typography variant="h6" mb={2}>
+                  Examenes de Bioimpedancia
+                </Typography>
+                <FormExamen />
               </Box>
             )}
           </Box>

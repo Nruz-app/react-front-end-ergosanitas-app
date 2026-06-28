@@ -2,8 +2,9 @@
 
 
 export interface IBioimpedanciaForm {
-  nombre: string;
+  nombre?: string;
   rut: string;
+  club?: string;
   file?: File | null;
 }
 

@@ -6,22 +6,18 @@ import { IBioimpedanciaForm, IFormErrors } from '../interface/bioimpedancia.inte
 import { formatearRut, validarRut } from '../utils/valida-rut';
 import { BioimpedanciaService } from '../service/Bioimpedancia';
 import Swal from "sweetalert2";
-import { SelectClub } from '../../components';
 
 
 const initialForm: IBioimpedanciaForm =     {
-    nombre: "",
     rut: "",
-    club : "",
     file: null,
   }
 
 
-export const FormBioimpedancia = () => {
+export const FormExamen = () => {
 
     const [form, setForm] = useState<IBioimpedanciaForm>(initialForm);
     const [errors, setErrors] = useState<IFormErrors>({});
-    const [club, setClub] = useState("");
   
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,10 +29,32 @@ export const FormBioimpedancia = () => {
     const handleGuardar = async () => {
         try {
 
-            form.club = club; // Asignar el valor del club al formulario
+            if (!form.file) {
+                setErrors((prev) => ({
+                    ...prev,
+                    archivo: "Debe subir un archivo",
+                }));
+                return;
+            }
 
-            const { postCreateBio } = await BioimpedanciaService();
-            const response = await postCreateBio(form);
+            //
+            Swal.fire({
+                title: "Analizando bioimpedancia...",
+                html: "Esto puede tardar unos segundos.<br><br>Estamos procesando la imagen con IA.",
+                imageUrl: "/terminator.gif",
+                imageWidth: 220,
+                imageHeight: 220,
+                imageAlt: "Procesando",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const { postUploadFile } = await BioimpedanciaService();
+            const response = await postUploadFile(form.file,form);
 
             if (response?.success) {
                 Swal.fire({
@@ -45,7 +63,9 @@ export const FormBioimpedancia = () => {
                     text: `Paciente: ${response.data.nombre}`,
                     confirmButtonColor: "#16a34a",
                 });
-                setForm(initialForm); 
+
+                setForm(initialForm);
+                setErrors({});
             } else {
                 Swal.fire({
                     icon: "error",
@@ -56,6 +76,13 @@ export const FormBioimpedancia = () => {
         } 
         catch (error) {
             console.error("Error al guardar:", error);
+            Swal.close();
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Ocurrió un error inesperado.",
+            });
         }
     }
 
@@ -89,6 +116,15 @@ export const FormBioimpedancia = () => {
         }));
     }
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
+        const file = event.target.files?.[0] || null;
+        setForm((prev) => ({
+            ...prev,
+            file: file,
+        }));
+    }
+
 
     return (
      <Paper
@@ -102,15 +138,6 @@ export const FormBioimpedancia = () => {
             <Grid item xs={12} md={6}>
                 <TextField
                     fullWidth
-                    label="Nombre"
-                    name="nombre"
-                    value={form.nombre}
-                    onChange={handleChange}
-                />
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <TextField
-                    fullWidth
                     label="RUT"
                     name="rut"
                     value={form.rut}
@@ -121,18 +148,26 @@ export const FormBioimpedancia = () => {
                 />
             </Grid>
             <Grid item xs={12} md={6}>
-                <SelectClub
-                    value={club}
-                    onChange={(value, item) => {
-                        setClub(value);
-                        console.log(value); // user_email
-                        console.log(item);  // objeto completo
-                    }}
-                    label="Paciente"
-                    placeholder="Seleccione un paciente"
-                    helperText="Seleccione un paciente"
-                />
+            <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                sx={{
+                py: 1.5,
+                borderRadius: 2,
+                textTransform: "none",
+                justifyContent: "flex-start",
+                }}
+            >
+                📎 {form.file ? form.file.name : "Subir archivo"}
                 
+                <input
+                    type="file"
+                    hidden
+                    accept="image/jpeg,image/png"
+                    onChange={handleFileChange}
+                />
+            </Button>
             </Grid>
             <Grid item xs={12} md={6}>
                 <Box display="flex" justifyContent="center" alignItems="center" height="100%">
@@ -140,7 +175,7 @@ export const FormBioimpedancia = () => {
                     variant="contained"
                     onClick={handleGuardar}
                     >
-                    Guardar
+                    Guardar Examen
                     </Button>
                 </Box>
             </Grid>

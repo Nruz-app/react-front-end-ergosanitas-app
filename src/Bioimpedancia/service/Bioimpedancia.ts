@@ -13,9 +13,17 @@ export const  BioimpedanciaService = async () => {
         const uploadData = new FormData();
         uploadData.append('file', selectedFile);
         uploadData.append('rut', formData.rut);
-        uploadData.append('nombre', formData.nombre);
 
-        const response = await  apiAdapter.post<{success:boolean,message:string,data:any}>(`${API}/bioimpedancia/form-upload`,uploadData);
+        const response = await  apiAdapter.post<{success:boolean,message:string,data:any}>
+        (`${API}/bioimpedancia/form-upload`,uploadData);
+        
+        return response;
+    }
+    const postCreateBio = async(formData : IBioimpedanciaForm) => {
+
+        
+        const response = await  apiAdapter.post<{success:boolean,message:string,data:any}>
+        (`${API}/bioimpedancia/create-bio`,formData);
         
         return response;
     }
@@ -28,7 +36,8 @@ export const  BioimpedanciaService = async () => {
     }
 
     return {
-        postUploadFile,
-        getListAll
+        postCreateBio,
+        getListAll,
+        postUploadFile   
     }
 }

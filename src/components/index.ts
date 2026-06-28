@@ -13,3 +13,5 @@ export { DatePickers } from './forms/DatePickers';
 export { DatePickersTime } from './forms/DatePickersTime';
 
 export { ButtonsForm } from './forms/ButtonsForm';
+
+export { SelectClub } from './forms/select-club';
