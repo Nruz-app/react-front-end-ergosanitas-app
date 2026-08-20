@@ -23,3 +23,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Volcados de Git Bash en Windows
+*.stackdump
