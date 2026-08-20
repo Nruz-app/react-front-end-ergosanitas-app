@@ -1,6 +1,6 @@
 import { LazyExoticComponent } from 'react';
 
-import { AppPacientePages } from '../Paciente/';
+import { AppPacientePages } from '../ficha-clinica/';
 
 type JSXComponent = () => JSX.Element;
 
