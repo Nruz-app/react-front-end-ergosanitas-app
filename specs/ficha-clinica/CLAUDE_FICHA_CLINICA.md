@@ -1,13 +1,13 @@
-# CLAUDE_PACIENTE.md — Guía del módulo `src/ficha-clinica/`
+# CLAUDE_FICHA_CLINICA.md — Guía del módulo `src/ficha-clinica/`
 
 Documento de referencia para trabajar sobre el módulo Paciente (ficha clínica). Recoge
-lo que las tres specs decidieron, por qué, y qué **no** hay que romper.
+lo que las cuatro specs decidieron, por qué, y qué **no** hay que romper.
 
 > **Lee esto antes de tocar `src/ficha-clinica/`.** Las specs individuales
-> (`01-`, `02-`, `03-`) tienen el detalle de cada iteración; este archivo es el estado
-> consolidado.
+> (`01-`, `02-`, `03-`, `04-`) tienen el detalle de cada iteración; este archivo es el
+> estado consolidado.
 
-**Última actualización:** 2026-08-19 (cierre de la Spec 03)
+**Última actualización:** 2026-08-20 (cierre de la Spec 04)
 
 ---
 
@@ -17,13 +17,17 @@ Se heredan desde la Spec 01 y aplican a toda la evolución del módulo:
 
 1. **No se toca nada fuera de `src/ficha-clinica/`.** Ni rutas, ni navegadores, ni `common/`.
    La única excepción histórica es `src/routes/routesPA.tsx`, que ya apunta al módulo y
-   no ha necesitado cambios.
+   no ha necesitado cambios. *Importar* de `common/` (el `ApiAdapter`, el `LoginContext`)
+   sí está permitido: es lectura, no modificación.
 2. **La ficha es de solo lectura.** No hay CRUD: ni crear, ni editar, ni borrar exámenes.
 3. **Un solo paciente.** No hay selector ni listado; la ficha es fija.
 4. **Sin dependencias nuevas.** Todo se resuelve con lo que ya está en `package.json`
    (MUI 5, chart.js, react-chartjs-2).
-5. **Sin tests.** El proyecto no tiene runner configurado. No inventes comandos de test.
-6. **`npm run build` debe quedar en verde.** `tsc -b` corre antes de Vite; un cambio que
+5. **`src/AsistenteVirtual/`, `src/presentation/` y `src/asistente-voz/` quedan intactas.**
+   Regla de la Spec 04, pedida explícitamente. El chat de la ficha es un **clon**; si algo
+   del chat hay que cambiar, se cambia la copia del módulo.
+6. **Sin tests.** El proyecto no tiene runner configurado. No inventes comandos de test.
+7. **`npm run build` debe quedar en verde.** `tsc -b` corre antes de Vite; un cambio que
    no tipa no compila.
 
 ---
@@ -34,10 +38,17 @@ Se heredan desde la Spec 01 y aplican a toda la evolución del módulo:
 |------|--------|--------|
 | 01 | Módulo Paciente (Ficha Clínica) | Approved → superada por la 02 |
 | 02 | Ficha Clínica con Tabs | Implementado |
-| 03 | Tab «Distribución Segmentaria» con silueta SVG | Aprobado, implementado (pendiente de verificación en navegador) |
+| 03 | Tab «Distribución Segmentaria» con silueta SVG | Código implementado; falta verificar en navegador |
+| 04 | Tab «Asistente Ergo» con chat GPT autoconsultado | Código implementado; falta verificar en navegador |
 
-La ficha tiene hoy **cuatro tabs**: Home · Bioimpedancias · Electrocardiogramas ·
-Distribución Segmentaria.
+Las specs 03 y 04 siguen marcadas **`Aprobado`** en su encabezado a propósito: el paso a
+`Implementado` lo hace el humano tras comprobar los criterios en el navegador, no el agente.
+
+La ficha tiene hoy **cinco tabs**: Home · Bioimpedancias · Electrocardiogramas ·
+Distribución Segmentaria · Asistente Ergo.
+
+**El servicio ya consume el backend real** (`USAR_MOCK = false`); el JSON local quedó como
+camino alternativo para desarrollar sin backend. Ver «Servicio», más abajo.
 
 ---
 
@@ -62,6 +73,10 @@ Capa 3 — interface/segmentaria.interface.ts
         modelo DERIVADO (calculado en el front, no viene del backend)
 ```
 
+Al margen de las tres capas está `interface/asistente.interface.ts` (Spec 04):
+`IMensajeChat` e `IRespuestaAsistente` **no pasan por el mapper** porque no son ficha
+clínica — el endpoint del asistente responde texto.
+
 ### Capa 1 — Forma cruda
 
 Refleja el payload **exactamente** como llega. Rarezas que hay que respetar:
@@ -84,8 +99,8 @@ Refleja el payload **exactamente** como llega. Rarezas que hay que respetar:
 `''` o `null` se tipa `number | null` y la UI lo renderiza como `—`.
 
 > **Nunca se mapea la ausencia de dato a `0`.** Un cero en un signo vital es una
-> medición, no un vacío. Esta regla se repite en las tres specs y es la más fácil de
-> romper por descuido.
+> medición, no un vacío. La regla se repite en todas las specs del módulo y es la más
+> fácil de romper por descuido.
 
 ### Capa 3 — Modelo derivado (Spec 03)
 
@@ -105,10 +120,15 @@ src/ficha-clinica/
 │   ├── api.interface.ts          Capa 1 — forma cruda
 │   ├── ficha-clinica.interface.ts Capa 2 — modelo de UI
 │   ├── segmentaria.interface.ts  Capa 3 — modelo derivado
+│   ├── asistente.interface.ts    chat (Spec 04) — fuera de las tres capas
 │   └── index.ts
 │
 ├── services/
-│   └── UsePacienteService.ts     resuelve el JSON local con setTimeout
+│   ├── UsePacienteService.ts     GET /ficha-clinica/{rut} (o el JSON local con USAR_MOCK)
+│   └── UseAsistenteService.ts    POST /sam-assistant/… (Spec 04)
+│
+├── hooks/
+│   └── useReconocimientoVoz.ts   clon del hook de voz (es-CL) — Spec 04
 │
 ├── utilities/
 │   ├── parse.ts                  aNumero, primerValor, aFechaISO, aCentimetros, calcularEdad
@@ -126,6 +146,11 @@ src/ficha-clinica/
     ├── charts/                   5 gráficos chart.js + chart-utils
     ├── tabs/                     TabHome · TabBioimpedancias
     │                             TabElectrocardiogramas · TabDistribucionSegmentaria
+    │                             TabAsistenteErgo
+    ├── asistente/                (Spec 04)
+    │   ├── BurbujaGpt · BurbujaUsuario   burbujas del chat
+    │   ├── CajaMensaje           input + micrófono (sin «cambiar paciente»)
+    │   └── LoaderEscribiendo     tres CircularProgress
     └── segmentaria/              (Spec 03)
         ├── SiluetaCorporal.tsx   ensambla el SVG; acepta children
         ├── ControlesSegmentaria  toggle métrica + selects de examen
@@ -140,7 +165,7 @@ src/ficha-clinica/
             └── GuiasCallout      líneas punteadas hacia las fichas
 ```
 
-**~4.270 líneas** de TS/TSX en el módulo.
+**~5.680 líneas** de TS/TSX en el módulo.
 
 ---
 
@@ -149,15 +174,39 @@ src/ficha-clinica/
 ### La página es el único que hace fetch
 
 `pages/app-pacientes.tsx` pide la ficha, muestra el estado de carga y reparte los datos
-**ya normalizados** a cada tab por props. Ningún tab ni componente hace fetch propio.
-Si agregas un tab, sigue ese patrón.
+**ya normalizados** a cada tab por props. Ningún tab ni componente hace fetch **de la
+ficha**. Si agregas un tab, sigue ese patrón.
+
+La única excepción es `TabAsistenteErgo`, que llama al endpoint del chat. No rompe la
+regla: recibe la ficha por props como todos y lo que pide es otra cosa —conversación, no
+datos clínicos—, imposible de resolver en el fetch inicial sin gastar una llamada a GPT
+aunque nadie abra el tab.
 
 ### Servicio
 
 `UsePacienteService` sigue el patrón `UseXService` del proyecto (ver
-`src/Chequeo/services/`). Hoy resuelve el JSON local con `setTimeout` simulando latencia;
-**no está conectado al backend real**. Cuando se conecte, solo cambia el interior del
-servicio: el mapper y los componentes no se enteran.
+`src/Chequeo/services/`) y **ya apunta al backend real**:
+`GET {VITE_API}{VITE_API_PATH}/ficha-clinica/{rut}`.
+
+La bandera `USAR_MOCK` (hoy `false`) alterna entre la petición HTTP y el JSON local con
+latencia simulada. **Los dos caminos son código real y `tsc -b` los type-checkea**: por eso
+la llamada no está comentada — un comentario no compila y el que hubo ahí llevaba la ruta
+equivocada sin que nadie se enterara.
+
+⚠️ **`data/paciente.json` no es la respuesta de un solo RUT.** Es un compuesto armado a
+mano para tener los cuatro primeros tabs poblados a la vez. Verificado contra el backend:
+
+| RUT | Respuesta real |
+|---|---|
+| `16900918-k` | paciente con `nombre`/`sexo`/`fechaNacimiento` en `null`, `bioimpedancias: array(1)`, `electrocardiogramas: null` |
+| `2123456-7` | paciente completo, `bioimpedancias: null`, `electrocardiogramas: array(6)` |
+| inexistente | HTTP 500 con `{success:false, message:"…"}` |
+
+Ningún RUT real devuelve los dos tipos de examen juntos, y las listas llegan `null`, no
+`[]`. El mapper cubre las tres formas.
+
+`UseAsistenteService` (Spec 04) sigue el mismo patrón contra
+`POST {API}/sam-assistant/as-question` y `POST {API}/sam-assistant/reset-patient`.
 
 ### Barriles
 
@@ -176,8 +225,10 @@ merece su propia spec.
 
 ### ⚠️ Todas las escalas son de POBLACIÓN ADULTA
 
-**El paciente del mock tiene 9–10 años.** Los cortes de adulto no son válidos en
-pediatría, donde se evalúa por percentiles según edad y sexo. La UI está **obligada** a
+**El paciente del mock tiene 9–10 años** (contra el backend real la edad varía: el RUT de
+respaldo `16900918-k` es un adulto). Los cortes de adulto no son válidos en pediatría,
+donde se evalúa por percentiles según edad y sexo, y el módulo no sabe de antemano con
+qué edad le van a llegar los datos. La UI está **obligada** a
 rotularlo: el tab de distribución segmentaria lo declara al pie, y
 `EstadoNutricionalChart` lo rotula desde la Spec 02.
 
@@ -308,6 +359,64 @@ que ese dato existe y falta.
 
 ---
 
+## El chat «Asistente Ergo» (Spec 04)
+
+### Es un clon, y eso es deliberado
+
+El chat vive en `components/asistente/` + `hooks/useReconocimientoVoz.ts` +
+`services/UseAsistenteService.ts`, copiado de `src/presentation/`. **No se importa nada de
+`src/presentation/`, `src/AsistenteVirtual/` ni `src/asistente-voz/`**: la regla dura del
+módulo lo prohíbe y el usuario lo pidió explícito. Se paga duplicación a cambio de que el
+tab quede inmune a cambios en el asistente global, que tiene otro dueño y otro ritmo.
+
+Unificar ambos chats en un componente compartido es el refactor correcto, pero toca
+`src/presentation/` y por tanto es **otra spec**. Está asumido y documentado, no es un
+pendiente silencioso.
+
+### Autoconsulta del RUT
+
+Al montarse el tab por primera vez envía `paciente.rut` **a secas** como prompt, sin frase
+envolvente: es literalmente lo que el asistente pide hoy por pantalla, y cualquier adorno
+arriesga no matchear su parser.
+
+- **El envío es silencioso**: no se pinta burbuja de usuario con el RUT. El usuario no
+  escribió eso; fingir que sí simula una acción que no ocurrió.
+- **Guarda de ejecución única** (`useRef`): `StrictMode` está activo, así que sin ella el
+  RUT saldría duplicado en cada apertura en desarrollo.
+- **El RUT sale de las props**, no de `user.rut_paciente` del `LoginContext`. Dos fuentes de
+  verdad para el mismo dato terminan desalineándose, y así el chat consulta siempre al
+  mismo paciente que la ficha está mostrando.
+- Sin RUT, no hay consulta automática: la caja de texto queda habilitada y una burbuja
+  explica que se puede indicar el paciente a mano.
+
+### Clave de sesión propia
+
+```
+ficha_chat_session_id     ← la ficha
+chat_session_id           ← el asistente global (NO se toca)
+```
+
+Separadas a propósito. Si compartieran clave, un hilo abierto en el asistente virtual con
+**otro** paciente contaminaría el contexto de la ficha y el chat respondería sobre alguien
+que no es el de la pantalla.
+
+### Lo que se quitó del original
+
+- **El botón naranja «Consultar por otro paciente».** El módulo tiene un solo paciente por
+  regla dura; ese botón podía dejar el chat hablando de otra persona. `reiniciarPaciente()`
+  sigue existiendo en el servicio (paridad con el contrato del backend), pero ningún
+  componente lo llama.
+- **`terminator.gif`** como loader: 300×300 px dentro de un panel de 400 px de alto. Se
+  reemplazó por los tres `CircularProgress`.
+
+### Ciclo de vida
+
+El historial vive en `useState` del tab. Cambiar de tab y volver **no** reenvía el RUT;
+un F5 vuelve a Home y la conversación empieza de cero. Si la respuesta llega con el tab
+desmontado, se pierde: aceptado.
+
+---
+
 ## Decisiones de presentación
 
 | Decisión | Razón |
@@ -330,6 +439,8 @@ npm run build              # tsc -b + vite — debe quedar en verde
 npx eslint src/ficha-clinica/   # debe salir en 0 (el lint global tiene ~117 preexistentes de otros módulos)
 ```
 
+Ambos verificados en verde el 2026-08-20, ya con el tab «Asistente Ergo» dentro.
+
 Cifras de referencia con el mock actual (bioimpedancia del 25/06/2026, `masaGrasaKg: 6.8`):
 
 - Tronco: `3.4 kg`, `50.4 % del total`
@@ -337,9 +448,27 @@ Cifras de referencia con el mock actual (bioimpedancia del 25/06/2026, `masaGras
 - Delta de tronco en músculo, comparando con 17/10/2025: `▲ +1.11 kg`
 - Delta de grasa entre esos dos exámenes: `0.00 kg` (ambos traen 6.8)
 
+⚠️ **Los dos endpoints no comparten base de pacientes** (verificado el 2026-08-20 contra
+el backend local `http://127.0.0.1:8000/api`):
+
+| RUT | `GET /ficha-clinica/{rut}` | `POST /sam-assistant/as-question` |
+|---|---|---|
+| `16900918-k` (= `RUT_DEMO`) | 200 | `patient: null`, `status: "needs_identifier"` |
+| `2123456-7` | 200 | reconocido → responde sobre el paciente |
+
+Con `RUT_DEMO` el tab «Asistente Ergo» contesta «No encontré información del paciente»:
+**ése es el comportamiento correcto del front ante esa respuesta, no un bug.** Para probar
+el camino feliz hay que entrar con `2123456-7`. Las pruebas HTTP van con PowerShell
+(`Invoke-WebRequest`); el sandbox de Bash bloquea las salientes y devuelve `HTTP 000`, que
+se confunde con un backend caído.
+
 **Pendiente de verificación en navegador** (requiere sesión con perfil `Paciente`):
-hover, click para fijar, segundo click para cerrar, click en callout, y el responsive a
-360 px.
+
+- Spec 03: hover, click para fijar, segundo click para cerrar, click en callout, y el
+  responsive a 360 px.
+- Spec 04: que al abrir el tab salga el loader **sin** burbuja de usuario con el RUT, que
+  el micrófono alterne `MicIcon`/`MicOffIcon`, que «Reintentar» reenvíe el mismo prompt y
+  que `localStorage` gane `ficha_chat_session_id` sin tocar `chat_session_id`.
 
 ---
 
@@ -347,7 +476,6 @@ hover, click para fijar, segundo click para cerrar, click en callout, y el respo
 
 Cada una de estas, si entra alguna vez, va en su propia spec:
 
-- Conexión al backend real (el servicio sigue resolviendo el JSON local).
 - Parseo de `raw_json`.
 - Tablas de referencia pediátricas por edad y sexo.
 - Cortes de normalidad por segmento.
@@ -357,6 +485,11 @@ Cada una de estas, si entra alguna vez, va en su propia spec:
 - Coloreado por variación en lugar de por estado clínico.
 - Exportación a PDF/PNG e impresión de la ficha.
 - Sincronización del tab con la URL.
+- Unificar el chat clonado con el asistente global en un componente compartido.
+- Persistir el historial del chat entre recargas o sesiones.
+- Pasar los datos ya cargados de la ficha (bioimpedancias, electros) como contexto del
+  prompt: hoy el backend resuelve la ficha por su cuenta a partir del RUT.
+- Streaming de la respuesta token a token, text-to-speech y cambiar de paciente desde el chat.
 - Enlace con el módulo Chequeo por `id_chequeo` (el dato está ahí).
 - Visualización del `archivo` PNG de la bioimpedancia (falta URL base).
 - Filtros, búsqueda o paginación en las tablas.
@@ -369,7 +502,7 @@ Cada una de estas, si entra alguna vez, va en su propia spec:
 
 El módulo se construyó con el flujo spec-driven del proyecto:
 
-1. `/spec <descripción>` → diseña por fases, guarda en `specs/paciente/NN-slug.md` en
+1. `/spec <descripción>` → diseña por fases, guarda en `specs/ficha-clinica/NN-slug.md` en
    estado `Borrador`. **Nunca escribe código.**
 2. Revisas y cambias el estado a `Aprobado` **a mano**. El agente no lo hace por ti.
 3. `/spec-impl NN-slug` → crea la rama `spec-NN-slug` e implementa paso a paso, con
@@ -379,3 +512,9 @@ El módulo se construyó con el flujo spec-driven del proyecto:
 Una spec que resulta equivocada durante la implementación **se corrige en la spec**, no
 en el código por sorpresa. Ejemplo real: la Spec 03 declaraba un delta de `+1.10 kg` y
 la aritmética daba `+1.11`; se corrigió el criterio en el `.md`.
+
+> La carpeta se llamó `specs/paciente/` hasta el 2026-08-20, y esta guía,
+> `CLAUDE_PACIENTE.md`. Se renombraron a `specs/ficha-clinica/` y
+> `CLAUDE_FICHA_CLINICA.md` para que coincidan con el nombre del módulo. Las specs 01–03
+> mencionan `src/Paciente/` en sus encabezados: es el nombre viejo de
+> `src/ficha-clinica/`, se deja como quedó escrito.
