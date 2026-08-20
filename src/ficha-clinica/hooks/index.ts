@@ -1,0 +1,1 @@
+export { useReconocimientoVoz } from './useReconocimientoVoz';

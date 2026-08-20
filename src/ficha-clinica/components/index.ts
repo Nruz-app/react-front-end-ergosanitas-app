@@ -15,6 +15,7 @@ export { TabHome } from './tabs/TabHome';
 export { TabBioimpedancias } from './tabs/TabBioimpedancias';
 export { TabElectrocardiogramas } from './tabs/TabElectrocardiogramas';
 export { TabDistribucionSegmentaria } from './tabs/TabDistribucionSegmentaria';
+export { TabAsistenteErgo } from './tabs/TabAsistenteErgo';
 
 // Gráficos (react-chartjs-2)
 export {
@@ -40,3 +41,11 @@ export {
     COLOR_ESTADO_CLARO,
     ETIQUETA_ESTADO,
 } from './segmentaria/paleta';
+
+// Chat del tab «Asistente Ergo» (Spec 04)
+export {
+    BurbujaGpt,
+    BurbujaUsuario,
+    CajaMensaje,
+    LoaderEscribiendo,
+} from './asistente';
