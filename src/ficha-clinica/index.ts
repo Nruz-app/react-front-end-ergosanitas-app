@@ -11,4 +11,5 @@ export { AppPacientePages };
 export * from './interface';
 export * from './components';
 export * from './utilities';
-export { UsePacienteService } from './services';
+export * from './services';
+export * from './hooks';

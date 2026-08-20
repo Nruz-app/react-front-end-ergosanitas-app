@@ -27,3 +27,10 @@ export type {
     IDeltaSegmento,
     IComparacionSegmentaria,
 } from './segmentaria.interface';
+
+// Chat del tab «Asistente Ergo» (Spec 04). No pasa por el mapper: el backend del
+// asistente responde texto, no ficha clínica.
+export type {
+    IMensajeChat,
+    IRespuestaAsistente,
+} from './asistente.interface';

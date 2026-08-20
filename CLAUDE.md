@@ -73,27 +73,33 @@ Cada carpeta de primer nivel en `src/` (ej. `Chequeo`, `Bioimpedancia`, `Certifi
 ### `src/ficha-clinica/` — ficha clínica (módulo con guía propia)
 
 Es el módulo más desarrollado por specs y el que más convenciones propias tiene.
-**Antes de tocarlo, lee `specs/paciente/CLAUDE_PACIENTE.md`**: recoge el estado
-consolidado de las tres specs, las decisiones tomadas y lo que no hay que romper.
+**Antes de tocarlo, lee `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md`**: recoge el estado
+consolidado de las cuatro specs, las decisiones tomadas y lo que no hay que romper.
 
 Lo mínimo que hay que saber:
 
 - **Regla dura heredada de la Spec 01:** el trabajo del módulo no toca nada fuera de
-  `src/ficha-clinica/`.
+  `src/ficha-clinica/`. Importar de `common/` (el `ApiAdapter`, el `LoginContext`) es
+  lectura, no modificación, y sí está permitido.
 - **Tres capas de datos.** Capa 1 (`api.interface.ts`, forma cruda del backend con sus
   typos) → mapper → Capa 2 (`ficha-clinica.interface.ts`, modelo de UI) → Capa 3
   (`segmentaria.interface.ts`, derivado en el front). Ningún componente importa la Capa 1.
 - **Nunca mapear ausencia de dato a `0`.** Se usa `number | null` y la UI muestra `—`.
   Un cero en un signo vital es una medición, no un vacío.
-- **`pages/app-pacientes.tsx` es el único que hace fetch**; los cuatro tabs reciben todo
-  por props.
-- **El servicio no está conectado al backend real**: resuelve `data/paciente.json` con
-  `setTimeout` simulando latencia.
+- **`pages/app-pacientes.tsx` es el único que hace fetch de la ficha**; los cinco tabs
+  reciben todo por props. La excepción es el tab «Asistente Ergo», que dispara sus
+  propias llamadas al chat (no a la ficha).
+- **El servicio ya apunta al backend real**: `GET {VITE_API}{VITE_API_PATH}/ficha-clinica/{rut}`,
+  con `USAR_MOCK = false` en `UsePacienteService.ts`. Poniéndolo en `true` vuelve a
+  resolver `data/paciente.json` con latencia simulada, útil para desarrollar sin backend.
 - **Los valores por segmento de la silueta son estimados, no medidos**, y la UI está
   obligada a declararlo con el chip de advertencia. El backend no entrega masa por
   extremidad.
-- **Las escalas clínicas son de población adulta** y el paciente del mock tiene 9 años.
+- **Las escalas clínicas son de población adulta** y el paciente de referencia tiene 9 años.
   Van rotuladas como tales; no son válidas en pediatría.
+- **El chat del tab «Asistente Ergo» es un clon**, no un import de `src/presentation/`
+  ni de `src/AsistenteVirtual/`. Esas carpetas no se tocan; la duplicación es deliberada
+  (Spec 04) y usa su propia clave de sesión, `ficha_chat_session_id`.
 
 ## Flujo Spec-Driven (skills `/spec` y `/spec-impl`)
 
@@ -104,8 +110,9 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: `specs/paciente/01-…`, `02-…`, `03-…`. La
-  numeración es correlativa dentro de cada carpeta.
+- **Las specs se agrupan por módulo**: `specs/ficha-clinica/01-…`, `02-…`, `03-…`, `04-…`.
+  La numeración es correlativa dentro de cada carpeta. Si el módulo tiene guía propia
+  (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a

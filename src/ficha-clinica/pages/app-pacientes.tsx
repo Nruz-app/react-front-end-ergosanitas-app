@@ -13,6 +13,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { LoginContext } from '../../common/context';
@@ -23,6 +24,7 @@ import { TabHome } from '../components/tabs/TabHome';
 import { TabBioimpedancias } from '../components/tabs/TabBioimpedancias';
 import { TabElectrocardiogramas } from '../components/tabs/TabElectrocardiogramas';
 import { TabDistribucionSegmentaria } from '../components/tabs/TabDistribucionSegmentaria';
+import { TabAsistenteErgo } from '../components/tabs/TabAsistenteErgo';
 
 /**
  * RUT de respaldo para desarrollo sin sesión iniciada.
@@ -173,6 +175,11 @@ export const AppPacientePages = () => {
                         iconPosition="start"
                         label="Distribución Segmentaria"
                     />
+                    <Tab
+                        icon={<SmartToyIcon />}
+                        iconPosition="start"
+                        label="Asistente Ergo"
+                    />
                 </Tabs>
 
                 {/* Contenido */}
@@ -198,6 +205,8 @@ export const AppPacientePages = () => {
                             electrocardiogramas={electrocardiogramas}
                         />
                     )}
+
+                    {tab === 4 && <TabAsistenteErgo paciente={paciente} />}
                 </Box>
             </Paper>
         </Container>
