@@ -1,89 +1,167 @@
 import {
   DataGridPremium,
   useGridApiRef,
+  type GridColDef,
 } from '@mui/x-data-grid-premium';
-
 import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { BioimpedanciaService } from '../service/Bioimpedancia';
 import { IBioimpedanciaAll } from '../interface/bioimpedancia.interface';
 
-const columns = [
-  // 🔹 Identificación base
-  { field: 'id', headerName: 'ID', width: 80 },
-  { field: 'rut', headerName: 'RUT', flex: 1, minWidth: 140 },
-  { field: 'nombre', headerName: 'Nombre', flex: 1, minWidth: 180 },
-  { field: 'fecha_prueba', headerName: 'Fecha', width: 120 },
-  { field: 'hora_prueba', headerName: 'Hora', width: 100 },
+const columns: GridColDef<IBioimpedanciaAll>[] = [
+  // Identificación
+  {
+    field: 'rut',
+    headerName: 'RUT',
+    width: 130,
+  },
+  {
+    field: 'nombre',
+    headerName: 'Nombre',
+    flex: 1,
+    minWidth: 180,
+  },
+  {
+    field: 'fecha_prueba',
+    headerName: 'Fecha',
+    width: 110,
+  },
 
-  // 🔹 Datos generales
-  { field: 'sexo', headerName: 'Sexo', width: 100 },
-  { field: 'edad', headerName: 'Edad', width: 90 },
-  { field: 'estatura_cm', headerName: 'Estatura (cm)', width: 120 },
-  { field: 'peso_kg', headerName: 'Peso (kg)', width: 110 },
+  // Datos principales
+  {
+    field: 'edad',
+    headerName: 'Edad',
+    width: 80,
+    type: 'number',
+  },
+  {
+    field: 'estatura_cm',
+    headerName: 'Estatura',
+    width: 100,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value} cm` : '-',
+  },
+  {
+    field: 'peso_kg',
+    headerName: 'Peso',
+    width: 100,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value} kg` : '-',
+  },
 
-  // 🔹 Composición corporal
-  { field: 'imc', headerName: 'IMC', width: 90 },
-  { field: 'puntaje_corporal', headerName: 'Score', width: 110 },
-  { field: 'grasa_corporal_pct', headerName: 'Grasa %', width: 110 },
-  { field: 'masa_grasa_kg', headerName: 'Masa grasa (kg)', width: 150 },
-  { field: 'masa_muscular_kg', headerName: 'Masa muscular (kg)', width: 170 },
-  { field: 'masa_musculo_esqueletico_kg', headerName: 'Músculo esq.', width: 170 },
-  { field: 'proteinas_kg', headerName: 'Proteínas (kg)', width: 140 },
-  { field: 'agua_corporal_total_kg', headerName: 'Agua corporal', width: 150 },
+  // Indicadores corporales
+  {
+    field: 'imc',
+    headerName: 'IMC',
+    width: 90,
+    type: 'number',
+  },
+  {
+    field: 'grasa_corporal_pct',
+    headerName: 'Grasa %',
+    width: 100,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value}%` : '-',
+  },
+  {
+    field: 'masa_grasa_kg',
+    headerName: 'Masa grasa',
+    width: 110,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value} kg` : '-',
+  },
+  {
+    field: 'masa_muscular_kg',
+    headerName: 'Masa muscular',
+    width: 125,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value} kg` : '-',
+  },
+  {
+    field: 'masa_musculo_esqueletico_kg',
+    headerName: 'Músculo esquelético',
+    width: 150,
+    type: 'number',
+    valueFormatter: (value) => value != null ? `${value} kg` : '-',
+  },
 
-  // 🔹 Metabolismo
-  { field: 'tasa_metabolica_basal_kcal', headerName: 'TMB', width: 120 },
-  { field: 'edad_corporal', headerName: 'Edad corporal', width: 130 },
+  // Indicadores de salud corporal
+  {
+    field: 'grasa_visceral',
+    headerName: 'Grasa visceral',
+    width: 120,
+    type: 'number',
+  },
+  {
+    field: 'smi',
+    headerName: 'SMI',
+    width: 80,
+    type: 'number',
+  },
+  {
+    field: 'whr',
+    headerName: 'WHR',
+    width: 80,
+    type: 'number',
+  },
 
-  // 🔹 Grasas
-  { field: 'grasa_visceral', headerName: 'Grasa visceral', width: 140 },
-  { field: 'grasa_subcutanea_pct', headerName: 'Subcutánea %', width: 140 },
+  // Metabolismo
+  {
+    field: 'tasa_metabolica_basal_kcal',
+    headerName: 'TMB',
+    width: 100,
+    type: 'number',
+    valueFormatter: (value) =>
+      value != null ? `${value} kcal` : '-',
+  },
 
-  // 🔹 Indicadores
-  { field: 'smi', headerName: 'SMI', width: 90 },
-  { field: 'whr', headerName: 'WHR', width: 90 },
+  // Objetivo
+  {
+    field: 'peso_objetivo_kg',
+    headerName: 'Peso objetivo',
+    width: 120,
+    type: 'number',
+    valueFormatter: (value) =>
+      value != null ? `${value} kg` : '-',
+  },
 
-  // 🔹 Objetivos
-  { field: 'peso_objetivo_kg', headerName: 'Peso objetivo', width: 140 },
-  { field: 'control_peso_kg', headerName: 'Control peso', width: 140 },
-  { field: 'peso_sin_grasa_kg', headerName: 'Peso sin grasa', width: 150 },
-
-  // 🔹 Contexto equipo
-  { field: 'tipo_corporal', headerName: 'Tipo corporal', width: 140 },
-  { field: 'marca', headerName: 'Marca', width: 120 },
-  { field: 'equipo', headerName: 'Equipo', width: 120 },
-
-  // 🔹 Auditoría
-  { field: 'created_at', headerName: 'Creado', width: 160 },
-  { field: 'updated_at', headerName: 'Actualizado', width: 160 },
+  // Evaluación
+  {
+    field: 'puntaje_corporal',
+    headerName: 'Score',
+    width: 90,
+    type: 'number',
+  },
+  {
+    field: 'tipo_corporal',
+    headerName: 'Tipo corporal',
+    width: 130,
+  },
 ];
 
 export const ListAll = () => {
   const [rows, setRows] = useState<IBioimpedanciaAll[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const apiRef = useGridApiRef();
 
-  // Instancia del servicio (evita recrearlo en cada render)
-  const service = useMemo(() => BioimpedanciaService(), []);
+  const service = useMemo(
+    () => BioimpedanciaService(),
+    []
+  );
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-       const { getListAll } = await BioimpedanciaService();
-        const response = await getListAll();
+      const { getListAll } = await BioimpedanciaService();
+      const response = await getListAll();
 
       const data: IBioimpedanciaAll[] = response?.data ?? [];
-      console.log('Datos obtenidos:', data);  
-      const rowsWithId = data.map((item) => ({
-        ...item,
-        id: item.id, 
-      }));
 
-      setRows(rowsWithId);
+      setRows(data);
     } catch (err) {
       console.error('Error cargando bioimpedancia:', err);
       setError('Error al cargar los datos');
@@ -103,8 +181,9 @@ export const ListAll = () => {
         rows={rows}
         loading={loading}
         getRowId={(row) => row.id}
-        columns={ columns }
+        columns={columns}
         disableRowSelectionOnClick
+        pageSizeOptions={[10, 25, 50, 100]}
       />
 
       {error && (
