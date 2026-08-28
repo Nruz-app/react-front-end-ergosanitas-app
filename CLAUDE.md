@@ -101,6 +101,40 @@ Lo mínimo que hay que saber:
   ni de `src/AsistenteVirtual/`. Esas carpetas no se tocan; la duplicación es deliberada
   (Spec 04) y usa su propia clave de sesión, `ficha_chat_session_id`.
 
+### `src/home-ergo/` — portada comercial (módulo con guía propia)
+
+Es la página que ve un visitante no autenticado en `/`. Sustituye a `src/Home/`, que sigue
+en el repositorio **intacto y sin rutear** como vía de reversa.
+**Antes de tocarlo, lee `specs/home-ergo/CLAUDE_HOME_ERGO.md`.**
+
+Lo mínimo que hay que saber:
+
+- **Regla dura:** el módulo solo toca `src/home-ergo/`, las dos líneas de la entrada `Home`
+  en `src/routes/routes.ts`, y los archivos de `public/home-ergo/`. Nada más. `src/Home/`,
+  `src/AsistenteVirtual/`, `src/presentation/`, `src/Servicios/` y `Navigation.tsx` quedan
+  intactos.
+- **El contenido vive en JSON**, en los seis archivos de `config/`. Agregar una foto, un
+  video o un servicio es agregar un objeto al JSON: ningún `.tsx` lleva rutas de archivo ni
+  textos de negocio escritos a mano. Galería, promociones y videos tienen campo `activo`
+  para apagar una entrada sin borrarla.
+- **Los assets están en `public/home-ergo/`** (26 imágenes, 7 videos), en `kebab-case` ASCII
+  con prefijo que indica su uso: `promo-`, `alianza-`, `operativo-`, `respaldo-`, `info-`,
+  `logo-`.
+- **El material es vertical**, medido: los 7 videos son 9:16 o 4:5 y los flyers son 2:3. Por
+  eso cada sección elige su ajuste — `cover` en la galería porque son fotografías, y
+  **`contain` en promociones y videos**, porque `cover` recortaría el texto quemado de los
+  flyers.
+- **`preload="none"` en los `<video>` es obligatorio y nunca hay `autoplay`.** Los siete
+  videos suman 139 MB; sin eso el Home es inusable con datos móviles.
+- **El chat comercial es un clon**, no un import de `src/presentation/`. Usa endpoint propio
+  `POST /chat-comercial/as-question` —que **todavía no existe**— y su propia clave de
+  sesión, `home_chat_session_id`. Reutilizar `sam-assistant/as-question` aquí expondría
+  datos de pacientes a visitantes anónimos: la separación es de seguridad.
+- **`USAR_ECO = true` en `UseChatComercialService.ts`**: hoy el chat devuelve la misma
+  pregunta. Se pone en `false` cuando exista el backend.
+- **`dist/` pesa 201 MB** por los assets, y el CI lo sube entero por FTP en cada push a
+  `main`.
+
 ## Flujo Spec-Driven (skills `/spec` y `/spec-impl`)
 
 El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`:
@@ -110,9 +144,12 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: `specs/ficha-clinica/01-…`, `02-…`, `03-…`, `04-…`.
-  La numeración es correlativa dentro de cada carpeta. Si el módulo tiene guía propia
-  (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec.
+- **Las specs se agrupan por módulo**: hoy hay dos carpetas,
+  `specs/ficha-clinica/` (`01-…` a `04-…`) y `specs/home-ergo/` (`01-…`).
+  La numeración es correlativa **dentro de cada carpeta**, así que existen dos specs `01`
+  distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
+  (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
+  `CLAUDE_FICHA_CLINICA.md` y `CLAUDE_HOME_ERGO.md`.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a
