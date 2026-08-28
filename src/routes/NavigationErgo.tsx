@@ -81,7 +81,11 @@ export const NavigationErgo = () => {
       <HashRouter>
         <AppBar
           sx={{
-            width: { xs: "150%", sm: "100%" },
+            // El `150%` que había aquí en `xs` hacía que la barra midiera vez y media
+            // el ancho de la pantalla, y era la causa del scroll horizontal en móvil.
+            // `border-box` permite que el `px: 2` quepa dentro del 100%.
+            width: "100%",
+            boxSizing: "border-box",
             px: 2,
           }}
           position="static"
@@ -89,12 +93,18 @@ export const NavigationErgo = () => {
         >
           <Container maxWidth="xl">
             <Toolbar disableGutters>
-              {/* LOGO */}
-              <img
-                width={100}
-                height={100}
+              {/* LOGO — encoge en `xs`: 100x100 fijos son casi un tercio de la
+                  barra en un teléfono de 360 px. */}
+              <Box
+                component="img"
                 src={logoTrans}
+                alt="Ergo Sanitas"
                 title="Visitanos en ergosanitas.com"
+                sx={{
+                  width: { xs: 56, sm: 100 },
+                  height: { xs: 56, sm: 100 },
+                  flexShrink: 0,
+                }}
               />
 
               {/* MOBILE MENU */}

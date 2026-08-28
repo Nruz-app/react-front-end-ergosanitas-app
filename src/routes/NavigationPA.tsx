@@ -65,18 +65,30 @@ export const NavigationPA = () => {
         <HashRouter>
             <AppBar 
                 sx={{
-                    width: { xs: '150%', sm: '100%' },
+                    // El `150%` que había aquí en `xs` hacía que la barra midiera vez y media
+                    // el ancho de la pantalla, y era la causa del scroll horizontal en móvil.
+                    // `border-box` permite que el `px: 2` quepa dentro del 100%.
+                    width: '100%',
+                    boxSizing: 'border-box',
                     px: 2, // padding horizontal
                 }}
                 position="static" 
                 color='success'>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <img 
-                            width={ 100 }
-                            height={ 100 }
-                            src= { logoTrans } 
-                            title='Visitanos en ergosanitas.com' />   
+                        {/* Encoge en `xs`: 100x100 fijos son casi un tercio de la barra
+                            en un teléfono de 360 px. */}
+                        <Box
+                            component="img"
+                            src={ logoTrans }
+                            alt="Ergo Sanitas"
+                            title="Visitanos en ergosanitas.com"
+                            sx={{
+                                width: { xs: 56, sm: 100 },
+                                height: { xs: 56, sm: 100 },
+                                flexShrink: 0,
+                            }}
+                        />
 
                         <Box 
                             sx={ { flexGrow: 1, display: { xs: 'flex', md: 'none' } } } >
