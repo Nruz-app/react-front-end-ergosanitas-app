@@ -1,6 +1,6 @@
 # Spec 01 — Módulo Paciente (Ficha Clínica)
 
-- **Estado:** Approved
+- **Estado:** Implementado
 - **Fecha:** 2026-07-20
 - **Dependencias:** ninguna (reutiliza `common/api/api.adapter.ts` y patrones de `Chequeo` y `Estadisticas`)
 - **Área afectada:** exclusivamente `src/Paciente/` (regla dura: no se toca ninguna otra carpeta)
