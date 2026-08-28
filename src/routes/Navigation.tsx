@@ -58,19 +58,32 @@ export const Navigation = () => {
         <BrowserRouter>
             <AppBar 
                 position="static" 
-                color="primary"
                 sx={{
-                    width: { xs: '150%', sm: '100%' },
+                    backgroundColor: '#0B2C4D',
+                    // El `150%` que había aquí en `xs` hacía que la barra midiera vez y
+                    // media el ancho de la pantalla, y era la causa del scroll horizontal
+                    // en móvil en todas las páginas. `border-box` es lo que permite que el
+                    // `px: 2` quepa dentro del 100% en vez de sumarse a él.
+                    width: '100%',
+                    boxSizing: 'border-box',
                     px: 2, // padding horizontal
                 }}
             >
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <img
-                            width={100}
-                            height={100}
+                        {/* El logo medía 100×100 fijos, y en un teléfono de 360 px eso es
+                            casi un tercio de la barra. Encoge en `xs` para que el
+                            contenido quepa sin necesidad de ensanchar el AppBar. */}
+                        <Box
+                            component="img"
                             src={logoTrans}
+                            alt="Ergo Sanitas"
                             title="Visítanos en ergosanitas.com"
+                            sx={{
+                                width: { xs: 56, sm: 100 },
+                                height: { xs: 56, sm: 100 },
+                                flexShrink: 0,
+                            }}
                         />
     
     
@@ -132,12 +145,23 @@ export const Navigation = () => {
                         <Typography
                             variant="h6"
                             sx={{
-                                ml: 2,
-                                mr: 2,
-                                display: { xs: 'flex', md: 'flex' },
+                                // En `xs` el texto se reduce en vez de ocultarse: a 1,25rem
+                                // con `letterSpacing: .3rem` ocupaba más de 200 px y era lo
+                                // que desbordaba la barra en un teléfono. Con letra más
+                                // chica, menos espaciado y márgenes estrechos cabe en unos
+                                // 60 px, partido en dos líneas como un logotipo.
+                                ml: { xs: 1, sm: 2 },
+                                mr: { xs: 1, sm: 2 },
+                                display: 'flex',
                                 fontFamily: 'Blackletter',
                                 fontWeight: 700,
-                                letterSpacing: '.3rem',
+                                fontSize: { xs: '0.72rem', sm: '1.25rem' },
+                                lineHeight: { xs: 1.1, sm: 1.6 },
+                                letterSpacing: { xs: '.06rem', sm: '.3rem' },
+                                // En `xs` se permite el salto: «ERGO» sobre «SANITAS» entra
+                                // en la mitad del ancho que necesita en una sola línea.
+                                whiteSpace: { xs: 'normal', sm: 'nowrap' },
+                                minWidth: 0,
                                 color: 'inherit',
                                 textDecoration: 'none',
                                 textTransform: 'uppercase',

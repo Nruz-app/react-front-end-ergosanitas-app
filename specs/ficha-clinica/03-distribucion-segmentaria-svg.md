@@ -1,6 +1,6 @@
 # SPEC 03 — Tab «Distribución Segmentaria» con silueta SVG dinámica
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 — Módulo Paciente (Ficha Clínica), SPEC 02 — Ficha Clínica con Tabs
 > **Fecha:** 2026-08-19
 > **Área afectada:** exclusivamente `src/Paciente/` (regla dura heredada de la Spec 01)

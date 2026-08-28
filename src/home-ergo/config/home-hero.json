@@ -1,0 +1,19 @@
+{
+    "hero": {
+        "imagen": "/home-ergo/img/operativo-punto-de-salud.jpg",
+        "titulo": "Salud domiciliaria y deportiva, donde estés",
+        "subtitulo": "Chequeos cardiovasculares, electrocardiogramas, bioimpedancia y exámenes de laboratorio. Vamos a tu casa, a tu club o a tu colegio.",
+        "ctaTexto": "Ver servicios",
+        "ctaTo": "/servicios"
+    },
+    "indicadores": [
+        {
+            "valor": "+2.500",
+            "texto": "personas nos siguen en Instagram"
+        },
+        {
+            "valor": "A domicilio",
+            "texto": "atendemos en tu casa, club o colegio"
+        }
+    ]
+}

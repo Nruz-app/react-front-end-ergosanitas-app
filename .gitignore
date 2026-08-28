@@ -23,3 +23,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Volcados de Git Bash en Windows
+*.stackdump
+
+# Los videos del Home se suben a mano por FTP a /public_html/home-ergo/video/
+# Son 139 MB: en el repositorio inflarian cada clone y el CI los re-subiria en cada push
+public/home-ergo/video/

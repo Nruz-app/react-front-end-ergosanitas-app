@@ -1,6 +1,6 @@
 # SPEC 04 — Tab «Asistente Ergo» con chat GPT autoconsultado
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 — Módulo Paciente (Ficha Clínica), SPEC 02 — Ficha Clínica con Tabs
 > **Fecha:** 2026-08-20
 > **Área afectada:** exclusivamente `src/ficha-clinica/` (regla dura heredada de la Spec 01)

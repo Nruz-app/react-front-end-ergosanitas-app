@@ -1,0 +1,162 @@
+[
+    {
+        "id": "promo-mes-corazon-01",
+        "src": "/home-ergo/img/promo-mes-corazon-01.png",
+        "alt": "Promoción de agosto, mes del corazón, de Ergo SaniTas",
+        "caption": "Agosto, mes del corazón",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-mes-corazon-02",
+        "src": "/home-ergo/img/promo-mes-corazon-02.png",
+        "alt": "Segunda promoción de agosto, mes del corazón, de Ergo SaniTas",
+        "caption": "Agosto, mes del corazón",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-chequeo-cardiovascular",
+        "src": "/home-ergo/img/promo-chequeo-cardiovascular.jpg",
+        "alt": "Promoción del chequeo cardiovascular deportivo de Ergo SaniTas",
+        "caption": "Chequeo cardiovascular deportivo",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-chequeo-cardiologo-deportivo",
+        "src": "/home-ergo/img/promo-chequeo-cardiologo-deportivo.png",
+        "alt": "Promoción del chequeo con cardiólogo deportivo de Ergo SaniTas",
+        "caption": "Chequeo con cardiólogo deportivo",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-bioimpedancia-01",
+        "src": "/home-ergo/img/promo-bioimpedancia-01.png",
+        "alt": "Oferta de bioimpedancia de Ergo SaniTas",
+        "caption": "Bioimpedancia",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-bioimpedancia-02",
+        "src": "/home-ergo/img/promo-bioimpedancia-02.png",
+        "alt": "Segunda oferta de bioimpedancia de Ergo SaniTas",
+        "caption": "Bioimpedancia",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-holter-presion-arterial",
+        "src": "/home-ergo/img/promo-holter-presion-arterial.png",
+        "alt": "Promoción del Holter de presión arterial de Ergo SaniTas",
+        "caption": "Holter de presión arterial",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-laboratorio-fonasa",
+        "src": "/home-ergo/img/promo-laboratorio-fonasa.webp",
+        "alt": "Exámenes de laboratorio con convenio Fonasa de Ergo SaniTas",
+        "caption": "Exámenes de laboratorio con Fonasa",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-laboratorio-toma-muestras",
+        "src": "/home-ergo/img/promo-laboratorio-toma-muestras.png",
+        "alt": "Laboratorio clínico y toma de muestras a domicilio de Ergo SaniTas",
+        "caption": "Laboratorio clínico y toma de muestras",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-adulto-mayor",
+        "src": "/home-ergo/img/promo-adulto-mayor.png",
+        "alt": "Servicios para el adulto mayor de Ergo SaniTas",
+        "caption": "Servicios para el adulto mayor",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "promo-pase-deportivo",
+        "src": "/home-ergo/img/promo-pase-deportivo.jpg",
+        "alt": "Pase deportivo de Ergo SaniTas",
+        "caption": "Pase deportivo",
+        "activo": true,
+        "destacado": true
+    },
+    {
+        "id": "alianza-chequeo-cardiovascular",
+        "src": "/home-ergo/img/alianza-chequeo-cardiovascular.png",
+        "alt": "Alianza de Ergo SaniTas para el chequeo cardiovascular deportivo",
+        "caption": "Alianza — Chequeo cardiovascular deportivo",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-ecg-domicilio",
+        "src": "/home-ergo/img/alianza-ecg-domicilio.png",
+        "alt": "Alianza de Ergo SaniTas para el electrocardiograma a domicilio",
+        "caption": "Alianza — ECG a domicilio",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-bioimpedancia",
+        "src": "/home-ergo/img/alianza-bioimpedancia.png",
+        "alt": "Alianza de Ergo SaniTas para el examen de bioimpedancia",
+        "caption": "Alianza — Bioimpedancia",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-holter",
+        "src": "/home-ergo/img/alianza-holter.png",
+        "alt": "Alianza de Ergo SaniTas para el examen Holter",
+        "caption": "Alianza — Holter",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-examen-laboratorio",
+        "src": "/home-ergo/img/alianza-examen-laboratorio.png",
+        "alt": "Alianza de Ergo SaniTas para exámenes de laboratorio",
+        "caption": "Alianza — Exámenes de laboratorio",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-enfermeria",
+        "src": "/home-ergo/img/alianza-enfermeria.png",
+        "alt": "Alianza de Ergo SaniTas para el servicio de enfermería",
+        "caption": "Alianza — Enfermería",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-neurobionta",
+        "src": "/home-ergo/img/alianza-neurobionta.png",
+        "alt": "Alianza de Ergo SaniTas con Neurobionta",
+        "caption": "Alianza — Neurobionta",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "alianza-la-voz-san-bernardo",
+        "src": "/home-ergo/img/alianza-la-voz-san-bernardo.png",
+        "alt": "Alianza de Ergo SaniTas con La Voz de San Bernardo",
+        "caption": "Alianza — La Voz de San Bernardo",
+        "activo": true,
+        "destacado": false
+    },
+    {
+        "id": "info-holter-instrucciones",
+        "src": "/home-ergo/img/info-holter-instrucciones.jpg",
+        "alt": "Instrucciones para el paciente que usa un Holter de presión arterial",
+        "caption": "Instrucciones para el paciente — Holter de presión arterial",
+        "activo": false,
+        "destacado": false
+    }
+]
