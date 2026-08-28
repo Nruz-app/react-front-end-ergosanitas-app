@@ -1,0 +1,51 @@
+[
+    {
+        "id": "chequeo-cardiovascular-deportivo",
+        "nombre": "Chequeo Cardiovascular Deportivo",
+        "descripcion": "Evaluación cardiológica para deportistas antes de competir. Detecta condiciones de riesgo que no dan síntomas y entrega el respaldo médico que piden clubes y federaciones.",
+        "icono": "MonitorHeart",
+        "activo": true
+    },
+    {
+        "id": "ecg-domicilio",
+        "nombre": "Electrocardiograma a Domicilio",
+        "descripcion": "Examen del corazón en tu propia casa, con equipo portátil. Sin traslados, sin salas de espera y con el informe en manos de un profesional.",
+        "icono": "FavoriteBorder",
+        "activo": true
+    },
+    {
+        "id": "bioimpedancia",
+        "nombre": "Bioimpedancia",
+        "descripcion": "Análisis de composición corporal: masa muscular, grasa y agua. Sirve para seguir un plan deportivo o nutricional con datos y no con impresiones.",
+        "icono": "AccessibilityNew",
+        "activo": true
+    },
+    {
+        "id": "holter-mapa",
+        "nombre": "Holter y MAPA",
+        "descripcion": "Monitoreo continuo del ritmo cardíaco y de la presión arterial durante 24 horas, mientras haces tu vida normal. Muestra lo que un examen de unos minutos no alcanza a ver.",
+        "icono": "WatchLater",
+        "activo": true
+    },
+    {
+        "id": "examenes-laboratorio",
+        "nombre": "Exámenes de Laboratorio",
+        "descripcion": "Toma de muestras a domicilio y laboratorio clínico. Convenio Fonasa disponible.",
+        "icono": "Science",
+        "activo": true
+    },
+    {
+        "id": "enfermeria-domicilio",
+        "nombre": "Enfermería a Domicilio",
+        "descripcion": "Curaciones, administración de medicamentos, control de signos vitales y acompañamiento en la recuperación, en un entorno conocido y seguro.",
+        "icono": "Vaccines",
+        "activo": true
+    },
+    {
+        "id": "primeros-auxilios-operativos",
+        "nombre": "Primeros Auxilios y Operativos",
+        "descripcion": "Cobertura médica para partidos, campeonatos y eventos masivos. Operativos de chequeo en clubes deportivos, colegios y empresas.",
+        "icono": "MedicalServices",
+        "activo": true
+    }
+]

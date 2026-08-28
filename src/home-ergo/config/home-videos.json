@@ -1,0 +1,37 @@
+[
+    {
+        "id": "ergo-sanitas-en-terreno",
+        "src": "/home-ergo/video/ergo-sanitas-en-terreno.mp4",
+        "poster": "/home-ergo/img/operativo-electrocardiograma-01.jpg",
+        "titulo": "Ergo SaniTas en terreno",
+        "activo": true
+    },
+    {
+        "id": "operativo-chequeo-cardiovascular",
+        "src": "/home-ergo/video/operativo-chequeo-cardiovascular.mp4",
+        "poster": "/home-ergo/img/operativo-punto-de-salud.jpg",
+        "titulo": "Operativo de chequeo cardiovascular",
+        "activo": true
+    },
+    {
+        "id": "operativo-escuela-menesianos",
+        "src": "/home-ergo/video/operativo-escuela-menesianos.mp4",
+        "poster": "/home-ergo/img/operativo-electrocardiograma-02.jpg",
+        "titulo": "Operativo en la Escuela Menesianos",
+        "activo": true
+    },
+    {
+        "id": "esteban-paredes",
+        "src": "/home-ergo/video/esteban-paredes.mp4",
+        "poster": "/home-ergo/img/respaldo-esteban-paredes.jpg",
+        "titulo": "Esteban Paredes con Ergo SaniTas",
+        "activo": true
+    },
+    {
+        "id": "oferta-mes-del-corazon",
+        "src": "/home-ergo/video/oferta-mes-del-corazon.mp4",
+        "poster": "/home-ergo/img/promo-mes-corazon-01.png",
+        "titulo": "Agosto, mes del corazón",
+        "activo": true
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "id": "operativo-electrocardiograma-01",
+        "src": "/home-ergo/img/operativo-electrocardiograma-01.jpg",
+        "alt": "Profesional de Ergo SaniTas tomando un electrocardiograma en un operativo en terreno",
+        "caption": "Electrocardiogramas en terreno",
+        "activo": true
+    },
+    {
+        "id": "operativo-electrocardiograma-02",
+        "src": "/home-ergo/img/operativo-electrocardiograma-02.jpg",
+        "alt": "Equipo de Ergo SaniTas realizando electrocardiogramas durante un operativo",
+        "caption": "Operativo de chequeo cardiovascular",
+        "activo": true
+    },
+    {
+        "id": "operativo-primeros-auxilios",
+        "src": "/home-ergo/img/operativo-primeros-auxilios.jpg",
+        "alt": "Personal de primeros auxilios de Ergo SaniTas cubriendo un evento deportivo",
+        "caption": "Primeros auxilios en eventos deportivos",
+        "activo": true
+    },
+    {
+        "id": "respaldo-esteban-paredes",
+        "src": "/home-ergo/img/respaldo-esteban-paredes.jpg",
+        "alt": "El futbolista Esteban Paredes junto al equipo de Ergo SaniTas",
+        "caption": "Esteban Paredes con el equipo de Ergo SaniTas",
+        "activo": true
+    }
+]

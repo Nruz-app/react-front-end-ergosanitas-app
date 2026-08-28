@@ -1,6 +1,6 @@
 import { LazyExoticComponent } from 'react';
 
-import { HomePage } from '../Home/pages';
+import { AppHomeErgoPage } from '../home-ergo/pages';
 import { AppCertificadoPage } from '../Certificados/pages/';
 import { AppAgendarHoraPage } from '../AgendarHora/pages/';
 import { AppServiciosPage } from '../Servicios/pages';
@@ -20,7 +20,7 @@ export const routes: Route[] = [
         name      : 'Home',
         to        : '/',
         path      : '/',
-        Component : HomePage
+        Component : AppHomeErgoPage
     },
 
     {
