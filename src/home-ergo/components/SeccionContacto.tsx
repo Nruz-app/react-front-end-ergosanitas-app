@@ -21,10 +21,25 @@ import { EncabezadoSeccion } from './EncabezadoSeccion';
  * Los seis enlaces no se arman aquí: salen de `config/canales-contacto.tsx`, que es la
  * fuente única del módulo. Esta sección, la franja de redes y el rail fijo pintan
  * exactamente los mismos datos, y cambiar el número de teléfono es editar el JSON.
+ *
+ * **Solo se muestra por debajo de 1200 px** (Spec 03). Desde ahí aparece `RailContacto`,
+ * que pinta los mismos seis canales fijos al borde izquierdo, y tener las dos cosas en
+ * pantalla es repetir el dato dos veces. El corte es exactamente el mismo `lg` que usa el
+ * rail —en sentido contrario— para que no exista ningún ancho sin contacto a la vista.
+ *
+ * El componente declara su propia visibilidad en vez de que lo haga `HomeErgoPage`, igual
+ * que hace `RailContacto` con la suya.
  */
 export const SeccionContacto = () => {
     return (
-        <Box component="section" sx={{ bgcolor: TEMA_HOME.azulProfundo, color: '#fff' }}>
+        <Box
+            component="section"
+            sx={{
+                bgcolor: TEMA_HOME.azulProfundo,
+                color  : '#fff',
+                display: { xs: 'block', lg: 'none' },
+            }}
+        >
             <Container maxWidth={ false } sx={{ maxWidth: ANCHO_MAXIMO, py: { xs: 7, md: 10 } }}>
                 <EncabezadoSeccion
                     sobreOscuro

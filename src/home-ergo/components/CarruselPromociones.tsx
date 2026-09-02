@@ -14,6 +14,7 @@ import promociones from '../config/home-promociones.json';
 import { urlWhatsappPromo } from '../config/canales-contacto';
 import { ANCHO_MAXIMO, TEMA_HOME } from '../config/tema-home';
 import { EncabezadoSeccion } from './EncabezadoSeccion';
+import { ImagenAmpliable } from './ImagenAmpliable';
 
 import type { IPromocionHome } from '../interface';
 
@@ -158,20 +159,26 @@ export const CarruselPromociones = ( { variante }: Props ) => {
                                         } ),
                                     }}
                                 >
-                                    <Box
-                                        component="img"
-                                        src={ promo.src }
-                                        alt={ promo.alt }
-                                        loading="lazy"
-                                        decoding="async"
-                                        sx={{
-                                            width      : '100%',
-                                            aspectRatio: '3 / 4',
-                                            objectFit  : 'contain',
-                                            display    : 'block',
-                                            bgcolor    : TEMA_HOME.hueso,
-                                        }}
-                                    />
+                                    {/* El envoltorio no cambia cómo se ve la gráfica en la
+                                        tarjeta: solo escucha el puntero para ampliarla.
+                                        Las decisiones de ajuste siguen aquí, que es donde
+                                        se sabe que un flyer va con `contain`. */}
+                                    <ImagenAmpliable src={ promo.src } alt={ promo.alt }>
+                                        <Box
+                                            component="img"
+                                            src={ promo.src }
+                                            alt={ promo.alt }
+                                            loading="lazy"
+                                            decoding="async"
+                                            sx={{
+                                                width      : '100%',
+                                                aspectRatio: '3 / 4',
+                                                objectFit  : 'contain',
+                                                display    : 'block',
+                                                bgcolor    : TEMA_HOME.hueso,
+                                            }}
+                                        />
+                                    </ImagenAmpliable>
                                 </Box>
 
                                 <Typography

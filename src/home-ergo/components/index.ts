@@ -9,6 +9,10 @@ export { GaleriaOperativos } from './GaleriaOperativos';
 export { TarjetaVideo } from './TarjetaVideo';
 export { SeccionVideos } from './SeccionVideos';
 export { CarruselPromociones } from './CarruselPromociones';
+
+// Envoltorio genérico: amplía la imagen que envuelve tras unos segundos de cursor encima.
+export { ImagenAmpliable } from './ImagenAmpliable';
+
 export { SeccionContacto } from './SeccionContacto';
 
 // Contacto siempre a la vista: la píldora compartida y la franja que la desfila.
