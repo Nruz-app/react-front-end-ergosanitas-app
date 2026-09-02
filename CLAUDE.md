@@ -47,8 +47,14 @@ La app no tiene un router único. `src/routes/NavigationApp.tsx` elige el **nave
 | (no autenticado)      | `Navigation`    | `routes.ts`    |
 
 - Cada navegador usa **`HashRouter`** (importante: el deploy es estático por FTP, sin reescrituras del servidor; por eso rutas con `#`).
-- Dentro de un navegador, el menú se filtra por perfil con `validatePerfil`: `Administrador` ve todo, `perfil: 'All'` es visible para todos, y cada ruta declara `perfil` y `status` (activar/desactivar sin borrar). Ver `NavigationErgo.tsx` como patrón de referencia (incluye submenús vía `children`).
-- Al agregar una vista para un rol, edita el `routes*.ts` correspondiente **y** verifica el filtrado por perfil, no solo la ruta.
+- **Cada `routes*` define su propio `interface Route` local**; no hay tipo compartido. Agregar un campo obliga a editar los cinco archivos.
+- `status: boolean` sí es uniforme: los cuatro navegadores autenticados hacen `.filter(({ status }) => status)`, así que se desactiva una vista sin borrar la entrada.
+- **El filtrado por perfil NO es uniforme, y es la trampa del área:**
+  - `NavigationErgo` tiene el helper `validatePerfil`, que acepta tres casos: coincidencia exacta, `Administrador` (ve todo) y `perfil: 'All'` (visible para todos). Es el patrón de referencia e incluye submenús vía `children`.
+  - `NavigationED`, `NavigationMe` y `NavigationPA` son copias entre sí y **no usan ese helper**: comparan inline con `(user_perfil == perfil)` más una rama suelta para `Administrador`. **No entienden `'All'`**, así que una ruta marcada así en `routesPA/ED/ME` no aparece en el menú.
+  - `routes.ts` (no autenticado) ni siquiera declara `perfil`/`status`: todas sus rutas se renderizan siempre.
+- Al agregar una vista para un rol, edita el `routes*` correspondiente **y** comprueba cómo filtra *ese* navegador, no solo la ruta.
+- `NavigationApp` decide por `user_perfil` **antes** de mirar `valid`: los tres perfiles con nombre entran a su navegador aunque la sesión no sea válida. Hoy no se nota porque el estado inicial de `LoginProvider` trae `user_perfil: ''`, pero no te apoyes en `valid` para proteger una vista.
 
 ### Sesión / autenticación
 
@@ -116,24 +122,39 @@ Lo mínimo que hay que saber:
 - **El contenido vive en JSON**, en los seis archivos de `config/`. Agregar una foto, un
   video o un servicio es agregar un objeto al JSON: ningún `.tsx` lleva rutas de archivo ni
   textos de negocio escritos a mano. Galería, promociones y videos tienen campo `activo`
-  para apagar una entrada sin borrarla.
-- **Los assets están en `public/home-ergo/`** (26 imágenes, 7 videos), en `kebab-case` ASCII
-  con prefijo que indica su uso: `promo-`, `alianza-`, `operativo-`, `respaldo-`, `info-`,
-  `logo-`.
+  para apagar una entrada sin borrarla; las promociones llevan además `destacado`, que
+  decide en qué carrusel salen (`true` → promociones, arriba; `false` → alianzas, abajo).
+  Ambos se comparan **explícitamente contra `true`/`false`**, nunca por verdad/falsedad ni
+  por el prefijo del `id`.
+- **Los assets están en `public/home-ergo/`** en `kebab-case` ASCII con prefijo que indica
+  su uso: `promo-`, `alianza-`, `operativo-`, `respaldo-`, `info-`, `logo-`. Las 26
+  imágenes (`img/`) sí están versionadas; los 7 videos **no**.
 - **El material es vertical**, medido: los 7 videos son 9:16 o 4:5 y los flyers son 2:3. Por
   eso cada sección elige su ajuste — `cover` en la galería porque son fotografías, y
   **`contain` en promociones y videos**, porque `cover` recortaría el texto quemado de los
   flyers.
+- **Los videos no están en el repositorio.** `public/home-ergo/video/` está en `.gitignore`
+  y los `.mp4` se subieron a mano por FTP a `/public_html/home-ergo/video/`. Como las rutas
+  del JSON son absolutas desde la raíz del sitio y `lftp mirror` corre sin `--delete`,
+  sobreviven a cada despliegue. **Agregar un video son dos pasos:** subirlo por FTP *y*
+  agregar su entrada en `home-videos.json`. Quien clone el repo desde cero verá las
+  carátulas sin reproducción.
 - **`preload="none"` en los `<video>` es obligatorio y nunca hay `autoplay`.** Los siete
   videos suman 139 MB; sin eso el Home es inusable con datos móviles.
+- **Contacto siempre visible = dos piezas** (Spec 02): `FranjaRedes` en el flujo y
+  `RailContacto` fijo al borde izquierdo desde 1200 px (`z-index` 1090, por debajo del
+  `AppBar` y del chat). En móvil no hay rail: moverlo obligaría a reubicar el FAB del chat.
+- **Los enlaces de contacto salen solo de `config/canales-contacto.tsx`.** Ningún
+  componente arma por su cuenta una URL de `wa.me`, `tel:` ni `mailto:`.
 - **El chat comercial es un clon**, no un import de `src/presentation/`. Usa endpoint propio
   `POST /chat-comercial/as-question` —que **todavía no existe**— y su propia clave de
   sesión, `home_chat_session_id`. Reutilizar `sam-assistant/as-question` aquí expondría
   datos de pacientes a visitantes anónimos: la separación es de seguridad.
 - **`USAR_ECO = true` en `UseChatComercialService.ts`**: hoy el chat devuelve la misma
   pregunta. Se pone en `false` cuando exista el backend.
-- **`dist/` pesa 201 MB** por los assets, y el CI lo sube entero por FTP en cada push a
-  `main`.
+- **`dist/` ronda los 60 MB** (las 26 imágenes pesan 30 MB) y el CI lo sube entero por FTP
+  en cada push a `main`. Sacar los videos del repositorio es justo lo que evita que sean
+  139 MB más, subidos tres veces en paralelo por la matriz de Node.
 
 ## Flujo Spec-Driven (skills `/spec` y `/spec-impl`)
 
@@ -145,7 +166,7 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
 Convenciones del repo:
 
 - **Las specs se agrupan por módulo**: hoy hay dos carpetas,
-  `specs/ficha-clinica/` (`01-…` a `04-…`) y `specs/home-ergo/` (`01-…`).
+  `specs/ficha-clinica/` (`01-…` a `04-…`) y `specs/home-ergo/` (`01-…` y `02-…`).
   La numeración es correlativa **dentro de cada carpeta**, así que existen dos specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
@@ -165,6 +186,15 @@ Al arrancar una feature grande, prefiere pasar por `/spec` antes de codificar.
 
 1. Calcula versión semántica desde los mensajes de commit — prefijo **`feat`** ⇒ bump minor, **`major`** ⇒ bump major (PaulHatch/semantic-version). Usa estos prefijos en los commits.
 2. Construye y publica la imagen Docker en Docker Hub (`nruz176/react-front-end-ergosanitas-app`).
-3. Genera `.env.production` desde secrets, corre `npm run build` y **despliega `dist/` por FTP** a `ergosanitas.com` (`/public_html`).
+3. Genera `.env.production` desde secrets, corre `npm run build` y **despliega `dist/` por FTP** a `ergosanitas.com` (`/public_html`) con `lftp … mirror -R`, transferencia serial.
+
+Dos detalles del workflow que importan al tocar assets:
+
+- **El job corre en matriz `[18.x, 20.x, 22.x]` y la matriz aplica al job completo**: hoy son
+  tres builds de Docker y **tres subidas FTP en paralelo** al mismo servidor por cada push.
+- **`mirror` va sin `--delete`**, así que no borra en el servidor lo que no viene en `dist/`.
+  Por eso lo subido a mano (los videos del Home) sobrevive a los despliegues.
+
+Verificación local antes de commitear: `npm run build` en verde y `npx eslint src/<modulo>/` en 0.
 
 El sistema se considera **en producción**: reutiliza la arquitectura existente, respeta los permisos por perfil y evita romper módulos actuales (ver README.md para el contexto de negocio y los roles Administrador / Médico / Colegio / Check).

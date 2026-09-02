@@ -8,7 +8,7 @@ Recoge lo que decidieron las Specs 01 y 02, por qué, y qué **no** hay que romp
 > tienen el detalle y la justificación de cada decisión; este archivo es el estado
 > consolidado.
 
-**Última actualización:** 2026-08-27 (cierre de la Spec 02)
+**Última actualización:** 2026-09-01 (cierre de la Spec 03)
 
 ---
 
@@ -38,11 +38,13 @@ Recoge lo que decidieron las Specs 01 y 02, por qué, y qué **no** hay que romp
 
 | Spec | Título | Estado |
 |------|--------|--------|
-| 01 | Home comercial «home-ergo» con chat de ventas | Código implementado; falta verificar en navegador |
-| 02 | Promociones al inicio y contacto siempre visible | Código implementado; falta verificar en navegador |
+| 01 | Home comercial «home-ergo» con chat de ventas | **Implementado** |
+| 02 | Promociones al inicio y contacto siempre visible | **Implementado** |
+| 03 | Ampliación de gráficas al pasar el cursor y contacto solo en móvil | **Implementado** |
 
-Las dos siguen marcadas **`Aprobado`** a propósito: el paso a `Implementado` lo hace el
-humano tras comprobar los criterios en el navegador, no el agente.
+Las tres están en **`Implementado`**. Ese paso lo da el humano tras comprobar los criterios
+en el navegador, nunca el agente: `/spec-impl` se niega a implementar una spec que no esté
+en `Aprobado`, y no toca el estado al terminar.
 
 ---
 
@@ -82,6 +84,7 @@ src/home-ergo/
 │   ├── GaleriaOperativos.tsx
 │   ├── SeccionVideos.tsx     +  TarjetaVideo.tsx
 │   ├── CarruselPromociones.tsx   dos variantes: promociones y alianzas
+│   ├── ImagenAmpliable.tsx       envoltorio: amplía en overlay tras 3 s de puntero
 │   ├── PastillaContacto.tsx      un canal, en variante franja o rail
 │   ├── FranjaRedes.tsx           marquee de los 6 canales
 │   ├── RailContacto.tsx          rail fijo al borde izquierdo (≥1200 px)
@@ -322,8 +325,12 @@ Orden vigente desde la Spec 02:
  7  SeccionVideos                     hueso
  8  CarruselPromociones «alianzas»    blanco
  9  FranjaRedes                       hueso
-10  SeccionContacto                   azul profundo
+10  SeccionContacto                   azul profundo   (solo < 1200 px, Spec 03)
 ```
+
+**Desde 1200 px la columna termina en la 9.** `SeccionContacto` no se renderiza, así que en
+escritorio la última sección es `FranjaRedes` (hueso) contra el `<Footer />` global. La
+alternancia se mantiene igual: lo que desaparece es el cierre oscuro.
 
 **Ninguna sección puede quedar pegada a otra del mismo color.** Es la regla que ordena esa
 columna, y es lo primero que se rompe al mover una sección de sitio: el fondo de los dos
@@ -374,6 +381,40 @@ que viaja es la carátula, y el `.mp4` se pide al pulsar play.
 
 **Nunca `autoplay`.**
 
+### `ImagenAmpliable`: dos líneas que no se pueden tocar (Spec 03)
+
+Envuelve una imagen y la amplía en un overlay centrado tras 3 s de puntero encima. Hoy lo
+montan los dos carruseles; el componente es genérico y recibe `src`, `alt`, `retardoMs` y
+la imagen por `children`.
+
+**Es un envoltorio, no un reemplazo de la imagen.** La tarjeta sigue decidiendo su
+`aspectRatio`, su `objectFit` y su `loading`. Por eso puede servir igual a las
+promociones (`contain`) y, el día que se decida, a la galería (`cover` con
+`objectPosition`).
+
+Dos cosas parecen detalles y no lo son:
+
+1. **El overlay se monta con `createPortal` sobre `document.body`.** Swiper aplica
+   `transform` a `.swiper-wrapper`, y un ancestro con `transform` se vuelve el bloque
+   contenedor de sus descendientes `position: fixed`. Sin portal, el overlay se centra
+   respecto del carrusel y queda recortado por el borde del slide. **Compila igual y solo
+   se ve al deslizar.**
+2. **El overlay lleva `pointer-events: none`.** Es lo que permite que ocupe la pantalla
+   entera y que el clic siga llegando al enlace de WhatsApp de la tarjeta. Si alguna vez
+   hace falta un botón dentro del overlay, hay que reabrir esa decisión antes de escribir
+   código: son incompatibles.
+
+**Eventos de puntero, nunca `onMouse*` + `onTouch*`.** Un solo par `pointerenter` /
+`pointerleave` da hover en escritorio y pulsación larga en táctil, sin ramificar por
+`pointerType`. Con manejadores de ratón, la secuencia de compatibilidad que el navegador
+emite tras un *tap* incluye un `mouseenter` sin `mouseleave`: el overlay se abría solo tres
+segundos después de tocar una promoción y no se cerraba. Es un error ya cometido y
+corregido; no hay que volver a él.
+
+El `preventDefault` del menú contextual va **en el elemento**, nunca en `document`: a nivel
+de documento le quitaría el «guardar imagen» a toda la portada, incluidas las fotos de la
+galería.
+
 ### Movimiento
 
 Todo lo que se mueve respeta `prefers-reduced-motion`: el trazo del hero, el autoplay del
@@ -416,16 +457,39 @@ móvil, además, el pulgar ya tiene el botón del chat.
 **Consecuencia aceptada:** en el celular no hay contacto fijo. Ponerlo exigiría reubicar el
 FAB del chat, y el chat no se toca.
 
+### El rail y `SeccionContacto` son excluyentes (Spec 03)
+
+Desde la Spec 03, `SeccionContacto` lleva `display: { xs: 'block', lg: 'none' }`: el
+**negativo exacto** del rail. Los dos pintan los mismos seis canales, y tenerlos a la vez
+es repetir el dato.
+
+| Ancho | Sección de contacto | Rail |
+|---|---|---|
+| < 1200 px | sí | no |
+| ≥ 1200 px | no | sí |
+
+**El corte tiene que seguir siendo el mismo `lg` en los dos archivos.** Si uno se mueve
+sin el otro, aparece un rango de anchos con contacto duplicado o —peor— sin ningún
+contacto a la vista. Es la razón de que la Spec 03 eligiera 1200 px y no 900.
+
+**Consecuencia aceptada y registrada:** desde 1200 px la portada se queda sin su último
+llamado a `/servicios`, porque el rail solo ofrece contacto directo. Fue decisión
+explícita del cliente al definir la Spec 03; revertirla es quitar una propiedad.
+
 ### El apilamiento está medido, no puesto a ojo
 
 | Elemento | `z-index` |
 |---|---|
+| **Overlay de `ImagenAmpliable`** | **1400** |
 | Botón flotante del chat | 1300 |
 | Panel del chat | 1299 |
 | `AppBar` de MUI | 1100 (por defecto) |
 | **Rail de contacto** | **1090** |
 
-El rail va por debajo de los tres a propósito: es el elemento menos urgente de la pantalla.
+El rail va por debajo de todos a propósito: es el elemento menos urgente de la pantalla.
+
+El overlay va por encima de todos, y puede hacerlo sin discusión porque lleva
+`pointer-events: none`: tapa durante el hover pero no intercepta un solo clic.
 
 ### El marquee no se pausa: no se monta
 
