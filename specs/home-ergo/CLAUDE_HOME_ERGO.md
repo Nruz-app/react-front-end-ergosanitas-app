@@ -39,11 +39,12 @@ Recoge lo que decidieron las Specs 01 y 02, por qué, y qué **no** hay que romp
 | Spec | Título | Estado |
 |------|--------|--------|
 | 01 | Home comercial «home-ergo» con chat de ventas | **Implementado** |
-| 02 | Promociones al inicio y contacto siempre visible | `Aprobado` — código implementado, falta verificar en navegador |
+| 02 | Promociones al inicio y contacto siempre visible | **Implementado** |
 | 03 | Ampliación de gráficas al pasar el cursor y contacto solo en móvil | **Implementado** |
 
-La 02 sigue marcada **`Aprobado`** a propósito: el paso a `Implementado` lo hace el humano
-tras comprobar los criterios en el navegador, no el agente.
+Las tres están en **`Implementado`**. Ese paso lo da el humano tras comprobar los criterios
+en el navegador, nunca el agente: `/spec-impl` se niega a implementar una spec que no esté
+en `Aprobado`, y no toca el estado al terminar.
 
 ---
 

@@ -1,6 +1,6 @@
 # SPEC 02 — Promociones al inicio y contacto siempre visible
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 de `home-ergo` (Home comercial «home-ergo» con chat de ventas).
 > **Referencia de patrón:** `src/Home/components/MarqueeHome.tsx` y `MarqueeBox.tsx`, que
 > se clonan y rediseñan dentro del módulo. No se importan.
