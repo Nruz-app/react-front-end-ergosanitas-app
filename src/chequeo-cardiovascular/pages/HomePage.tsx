@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 
 import {
-    BarPresion, ListaAlterados, ModalStatus, PieChartHemoglucotest, PieChartImc,
+    AsistenteColegio, BarPresion, ListaAlterados, PieChartHemoglucotest, PieChartImc,
     PieChartSaturacion, PiramideEdadSexo, SeccionHome, StatisticsGlobal,
 } from '../components';
 import { useResumenColegio } from '../hooks';
@@ -26,15 +26,36 @@ import { useResumenColegio } from '../hooks';
  * lo derivado baja por props. Los tres gráficos que siguen viniendo del backend sí piden lo suyo
  * cada uno, porque cada uno consulta un endpoint distinto.
  *
- * `ModalStatus` cuelga del `ModalBarProvider` que monta el orquestador.
+ * El asistente (Spec 03) va **entre los contadores y la lista**: ocupa el lugar del botón
+ * «Detalle clínico» que se retiró, y es lo único de la pantalla que responde una pregunta que
+ * nadie anticipó al diseñar un gráfico. No hace fetch al montarse — ver `AsistenteColegio`.
  */
-export const HomePage = () => {
+
+interface Props {
+    /**
+     * `true` mientras el tab Home está a la vista.
+     *
+     * Solo baja hasta `AsistenteColegio`, para cerrar el micrófono al cambiar de tab:
+     * `TabPanel` oculta con `display: none` y nunca desmonta. No se usa para nada más — el
+     * resto del Home puede seguir montado sin coste.
+     */
+    activo?: boolean;
+}
+
+export const HomePage = ({ activo = true }: Props) => {
 
     const { resumen, cargado, error } = useResumenColegio();
 
     return (
         <Box>
             <StatisticsGlobal />
+
+            <SeccionHome
+                titulo="Asistente Ergo"
+                descripcion="Consulta asistida sobre los deportistas de tu colegio."
+            >
+                <AsistenteColegio activo={activo} />
+            </SeccionHome>
 
             <SeccionHome
                 titulo="Requiere atención"
@@ -74,8 +95,6 @@ export const HomePage = () => {
                     </Grid>
                 </Grid>
             </SeccionHome>
-
-            <ModalStatus />
         </Box>
     );
 };

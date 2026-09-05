@@ -1,16 +1,14 @@
 import { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { Box, Button, Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import WcIcon from '@mui/icons-material/Wc';
 
-import { COLORES, sxFocoVisible, sxTarjeta, sxTituloSeccion } from '../../config/tema';
+import { COLORES, sxTarjeta, sxTituloSeccion } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
-import { ModalBarContext } from '../../context';
 import type { EstadoGenerales } from '../../interface';
 import { UseChequeoCardiovascularService } from '../../services';
 
@@ -69,7 +67,6 @@ export const StatisticsGlobal = () => {
 
     const { user } = useContext(LoginContext);
     const { user_email } = user;
-    const { onOpenModal } = useContext(ModalBarContext);
 
     const [estado, setEstado] = useState<EstadoGenerales>(SIN_DATOS);
 
@@ -141,29 +138,6 @@ export const StatisticsGlobal = () => {
                     />
                 </Grid>
             </Grid>
-
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                <Button
-                    onClick={() => onOpenModal({ isModalOpen: true, typePresion: 'Presion Sistolica' })}
-                    startIcon={<DescriptionIcon />}
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                        textTransform : 'none',
-                        fontWeight    : 600,
-                        borderRadius  : 2,
-                        borderColor   : COLORES.primario,
-                        color         : COLORES.primario,
-                        '&:hover'     : {
-                            borderColor     : COLORES.primarioOsc,
-                            backgroundColor : COLORES.fondoSuave,
-                        },
-                        ...sxFocoVisible,
-                    }}
-                >
-                    Detalle clínico
-                </Button>
-            </Box>
         </Box>
     );
 };

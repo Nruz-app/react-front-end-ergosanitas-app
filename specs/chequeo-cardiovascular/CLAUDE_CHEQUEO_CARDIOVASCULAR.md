@@ -1,7 +1,7 @@
 # CLAUDE_CHEQUEO_CARDIOVASCULAR.md
 
-Guía del módulo `src/chequeo-cardiovascular/`. Recoge el estado consolidado tras las Specs 01 y
-02, y lo que **no** hay que romper. Léela antes de tocar el módulo.
+Guía del módulo `src/chequeo-cardiovascular/`. Recoge el estado consolidado tras las Specs 01,
+02 y 03, y lo que **no** hay que romper. Léela antes de tocar el módulo.
 
 El módulo tiene además **agente y skill propios**, `ergo-chequeo-cardiovascular`, con perímetro
 cerrado a `src/chequeo-cardiovascular/`. Si esta guía y la skill discrepan, **manda esta guía**.
@@ -12,6 +12,7 @@ Estado de las specs de esta carpeta:
 |---|---|---|
 | `01-perfil-colegios.md` | Creó el módulo para el perfil `Colegios` | Implementado |
 | `02-home-colegio.md` | Rediseñó el Home: 2 secciones, 4 gráficos nuevos, accesibilidad | Aprobado (código completo; 4 criterios visuales sin verificar) |
+| `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional en el Home | Implementado (10 de 18 criterios verificados; 8 de comportamiento pendientes de prueba manual — ver §8 de la spec) |
 | — | `Medicos`, `Administrador`, `Usuario` siguen en `src/Chequeo/` | — |
 
 ---
@@ -54,15 +55,16 @@ src/chequeo-cardiovascular/
 ├── components/  ChequeoTable · ChequeoTarjeta · ChequeoForm · ChequeoFormUpdate ·
 │                ChequeoView · SeccionCampos · SeccionHome · DownloadPDF · LoadingTable
 │                filters/ · date-pickers/ · forms/ · carga-masiva/ · exportar-excel/ ·
-│                estadisticas/ · statistics-global/ · modal/ · tabs/
+│                estadisticas/ · statistics-global/ · asistente/ · tabs/
 ├── config/      custom-form.json (25 campos + `seccion`) · custom-likes.json ·
-│                excel-data.json · secciones.ts · tema.ts (tokens visuales)
-├── context/     like-text/ (búsqueda) · modal-bar/ (modal del Home) — barril COMPLETO
+│                excel-data.json · secciones.ts · tema.ts (tokens visuales) ·
+│                sugerencias-asistente.ts
+├── context/     like-text/ (búsqueda) — el único; `modal-bar/` se retiró en la Spec 03
 ├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel ·
-│                useResumenColegio
-├── interface/   9 archivos de tipos + barril
+│                useResumenColegio · useReconocimientoVoz
+├── interface/   10 archivos de tipos + barril
 ├── services/    useChequeoCardiovascularService (9) · useEstadisticasService (4) ·
-│                useCertificadoService (1)
+│                useCertificadoService (1) · useAsistenteColegioService (2)
 └── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
 ```
 
@@ -110,17 +112,84 @@ Dos consecuencias que se descubrieron al activar la validación de verdad:
   se veían con «Masculino» y «No Pagado» elegidos mientras la validación los daba por vacíos.
   En alta se hace `reset(defaults)`, nunca `reset({})`.
 
-## 5. El Home: dos secciones y dos fuentes de datos (Spec 02)
+## 5. El Home: tres secciones y dos fuentes de datos (Specs 02 y 03)
 
-El tab 0 tiene **6 contadores, una lista y 5 gráficos**, en dos secciones con encabezado
-(`SeccionHome`). La lista va primero porque es **lo único accionable**: el resto describe a la
-población, ella nombra a quien hay que atender.
+El tab 0 tiene **6 contadores, un chat, una lista y 5 gráficos**, en tres secciones con
+encabezado (`SeccionHome`). El orden no es estético: el chat responde la pregunta que nadie
+anticipó al diseñar un gráfico, y la lista nombra a quien hay que atender. El resto **describe**
+a la población.
 
 | Sección | Contenido | Fuente |
 |---|---|---|
+| **Asistente Ergo** | `AsistenteColegio` — chat conversacional sobre los deportistas | `sam-assistant-club` (bajo demanda) |
 | **Requiere atención** | `ListaAlterados` — quiénes tienen diagnóstico alterado, con sus signos vitales | Derivada de `chequeo-all` |
 | **Salud de los deportistas** | IMC · Hemoglucotest · Presión | `estadisticas/*` (backend) |
 | | Saturación de oxígeno · Pirámide edad/sexo | Derivadas de `chequeo-all` |
+
+### El chat del Home (Spec 03)
+
+Ocupa el sitio del botón «Detalle clínico», que abría un modal con cuatro párrafos fijos y **no
+leía ni un dato del colegio**. Con él se retiraron `ModalStatus` y todo el contexto
+`context/modal-bar/`: eran sus dos únicos consumidores, así que quedaban inalcanzables.
+
+Lo que hay que saber antes de tocarlo:
+
+- 🔴 **Los cinco componentes de `components/asistente/` y `hooks/useReconocimientoVoz.ts` son
+  clones locales** de `src/ficha-clinica/`, no imports. La regla dura 1 lo obliga, y la
+  divergencia es esperada: aquel chat habla de **un paciente** y este de **una institución**.
+  Si corriges un bug aquí, mira si aplica también allí — y al revés.
+- **No consulta nada al montarse.** El tab de la ficha clínica sí lo hace porque tiene un RUT
+  concreto que preguntar; aquí no hay pregunta obvia, y una llamada por cada entrada al tab 0 es
+  tráfico que nadie pidió. En su lugar hay una bienvenida fija y los chips de
+  `config/sugerencias-asistente.ts`, que **rellenan el input sin enviarlo**.
+- **`email` es obligatorio y va en el body**, junto a `prompt` y `sessionId`. Es la clave de
+  multi-tenencia: es lo que impide que este chat resuelva por un RUT arbitrario. Sin
+  `user_email` el chat se bloquea con una burbuja que lo explica, en vez de mandar la consulta y
+  mostrar un error técnico.
+- **Clave de sesión propia: `colegio_chat_session_id`.** Son ya cuatro hilos separados en el
+  proyecto —`chat_session_id` (asistente global), `ficha_chat_session_id`,
+  `home_chat_session_id` y esta—. Compartir clave contaminaría el contexto entre un paciente y
+  un colegio.
+- **«Nueva conversación» solo toca el front**: renueva el `sessionId` y vacía la pantalla, sin
+  llamar a ningún endpoint. No consta que `sam-assistant-club` exponga un reset, y llamar a una
+  ruta inventada fallaría en silencio. Usa **`RestartAltIcon`**, no un icono de papelera: la
+  regla dura 2 se comprueba con `grep -rni "delete"`.
+- El servicio exige que `response` sea un string con contenido antes de pintarlo, por la misma
+  razón que los gráficos comprueban `Array.isArray`: **este backend responde 200 con sobres de
+  error**.
+
+#### El chat es **una sola pieza**, no tres cajas
+
+Su primera versión eran un botón suelto, un panel blanco y una caja de texto, apiladas. Se veía
+sin acabar. Ahora es un único bloque con `borderRadius: 3` y `overflow: hidden`, en tres franjas:
+
+| Franja | Qué lleva | Fondo |
+|---|---|---|
+| Cabecera | Avatar, «Asistente Ergo», el estado en texto y «Nueva conversación» | `DEGRADADOS.cabeceraChat` |
+| Lienzo | El hilo, con scroll propio | `DEGRADADOS.lienzoChat` |
+| Pie | Micrófono e input, tras un `borderTop` | `COLORES.fondoTarjeta` |
+
+Tres decisiones que conviene no deshacer:
+
+- 🔴 **La burbuja del asistente es blanca sobre lienzo tintado**, no gris sobre blanco. El gris
+  translúcido heredado (`rgba(0,0,0,0.06)`) solo funciona sobre un panel blanco; invertir la
+  relación es lo que hace que el turno del asistente **destaque por ser el más claro**.
+- **Las esquinas recogidas apuntan al avatar**: `4px 16px 16px 16px` en el asistente y su espejo
+  en el usuario. Es lo que evita que las burbujas parezcan tarjetas sueltas.
+- **El estado de la cabecera se escribe** («Listo para responder» / «Escribiendo…» /
+  «No disponible»), no se codifica en un punto de color. En una pantalla donde el verde ya
+  significa «resultado normal», un punto verde de «en línea» mezclaría las dos familias.
+
+Las sombras del chat van **teñidas de azul** (`SOMBRAS.chat`, `.burbuja`, `.burbujaUsuario`): una
+sombra gris sobre fondo azulado se ve sucia. Y el loader se dibuja **con forma de burbuja del
+asistente**, para que la respuesta no haga saltar el hilo al llegar.
+- 🔴 **El micrófono se corta con la prop `activo`, no con el desmontaje.** `TabPanel` oculta los
+  paneles con `display: none` en vez de desmontarlos —así la lista conserva sus filtros y su
+  página—, así que el cleanup de `useReconocimientoVoz` **nunca se dispara al cambiar de tab**.
+  Por eso `AppChequeoCardiovascular` pasa `activo={tab === 0}` a `HomePage` y esta a
+  `AsistenteColegio`, que llama a `detener()` al perder el foco. Es la única razón de esa prop:
+  sin ella el navegador seguiría grabando con el chat fuera de pantalla. Se detiene pero **no se
+  limpia**, para no borrar lo que el usuario llevaba dictado al volver.
 
 ### La asimetría de los fetch es deliberada
 
@@ -226,6 +295,10 @@ series sin significado clínico (cursos, meses).
   compone dentro de otro `sx`, no lo sustituye— y los `sx` de tarjeta y títulos.
 - Las tres **donas apagan la leyenda de chart.js** y usan `LeyendaGrafico`: la leyenda nativa vive
   dentro del canvas y descentraría el total del medio. Barras y línea sí usan la nativa.
+- **Las dos zonas con scroll propio son navegables por teclado y se anuncian.** `ListaAlterados`
+  va con `tabIndex={0}` + `role="group"`; el hilo del chat, con `tabIndex={0}` +
+  `role="log" aria-live="polite"`, para que cada respuesta se lea sola sin interrumpir. Una zona
+  que solo se mueve con el ratón deja fuera a quien navega con teclado.
 
 ## 6. Datos: dos claves, ningún id relacional
 
@@ -235,11 +308,15 @@ listados) y **`rut`** identifica a la persona.
 `IChequeo` se clona **sin retipar**: casi todo `string` opcional. Es deuda conocida y heredada;
 retiparla obligaría a tocar el mapeo con el backend y sale del alcance de la Spec 01.
 
-### Endpoints (10, ninguno nuevo)
+### Endpoints (11, uno nuevo desde la Spec 03)
 
 `postChequeoSearch` · `postChequeoAll` · `getChequeoRut` · `postCreateChequeo` ·
 `postUpdateChequeo` · `chequeoPDF` · `pathUrlCertificado` · `getEstadoGeneral` ·
 `postCargaMasiva` · `getCertificadoRut`, más los 4 de `estadisticas/estadistica-*`.
+
+**Nuevo (Spec 03):** `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }`
+→ `{ response }`. Es el **único endpoint que el módulo estrenó**: los otros 10 ya existían. No
+hay endpoint de reset del hilo.
 
 ### ⚠️ El backend responde 200 con sobres de error
 

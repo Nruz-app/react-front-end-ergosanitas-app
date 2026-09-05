@@ -63,6 +63,38 @@ export const UI = {
     bordeSuave     : '#eeeeee',
     /** Borde punteado de la zona de arrastre del Excel. */
     bordePunteado  : '#c5cae9',
+
+    /**
+     * Los dos turnos del chat del Home (Spec 03).
+     *
+     * Van en `UI` y no en `COLORES` porque no significan nada clínico: separan quién habla. El
+     * azul del usuario es Material Indigo 700 literal — el original de `src/presentation/` lo
+     * pedía como `'indigo.700'`, que **no existe** en la paleta por defecto de MUI y se emitía
+     * como CSS inválido, dejando la burbuja sin fondo.
+     *
+     * ⚠️ **La burbuja del asistente es blanca, no gris.** El gris translúcido del original
+     * (`rgba(0,0,0,0.06)`) funcionaba sobre un panel blanco; aquí el lienzo va tintado, así que
+     * el turno del asistente destaca **por ser el más claro**, con borde y sombra en vez de
+     * relleno. Es lo que quita la sensación de formulario y lo hace leerse como conversación.
+     */
+    burbujaGpt          : '#ffffff',
+    burbujaGptBorde     : '#e4ecf7',
+    burbujaUsuario      : '#303f9f',
+    burbujaUsuarioHover : '#283593',
+
+    /** Lienzo del hilo: un azul casi imperceptible sobre el que flotan las burbujas blancas. */
+    lienzoChat          : '#f4f8fd',
+
+    /**
+     * Piezas sobre la cabecera azul del chat.
+     *
+     * Van en blanco translúcido y no en un color propio para que la banda siga leyéndose como
+     * una sola superficie: un botón con fondo opaco encima de un degradado lo parte en dos.
+     */
+    sobreCabecera       : 'rgba(255, 255, 255, 0.88)',
+    sobreCabeceraSuave  : 'rgba(255, 255, 255, 0.16)',
+    sobreCabeceraHover  : 'rgba(255, 255, 255, 0.26)',
+    sobreCabeceraBorde  : 'rgba(255, 255, 255, 0.38)',
 };
 
 /** Paleta para series sin orden clínico —cursos, meses—, donde el color solo separa. */
@@ -75,12 +107,43 @@ export const DEGRADADOS = {
     fondo    : `linear-gradient(135deg, ${COLORES.fondoApp}, ${COLORES.fondoAppSuave})`,
     hover    : `linear-gradient(135deg, ${COLORES.primarioClaro}, ${COLORES.primario})`,
     primario : `linear-gradient(135deg, ${COLORES.primario}, ${COLORES.primarioOsc})`,
+
+    /** Los dos estados del botón de enviar del chat (Spec 03). */
+    boton      : `linear-gradient(135deg, ${COLORES.primario}, ${COLORES.primarioHover})`,
+    botonHover : `linear-gradient(135deg, ${COLORES.primarioHover}, ${COLORES.primarioOsc})`,
+
+    /**
+     * Cabecera del chat: tres paradas en vez de dos.
+     *
+     * El degradado de dos colores del rail de tabs se ve plano estirado a lo ancho de la
+     * pantalla. La parada intermedia le da profundidad sin salirse del azul de marca.
+     */
+    cabeceraChat : `linear-gradient(120deg, ${COLORES.primarioOsc} 0%, ${COLORES.primario} 62%, ${COLORES.primarioClaro} 100%)`,
+
+    /** Lienzo del hilo: se aclara hacia abajo, de modo que el turno más reciente respira más. */
+    lienzoChat : `linear-gradient(180deg, ${UI.lienzoChat} 0%, ${COLORES.fondoTarjeta} 100%)`,
+
+    /** Turno del usuario. Plano se veía como una etiqueta; con volumen se lee como un mensaje. */
+    burbujaUsuario : `linear-gradient(135deg, ${UI.burbujaUsuario}, ${COLORES.primarioHover})`,
 };
 
-/** Sombras del módulo. Las dos que había, con nombre. */
+/**
+ * Sombras del módulo.
+ *
+ * Las del chat (Spec 03) van **teñidas de azul** en vez de negro puro: una sombra gris sobre un
+ * fondo azulado se ve sucia, y es parte de lo que hacía que el panel pareciera sin acabar.
+ */
 export const SOMBRAS = {
     tarjeta   : '0 10px 30px rgba(0, 0, 0, 0.08)',
     seleccion : '0 10px 25px rgba(13, 71, 161, 0.35)',
+
+    /** El panel del chat completo. */
+    chat      : '0 14px 40px rgba(13, 71, 161, 0.12)',
+    /** Un turno de la conversación: apenas despega del lienzo. */
+    burbuja   : '0 2px 10px rgba(13, 71, 161, 0.08)',
+    /** El turno del usuario, que sí pesa: es el color más oscuro de la pieza. */
+    burbujaUsuario      : '0 4px 14px rgba(48, 63, 159, 0.28)',
+    burbujaUsuarioHover : '0 6px 18px rgba(48, 63, 159, 0.42)',
 };
 
 /**

@@ -8,7 +8,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { COLORES, DEGRADADOS, SOMBRAS, sxFocoVisible } from '../config/tema';
 import { ModalProvider } from '../../common/context';
 import { CargaMasiva, ChequeoTable, ChequeoView, TabPanel } from '../components';
-import { LikeTextProvider, ModalBarProvider } from '../context';
+import { LikeTextProvider } from '../context';
 import type { IChequeo } from '../interface';
 import { UseChequeoCardiovascularService } from '../services';
 
@@ -149,10 +149,11 @@ export const AppChequeoCardiovascular = () => {
 
                     <Box sx={{ flex: 1, minWidth: 0 }}>
 
+                        {/* `activo` solo lo necesita el chat: `TabPanel` oculta con
+                            `display: none`, así que sin esta señal el micrófono seguiría
+                            escuchando tras cambiar de tab. */}
                         <TabPanel value={tab} index={0}>
-                            <ModalBarProvider>
-                                <HomePage />
-                            </ModalBarProvider>
+                            <HomePage activo={tab === 0} />
                         </TabPanel>
 
                         <TabPanel value={tab} index={1}>
