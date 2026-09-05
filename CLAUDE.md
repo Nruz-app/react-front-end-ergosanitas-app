@@ -281,7 +281,7 @@ Lo mínimo que hay que saber:
   que algún día se retirará.
 - **Ninguna operación de borrado**: ni endpoint, ni handler, ni botón. `Colegios` tampoco la
   tenía. El botón de limpiar el buscador usa `ClearIcon`, nunca `DeleteIcon`.
-- **No ramifica por perfil.** `AppChequeoCardiovascular` tiene 4 tabs fijos con índices
+- **No ramifica por perfil.** `AppChequeoCardiovascular` tiene 5 tabs fijos con índices
   estables, que es justo lo que hacía insoportable a `AppChequeo`.
 - **El formulario se agrupa por el campo `seccion`** de `custom-form.json` —el único cambio de
   forma respecto al JSON original—, y una sección sin campos visibles **no se renderiza**. Para
@@ -289,13 +289,17 @@ Lo mínimo que hay que saber:
 - ⚠️ **El esquema yup valida solo los campos visibles.** Ocho campos ocultos declaran `required`;
   validarlos todos haría el formulario imposible de enviar. El módulo viejo esquivaba esto no
   validando nada (su botón saltaba `handleSubmit`).
-- **El Home (tab 0) tiene tres secciones y dos fuentes de datos** (Specs 02 y 03): 6 contadores,
-  el chat `AsistenteColegio`, la lista `ListaAlterados` y 5 gráficos.
-- **El chat del Home es un clon**, no un import de `src/ficha-clinica/` (Spec 03). Usa endpoint
-  propio `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }` y su propia
-  clave de sesión, `colegio_chat_session_id`. **No consulta nada al montarse**: saluda y ofrece
-  chips de ejemplo. Sustituyó al botón «Detalle clínico», y con él se borraron `ModalStatus` y
-  el contexto `context/modal-bar/` —sus dos únicos consumidores—.
+- **El Home (tab 0) tiene dos secciones y dos fuentes de datos** (Spec 02): 6 contadores, la
+  lista `ListaAlterados` —lo único accionable de la pantalla, por eso va primero— y 5 gráficos.
+- **El asistente es el tab 1, «Asistente Virtual»** (Spec 03). Nació dentro del Home, en el sitio
+  del botón «Detalle clínico» —con el que se borraron `ModalStatus` y `context/modal-bar/`, sus
+  dos únicos consumidores—, y se sacó a tab propio: el Home es para mirar y el chat para hacer.
+  Es un **clon**, no un import de `src/ficha-clinica/`; usa endpoint propio
+  `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }` y su propia clave de
+  sesión, `colegio_chat_session_id`. **No consulta nada al montarse**: saluda y ofrece chips.
+- ⚠️ **Los índices de tab van por constantes `TAB_*`, no por literales.** Dos handlers del
+  orquestador los usan a mano, así que insertar un tab en medio los desplaza en silencio — pasó
+  al meter el asistente en la posición 1. Si agregas un tab, declara su constante.
   IMC, hemoglucotest y presión piden su serie a `estadisticas/*`; **saturación y pirámide
   edad/sexo se derivan en el front** de `chequeo-all`. `HomePage` llama a `useResumenColegio`
   **una sola vez** y reparte por props: las derivadas no consultan ningún servicio. La asimetría
@@ -423,7 +427,7 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`. Cárgala antes de crear o modificar cualquier `.ts`/`.tsx`. |
 | `ergo-login` | Conocimiento completo de `src/Login/` (13 archivos): modal dual login/registro, `custom-form.json`, `UseRegister` y sus 5 consumidores externos, sesión. |
 | `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
-| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (84 archivos, ~5.800 líneas): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 4 servicios, el Home de chat + lista + 5 gráficos con sus dos fuentes de datos, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
+| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (84 archivos, ~5.800 líneas): los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 4 servicios, el Home de lista + 5 gráficos y el tab del asistente con sus dos fuentes de datos, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
 | `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |

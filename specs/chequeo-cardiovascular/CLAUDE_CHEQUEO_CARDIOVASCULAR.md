@@ -41,7 +41,7 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
    comprobación por `grep -rni delete` siga siendo significativa.
 
 3. **Este módulo es de un solo perfil.** `AppChequeoCardiovascular` **no ramifica por
-   `user_perfil`**: son 4 tabs fijos. Esa es la diferencia de fondo con `AppChequeo`. Si un día
+   `user_perfil`**: son 5 tabs fijos. Esa es la diferencia de fondo con `AppChequeo`. Si un día
    se migra otro perfil aquí, la decisión de cómo convivir se toma en su spec — no se replica
    el `if (user_perfil === …)` por dentro sin pensarlo.
 
@@ -51,7 +51,8 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
 
 ```
 src/chequeo-cardiovascular/
-├── pages/       AppChequeoCardiovascular (orquestador, 4 tabs) · HomePage · ChequeoPage
+├── pages/       AppChequeoCardiovascular (orquestador, 5 tabs) · HomePage ·
+│                AsistentePage · ChequeoPage
 ├── components/  ChequeoTable · ChequeoTarjeta · ChequeoForm · ChequeoFormUpdate ·
 │                ChequeoView · SeccionCampos · SeccionHome · DownloadPDF · LoadingTable
 │                filters/ · date-pickers/ · forms/ · carga-masiva/ · exportar-excel/ ·
@@ -68,7 +69,15 @@ src/chequeo-cardiovascular/
 └── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
 ```
 
-Los 4 tabs, con índices **estables**: 0 Home · 1 Lista · 2 Alta/Edición · 3 Carga masiva.
+Los 5 tabs: **0** Home · **1** Asistente Virtual · **2** Lista · **3** Alta/Edición ·
+**4** Carga masiva.
+
+🔴 **Los índices se usan a mano en dos handlers** del orquestador, así que insertar un tab en
+medio los desplaza en silencio — es exactamente lo que pasó al mover el asistente a la posición
+1, que empujó los tres siguientes. Por eso ya no hay literales: las cinco posiciones son
+constantes `TAB_HOME`, `TAB_ASISTENTE`, `TAB_LISTA`, `TAB_ALTA` y `TAB_CARGA`, declaradas junto
+al array `TABS`, y las usan tanto los `<TabPanel>` como `handleChange` y `handleUpdateStatus`.
+Si agregas un tab, **declara su constante**; no escribas el número.
 
 ## 4. El formulario: agrupado por `seccion` (concepto central)
 
@@ -112,25 +121,33 @@ Dos consecuencias que se descubrieron al activar la validación de verdad:
   se veían con «Masculino» y «No Pagado» elegidos mientras la validación los daba por vacíos.
   En alta se hace `reset(defaults)`, nunca `reset({})`.
 
-## 5. El Home: tres secciones y dos fuentes de datos (Specs 02 y 03)
+## 5. El Home: dos secciones y dos fuentes de datos (Spec 02)
 
-El tab 0 tiene **6 contadores, un chat, una lista y 5 gráficos**, en tres secciones con
-encabezado (`SeccionHome`). El orden no es estético: el chat responde la pregunta que nadie
-anticipó al diseñar un gráfico, y la lista nombra a quien hay que atender. El resto **describe**
-a la población.
+El tab 0 tiene **6 contadores, una lista y 5 gráficos**, en dos secciones con encabezado
+(`SeccionHome`). La lista va primero porque es **lo único accionable**: el resto describe a la
+población, ella nombra a quien hay que atender.
 
 | Sección | Contenido | Fuente |
 |---|---|---|
-| **Asistente Ergo** | `AsistenteColegio` — chat conversacional sobre los deportistas | `sam-assistant-club` (bajo demanda) |
 | **Requiere atención** | `ListaAlterados` — quiénes tienen diagnóstico alterado, con sus signos vitales | Derivada de `chequeo-all` |
 | **Salud de los deportistas** | IMC · Hemoglucotest · Presión | `estadisticas/*` (backend) |
 | | Saturación de oxígeno · Pirámide edad/sexo | Derivadas de `chequeo-all` |
 
-### El chat del Home (Spec 03)
+### El tab «Asistente Virtual» (Spec 03)
 
-Ocupa el sitio del botón «Detalle clínico», que abría un modal con cuatro párrafos fijos y **no
-leía ni un dato del colegio**. Con él se retiraron `ModalStatus` y todo el contexto
-`context/modal-bar/`: eran sus dos únicos consumidores, así que quedaban inalcanzables.
+El chat nació **dentro del Home**, en el sitio del botón «Detalle clínico» —que abría un modal
+con cuatro párrafos fijos y no leía ni un dato del colegio—. Con ese botón se retiraron
+`ModalStatus` y todo el contexto `context/modal-bar/`: eran sus dos únicos consumidores.
+
+Después se **sacó a su propio tab**, el 1, justo detrás de Home. El motivo: el Home es una
+pantalla para **mirar** —cifras, quién requiere atención, gráficos— y el chat una para **hacer**.
+Embebido obligaba a bajar por encima de él para llegar a los datos, y el hilo de la conversación
+se perdía al hacer scroll. En su tab ocupa el alto completo, que es como se lee una conversación
+larga.
+
+`AsistenteColegio` conserva la prop **`alto`** (`'completo' | 'franja'`) precisamente de ese
+viaje: `franja` es el alto contenido que hacía falta embebido. Hoy no la usa nadie, y se conserva
+para poder volver a incrustar el chat en otra pantalla sin tocar el componente.
 
 Lo que hay que saber antes de tocarlo:
 

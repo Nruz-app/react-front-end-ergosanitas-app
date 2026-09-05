@@ -194,7 +194,7 @@ Cada carpeta de primer nivel de `src/` es un **módulo autocontenido**, típicam
 
 | Módulo | Tamaño | Qué es | Guía |
 |---|---|---|---|
-| `chequeo-cardiovascular/` | 84 arch. · 5.832 líneas | Reemplazo de `Chequeo/` construido **perfil por perfil**; hoy sirve solo a `Colegios`. 4 tabs de índice estable: Home, Lista, Alta/Edición, Carga masiva. El Home lleva chat conversacional propio. | `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md` |
+| `chequeo-cardiovascular/` | 84 arch. · 5.832 líneas | Reemplazo de `Chequeo/` construido **perfil por perfil**; hoy sirve solo a `Colegios`. 5 tabs de índice estable: Home, Asistente Virtual, Lista, Alta/Edición, Carga masiva. Tab propio de asistente virtual conversacional. | `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md` |
 | `ficha-clinica/` | 55 arch. · 5.681 líneas | Ficha clínica del paciente por RUT: 5 tabs, 3 capas de datos con mappers, silueta segmentaria en SVG y tab «Asistente Ergo». **La referencia de arquitectura de datos.** | `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md` |
 | `home-ergo/` | 43 arch. · 2.920 líneas | Portada comercial pública (`/`): galería, promociones, videos, franja de contacto y chat de ventas. Todo el contenido vive en 6 JSON de `config/`. | `specs/home-ergo/CLAUDE_HOME_ERGO.md` |
 

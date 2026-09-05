@@ -1,6 +1,6 @@
 ---
 name: ergo-chequeo-cardiovascular
-description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (84 archivos, ~5.800 líneas). Cubre los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 4 servicios, el Home de chat + lista + 5 gráficos con sus dos fuentes de datos, las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas o su ruteo por `NavigationCol`.
+description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (84 archivos, ~5.800 líneas). Cubre los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 4 servicios, el Home de lista + 5 gráficos y el tab del asistente con sus dos fuentes de datos, las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas o su ruteo por `NavigationCol`.
 ---
 
 # ergo-chequeo-cardiovascular — el chequeo del perfil Colegios
@@ -47,7 +47,7 @@ Gobiernan cualquier cambio. Si una tarea las contradice, **para y dilo** antes d
    por `grep -rni delete src/chequeo-cardiovascular/` siga siendo significativa.
 
 3. 🔴 **El módulo no ramifica por `user_perfil` en el orquestador.** `AppChequeoCardiovascular`
-   tiene **4 tabs fijos con índices estables**, que es justo lo que hacía insoportable a
+   tiene **5 tabs fijos con índices estables**, que es justo lo que hacía insoportable a
    `AppChequeo`. Si algún día se migra otro perfil aquí, cómo convivir se decide en **su** spec:
    no repliques un `if (user_perfil === …)` por dentro sin pensarlo.
    (Sí hay una comparación de perfil, y solo una: `estaOculto` en `ChequeoForm` — §5.)
@@ -58,8 +58,8 @@ Gobiernan cualquier cambio. Si una tarea las contradice, **para y dilo** antes d
 
 ```
 src/chequeo-cardiovascular/
-├── pages/       AppChequeoCardiovascular (188) orquestador de 4 tabs ·
-│                HomePage (28) · ChequeoPage (48)
+├── pages/       AppChequeoCardiovascular (196) orquestador de 5 tabs ·
+│                HomePage (22) · AsistentePage (45) · ChequeoPage (48)
 ├── components/  26 archivos, 2.421 líneas. Los grandes:
 │   ├── ChequeoTable.tsx (332)             la lista + 3 acciones + paginación
 │   ├── ChequeoForm.tsx (253)              alta y edición, agrupado por sección
@@ -76,7 +76,7 @@ src/chequeo-cardiovascular/
 │   ├── filters/           FilterTable (48) · LikeTextChequeo (82)
 │   ├── date-pickers/      DatePickers (91, del form) · DatePickerInput (57, del filtro)
 │   ├── forms/             InputText (118) · InputSelect (71) · ButtonsForm (40)
-│   ├── asistente/         AsistenteColegio (el chat del Home) · SugerenciasChat ·
+│   ├── asistente/         AsistenteColegio (el chat, tab 1) · SugerenciasChat ·
 │   │                      BurbujaGpt · BurbujaUsuario · CajaMensaje · LoaderEscribiendo
 │   │                      (los 4 últimos, clones de `src/ficha-clinica/`)
 │   ├── statistics-global/ StatisticsGlobal (140)
@@ -119,16 +119,23 @@ resto de perfiles con navegador propio: **no uses `valid` para proteger esta vis
 `AppChequeoCardiovascular` monta su **propio `<ModalProvider>` anidado** sobre el global de
 `App.tsx`, para que el modal de detalle no comparta `isDateModalOpen` con el de login.
 
-## 4. Los 4 tabs — índices estables
+## 4. Los 5 tabs — índices estables
 
 Layout de `Tabs` **vertical** (rail de iconos a la izquierda, 64/90 px según breakpoint).
 
 | Índice | Tab | Contenido | Provider que lo envuelve |
 |---|---|---|---|
-| 0 | Home | `HomePage` → `StatisticsGlobal` + 3 secciones (chat, lista, gráficos) | — |
-| 1 | Lista de deportistas | `ChequeoTable` | `LikeTextProvider` |
-| 2 | Agregar deportista | `ChequeoPage` → `ChequeoForm` o `ChequeoFormUpdate` | — |
-| 3 | Carga masiva | `CargaMasiva` | — |
+| 0 | Home | `HomePage` → `StatisticsGlobal` + 2 secciones (lista, gráficos) | — |
+| 1 | Asistente Virtual | `AsistentePage` → `AsistenteColegio` | — |
+| 2 | Lista de deportistas | `ChequeoTable` | `LikeTextProvider` |
+| 3 | Agregar deportista | `ChequeoPage` → `ChequeoForm` o `ChequeoFormUpdate` | — |
+| 4 | Carga masiva | `CargaMasiva` | — |
+
+🔴 **Los índices están escritos a mano en dos handlers** del orquestador (`handleChange` mira
+`TAB_ALTA`, `handleUpdateStatus` salta a `TAB_ALTA` o `TAB_LISTA`). Insertar un tab en medio los
+desplaza en silencio: es lo que pasó al meter «Asistente Virtual» en la posición 1. Por eso ya
+**no hay literales**: las cinco posiciones son constantes `TAB_*` declaradas junto al array, y
+tanto los `<TabPanel>` como los handlers las usan. Si agregas un tab, declara su constante.
 
 Estado que vive en el orquestador: `tab`, `{ rut_paciente, id_paciente }`, `chequeoView`,
 `reloadTable`. Tres handlers bajan por props:
