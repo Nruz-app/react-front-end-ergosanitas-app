@@ -4,6 +4,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import HomeIcon from '@mui/icons-material/Home';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 import { COLORES, DEGRADADOS, SOMBRAS, sxFocoVisible } from '../config/tema';
 import { ModalProvider } from '../../common/context';
@@ -12,6 +13,7 @@ import { LikeTextProvider } from '../context';
 import type { IChequeo } from '../interface';
 import { UseChequeoCardiovascularService } from '../services';
 
+import { AsistentePage } from './AsistentePage';
 import { ChequeoPage } from './ChequeoPage';
 import { HomePage } from './HomePage';
 
@@ -20,15 +22,27 @@ const CHEQUEO_VACIO: IChequeo = {
     user_email : '', sexo_paciente : '', estado_paciente : '',
 };
 
+/**
+ * Los índices son la navegación interna del módulo y **están escritos a mano en dos handlers**
+ * (`handleChange` y `handleUpdateStatus`). Insertar un tab en medio obliga a revisar los dos:
+ * es lo que pasó al meter «Asistente Virtual» en la posición 1, que empujó los tres siguientes.
+ */
+const TAB_HOME      = 0;
+const TAB_ASISTENTE = 1;
+const TAB_LISTA     = 2;
+const TAB_ALTA      = 3;
+const TAB_CARGA     = 4;
+
 const TABS = [
-    { indice: 0, titulo: 'Home',                icono: <HomeIcon /> },
-    { indice: 1, titulo: 'Lista de deportistas', icono: <ListAltIcon /> },
-    { indice: 2, titulo: 'Agregar deportista',   icono: <PersonAddIcon /> },
-    { indice: 3, titulo: 'Carga masiva',         icono: <CloudUploadIcon /> },
+    { indice: TAB_HOME,      titulo: 'Home',                 icono: <HomeIcon /> },
+    { indice: TAB_ASISTENTE, titulo: 'Asistente Virtual',    icono: <SmartToyIcon /> },
+    { indice: TAB_LISTA,     titulo: 'Lista de deportistas', icono: <ListAltIcon /> },
+    { indice: TAB_ALTA,      titulo: 'Agregar deportista',   icono: <PersonAddIcon /> },
+    { indice: TAB_CARGA,     titulo: 'Carga masiva',         icono: <CloudUploadIcon /> },
 ];
 
 /**
- * Orquestador del módulo: los 4 tabs del perfil `Colegios`.
+ * Orquestador del módulo: los 5 tabs del perfil `Colegios`.
  *
  * **No ramifica por perfil.** Esa es la diferencia de fondo con `AppChequeo`, que reparte una
  * sola pantalla entre tres bloques de perfil con índices de tab que no coinciden: agregar un
@@ -51,7 +65,7 @@ export const AppChequeoCardiovascular = () => {
 
         // Entrar al tab de alta por el menú siempre abre un formulario limpio; se llega a la
         // edición desde la lista, que sí trae rut e id.
-        if (nuevoTab === 2) setSeleccion({ rut_paciente: '', id_paciente: 0 });
+        if (nuevoTab === TAB_ALTA) setSeleccion({ rut_paciente: '', id_paciente: 0 });
     };
 
     /**
@@ -61,7 +75,7 @@ export const AppChequeoCardiovascular = () => {
     const handleUpdateStatus = (status: number, rut: string, id: number) => {
 
         setSeleccion({ rut_paciente: status === 1 ? rut : '', id_paciente: status === 1 ? id : 0 });
-        setTab(status === 1 ? 2 : 1);
+        setTab(status === 1 ? TAB_ALTA : TAB_LISTA);
     };
 
     const handleViewData = async (id: number) => {
@@ -149,14 +163,18 @@ export const AppChequeoCardiovascular = () => {
 
                     <Box sx={{ flex: 1, minWidth: 0 }}>
 
+                        <TabPanel value={tab} index={TAB_HOME}>
+                            <HomePage />
+                        </TabPanel>
+
                         {/* `activo` solo lo necesita el chat: `TabPanel` oculta con
                             `display: none`, así que sin esta señal el micrófono seguiría
                             escuchando tras cambiar de tab. */}
-                        <TabPanel value={tab} index={0}>
-                            <HomePage activo={tab === 0} />
+                        <TabPanel value={tab} index={TAB_ASISTENTE}>
+                            <AsistentePage activo={tab === TAB_ASISTENTE} />
                         </TabPanel>
 
-                        <TabPanel value={tab} index={1}>
+                        <TabPanel value={tab} index={TAB_LISTA}>
                             <LikeTextProvider>
                                 <ChequeoTable
                                     handleViewData={handleViewData}
@@ -165,7 +183,7 @@ export const AppChequeoCardiovascular = () => {
                             </LikeTextProvider>
                         </TabPanel>
 
-                        <TabPanel value={tab} index={2}>
+                        <TabPanel value={tab} index={TAB_ALTA}>
                             <ChequeoPage
                                 rut_paciente={rut_paciente}
                                 id_paciente={id_paciente}
@@ -174,7 +192,7 @@ export const AppChequeoCardiovascular = () => {
                             />
                         </TabPanel>
 
-                        <TabPanel value={tab} index={3}>
+                        <TabPanel value={tab} index={TAB_CARGA}>
                             <CargaMasiva handleReloadTable={handleReloadTable} />
                         </TabPanel>
 

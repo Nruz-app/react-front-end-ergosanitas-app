@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 
 import {
-    AsistenteColegio, BarPresion, ListaAlterados, PieChartHemoglucotest, PieChartImc,
+    BarPresion, ListaAlterados, PieChartHemoglucotest, PieChartImc,
     PieChartSaturacion, PiramideEdadSexo, SeccionHome, StatisticsGlobal,
 } from '../components';
 import { useResumenColegio } from '../hooks';
@@ -26,36 +26,20 @@ import { useResumenColegio } from '../hooks';
  * lo derivado baja por props. Los tres gráficos que siguen viniendo del backend sí piden lo suyo
  * cada uno, porque cada uno consulta un endpoint distinto.
  *
- * El asistente (Spec 03) va **entre los contadores y la lista**: ocupa el lugar del botón
- * «Detalle clínico» que se retiró, y es lo único de la pantalla que responde una pregunta que
- * nadie anticipó al diseñar un gráfico. No hace fetch al montarse — ver `AsistenteColegio`.
+ * El chat del asistente **estuvo aquí** entre los contadores y la lista, y se movió a su propio
+ * tab: el Home es una pantalla para mirar y el chat una para hacer. Embebido obligaba a bajar
+ * por encima de él para llegar a los datos. Ver `AsistentePage`.
+ *
+ * Esta página no recibe `activo`: la señal que cierra el micrófono al cambiar de tab la necesita
+ * solo el asistente, y desde que se mudó ya no pasa por aquí.
  */
-
-interface Props {
-    /**
-     * `true` mientras el tab Home está a la vista.
-     *
-     * Solo baja hasta `AsistenteColegio`, para cerrar el micrófono al cambiar de tab:
-     * `TabPanel` oculta con `display: none` y nunca desmonta. No se usa para nada más — el
-     * resto del Home puede seguir montado sin coste.
-     */
-    activo?: boolean;
-}
-
-export const HomePage = ({ activo = true }: Props) => {
+export const HomePage = () => {
 
     const { resumen, cargado, error } = useResumenColegio();
 
     return (
         <Box>
             <StatisticsGlobal />
-
-            <SeccionHome
-                titulo="Asistente Ergo"
-                descripcion="Consulta asistida sobre los deportistas de tu colegio."
-            >
-                <AsistenteColegio activo={activo} />
-            </SeccionHome>
 
             <SeccionHome
                 titulo="Requiere atención"

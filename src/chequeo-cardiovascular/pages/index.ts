@@ -7,3 +7,4 @@ const AppChequeoCardiovascular = lazy(
 export { AppChequeoCardiovascular };
 export { HomePage } from './HomePage';
 export { ChequeoPage } from './ChequeoPage';
+export { AsistentePage } from './AsistentePage';

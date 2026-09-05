@@ -35,6 +35,15 @@ interface Props {
      * seguiría grabando con el chat fuera de pantalla.
      */
     activo?: boolean;
+
+    /**
+     * Alto del hilo. `completo` aprovecha la pantalla en el tab propio del asistente;
+     * `franja` es el alto contenido que hacía falta cuando el chat vivía embebido en el Home.
+     *
+     * Se conserva `franja` aunque hoy no la use nadie: es lo que permite volver a incrustar el
+     * chat en otra pantalla sin tocar el componente.
+     */
+    alto?: 'completo' | 'franja';
 }
 
 /**
@@ -51,7 +60,7 @@ interface Props {
  * Los cinco componentes que usa son clones locales de `src/ficha-clinica/`: la regla dura del
  * módulo prohíbe importar de otros módulos que no sean `src/common/`.
  */
-export const AsistenteColegio = ({ activo = true }: Props) => {
+export const AsistenteColegio = ({ activo = true, alto = 'completo' }: Props) => {
 
     const { user } = useContext(LoginContext);
     const user_email = user.user_email?.trim() ?? '';
@@ -293,7 +302,11 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
                 aria-label="Conversación con el Asistente Ergo"
                 tabIndex={0}
                 sx={{
-                    height     : { xs: 380, md: 440 },
+                    // `completo` se mide contra el viewport, no en píxeles fijos: en un portátil
+                    // de 768 px de alto un valor fijo de 600 dejaría el input fuera de pantalla.
+                    height     : alto === 'completo'
+                        ? { xs: 420, md: 'clamp(420px, 62vh, 720px)' }
+                        : { xs: 380, md: 440 },
                     overflowY  : 'auto',
                     background : DEGRADADOS.lienzoChat,
                     px         : { xs: 0.5, md: 1 },
