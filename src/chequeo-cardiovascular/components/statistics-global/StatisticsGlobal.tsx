@@ -8,6 +8,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import WcIcon from '@mui/icons-material/Wc';
 
+import { COLORES, sxFocoVisible, sxTarjeta, sxTituloSeccion } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
 import { ModalBarContext } from '../../context';
 import type { EstadoGenerales } from '../../interface';
@@ -40,11 +41,10 @@ const Kpi = ({ icon, label, valor, destacado = false }: KpiProps) => (
     <Paper
         elevation={0}
         sx={{
+            ...sxTarjeta,
             p            : 2,
-            height       : '100%',
             borderRadius : 2.5,
-            border       : '1px solid #e3f2fd',
-            backgroundColor : destacado ? '#e3f2fd' : '#fff',
+            backgroundColor : destacado ? COLORES.fondoSuave : COLORES.fondoTarjeta,
         }}
     >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -53,7 +53,7 @@ const Kpi = ({ icon, label, valor, destacado = false }: KpiProps) => (
                 { label }
             </Typography>
         </Box>
-        <Typography sx={{ fontSize: { xs: 22, md: 26 }, fontWeight: 700, color: '#0d47a1', lineHeight: 1.1 }}>
+        <Typography sx={{ fontSize: { xs: 22, md: 26 }, fontWeight: 700, color: COLORES.primarioOsc, lineHeight: 1.1 }}>
             { valor }
         </Typography>
     </Paper>
@@ -91,7 +91,7 @@ export const StatisticsGlobal = () => {
         <Box sx={{ width: '100%' }}>
             <Typography
                 component="h2"
-                sx={{ fontWeight: 700, fontSize: { xs: 18, md: 20 }, color: '#0d47a1', mb: 2 }}
+                sx={{ ...sxTituloSeccion, mb: 2 }}
             >
                 Estado general del colegio
             </Typography>
@@ -99,7 +99,7 @@ export const StatisticsGlobal = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<AssignmentIcon sx={{ color: '#1976d2', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<AssignmentIcon sx={{ color: COLORES.primario, fontSize: 20 }} aria-hidden="true" />}
                         label="Exámenes totales"
                         valor={estado.total_examenes}
                         destacado
@@ -107,35 +107,35 @@ export const StatisticsGlobal = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<TaskAltIcon sx={{ color: '#2e7d32', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<TaskAltIcon sx={{ color: COLORES.normal, fontSize: 20 }} aria-hidden="true" />}
                         label="Exámenes realizados"
                         valor={estado.can_realizado ?? 0}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<RestaurantIcon sx={{ color: '#f57c00', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<RestaurantIcon sx={{ color: COLORES.limite, fontSize: 20 }} aria-hidden="true" />}
                         label="Estado nutricional normal"
                         valor={`${estado.porcentaje_imc_normal ?? 0}%`}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<FavoriteIcon sx={{ color: '#d32f2f', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<FavoriteIcon sx={{ color: COLORES.alterado, fontSize: 20 }} aria-hidden="true" />}
                         label="Estado cardíaco normal"
                         valor={`${estado.porcentaje_estado_normal ?? 0}%`}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<WcIcon sx={{ color: '#1976d2', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<WcIcon sx={{ color: COLORES.primario, fontSize: 20 }} aria-hidden="true" />}
                         label="Masculino / Femenino"
                         valor={`${estado.can_masculino} / ${estado.can_femenino}`}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
                     <Kpi
-                        icon={<BarChartIcon sx={{ color: '#2e7d32', fontSize: 20 }} aria-hidden="true" />}
+                        icon={<BarChartIcon sx={{ color: COLORES.normal, fontSize: 20 }} aria-hidden="true" />}
                         label="Normales / Alterados"
                         valor={`${estado.can_estado_normal} / ${estado.can_estado_alterado}`}
                     />
@@ -152,10 +152,13 @@ export const StatisticsGlobal = () => {
                         textTransform : 'none',
                         fontWeight    : 600,
                         borderRadius  : 2,
-                        borderColor   : '#1976d2',
-                        color         : '#1976d2',
-                        '&:hover'     : { borderColor: '#0d47a1', backgroundColor: '#e3f2fd' },
-                        '&:focus-visible': { outline: '3px solid #90caf9', outlineOffset: 2 },
+                        borderColor   : COLORES.primario,
+                        color         : COLORES.primario,
+                        '&:hover'     : {
+                            borderColor     : COLORES.primarioOsc,
+                            backgroundColor : COLORES.fondoSuave,
+                        },
+                        ...sxFocoVisible,
                     }}
                 >
                     Detalle clínico

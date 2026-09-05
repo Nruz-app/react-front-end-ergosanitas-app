@@ -205,11 +205,14 @@ Lo mínimo que hay que saber:
   en cada push a `main`. Sacar los videos del repositorio es justo lo que evita que sean
   139 MB más, subidos tres veces en paralelo por la matriz de Node.
 
-### `src/chequeo-cardiovascular/` — chequeo por perfil (módulo con guía propia)
+### `src/chequeo-cardiovascular/` — chequeo por perfil (skill `ergo-chequeo-cardiovascular`)
 
 Reemplazo autocontenido de `src/Chequeo/`, que se está construyendo **perfil por perfil**. Hoy
 sirve solo a `Colegios`; `Administrador`, `Medicos` y `Usuario` siguen en el módulo viejo, que
-queda intacto. **Antes de tocarlo, lee `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.**
+queda intacto. **Antes de tocarlo, lee `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`**
+—la guía viva, que manda si discrepa de la skill— y carga la skill `ergo-chequeo-cardiovascular`.
+Tiene además agente propio con perímetro cerrado, `ergo-chequeo-cardiovascular`; el ruteo queda
+fuera de él.
 
 Lo mínimo que hay que saber:
 
@@ -316,6 +319,7 @@ están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skill
 | `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`. Cárgala antes de crear o modificar cualquier `.ts`/`.tsx`. |
 | `ergo-login` | Conocimiento completo de `src/Login/` (13 archivos): modal dual login/registro, `custom-form.json`, `UseRegister` y sus 5 consumidores externos, sesión. |
 | `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
+| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (67 archivos): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 3 servicios, el blindaje de los gráficos y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
 | `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
@@ -327,17 +331,22 @@ están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skill
 | `ergosanitas-developer` | Desarrolla, modifica, prueba y corrige respetando las convenciones. El agente de uso general para implementar. | Todo el repo |
 | `ergosanitas-architect` | Conoce arquitectura y modelo; diseña módulos nuevos y revisa coherencia. Diseña, no implementa. | Todo el repo (diseño) |
 | `ergo-login` | Dueño de `src/Login/` | **Solo `src/Login/`** |
-| `ergo-chequeo` | Dueño de `src/Chequeo/` | **Solo `src/Chequeo/`** |
+| `ergo-chequeo` | Dueño de `src/Chequeo/` (módulo viejo, perfiles Administrador/Medicos/Usuario) | **Solo `src/Chequeo/`** |
+| `ergo-chequeo-cardiovascular` | Dueño de `src/chequeo-cardiovascular/` (módulo nuevo, perfil Colegios) | **Solo `src/chequeo-cardiovascular/`** |
 | `ergo-common` | Dueño de `src/common/` | **Solo `src/common/`** |
 
-Los tres agentes de módulo tienen **perímetro cerrado**: leen lo que haga falta para entender el
+Los cuatro agentes de módulo tienen **perímetro cerrado**: leen lo que haga falta para entender el
 flujo, pero solo modifican su carpeta. Si la tarea exige tocar algo fuera, se detienen y lo
 reportan en vez de improvisar. Cada uno carga su skill homónima al arrancar.
 
-**Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/` y
-`src/chequeo-cardiovascular/` usan `ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en
-`specs/`. El de `chequeo-cardiovascular` toca además el ruteo, así que su cierre pasa también
-por `ergosanitas-architect`.
+⚠️ **`ergo-chequeo` y `ergo-chequeo-cardiovascular` son dueños de módulos distintos** y ninguno
+puede tocar el del otro. El perfil decide a quién llamar: `Colegios` → el nuevo; `Administrador`,
+`Medicos` y `Usuario` → el viejo. El **ruteo** (`routesCOL.tsx`, `NavigationCol.tsx`,
+`NavigationApp.tsx`) queda fuera de ambos perímetros y lo lleva `ergosanitas-developer` o
+`ergosanitas-architect`.
+
+**Módulos sin agente propio pero con guía**: `src/ficha-clinica/` y `src/home-ergo/` usan
+`ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
 
 ## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo`)
 

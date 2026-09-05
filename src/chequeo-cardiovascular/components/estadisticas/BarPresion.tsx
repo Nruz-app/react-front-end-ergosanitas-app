@@ -1,19 +1,28 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import {
     BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip,
 } from 'chart.js';
 
+import { COLORES } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
 import type { IEstadisticaPresion } from '../../interface';
 import { UseEstadisticasService } from '../../services';
+import { colorClinico, estadoDeTarjeta } from '../../utilities';
+
+import { TablaAccesible } from './TablaAccesible';
+import { TarjetaGrafico } from './TarjetaGrafico';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const SIN_DATOS: IEstadisticaPresion = { total_paciente: 0, labels: [], data: [] };
 
-/** Distribución de presión arterial del colegio, en barras. */
+/**
+ * Distribución de presión arterial del colegio, en barras.
+ *
+ * Se queda en barras y no pasa a dona como los otros tres: la presión se lee comparando
+ * categorías entre sí, y para eso una barra es más precisa que un ángulo.
+ */
 export const BarPresion = () => {
 
     const { user } = useContext(LoginContext);
@@ -21,20 +30,27 @@ export const BarPresion = () => {
 
     const [serie, setSerie] = useState<IEstadisticaPresion>(SIN_DATOS);
     const [cargado, setCargado] = useState(false);
+    const [error, setError] = useState(false);
 
     const cargar = useCallback(async () => {
 
         try {
+            setError(false);
             const { getEstadisticaPresion } = UseEstadisticasService();
             const response = await getEstadisticaPresion(user_email);
 
             // Mismo blindaje que en `GraficoTorta`: el backend devuelve 200 con sobre de error
             // en algunos endpoints de estadísticas, y sin esto el Home se cae entero.
-            setSerie(Array.isArray(response?.data) ? response : SIN_DATOS);
+            if (Array.isArray(response?.data)) setSerie(response);
+            else {
+                setSerie(SIN_DATOS);
+                setError(true);
+            }
         }
         catch (problema) {
             console.error('Error al cargar la presión arterial:', problema);
             setSerie(SIN_DATOS);
+            setError(true);
         }
         finally {
             setCargado(true);
@@ -44,67 +60,67 @@ export const BarPresion = () => {
     useEffect(() => { cargar(); }, [cargar]);
 
     const hayDatos = serie.data.length > 0 && serie.data.some((valor) => valor > 0);
+    const estado = estadoDeTarjeta(cargado, error, hayDatos);
+
+    const total = serie.data.reduce((suma, valor) => suma + valor, 0);
+    const colores = serie.labels.map((etiqueta) => colorClinico(etiqueta));
 
     return (
-        <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e3f2fd', height: '100%' }}>
-            <CardContent>
-                <Typography
-                    component="h3"
-                    sx={{ fontWeight: 700, fontSize: 15, color: '#0d47a1', mb: 0.5 }}
-                >
-                    Presión arterial
-                </Typography>
-                <Typography sx={{ fontSize: 12, color: 'text.secondary', mb: 2 }}>
-                    { serie.total_paciente > 0
-                        ? `${serie.total_paciente} deportistas`
-                        : 'Sin mediciones registradas' }
-                </Typography>
-
-                <Box sx={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    { !cargado && (
-                        <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>Cargando…</Typography>
-                    )}
-
-                    { cargado && !hayDatos && (
-                        <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
-                            Todavía no hay datos suficientes.
-                        </Typography>
-                    )}
-
-                    { cargado && hayDatos && (
-                        <Bar
-                            data={{
-                                labels   : serie.labels,
-                                datasets : [{
-                                    label           : 'Deportistas',
-                                    data            : serie.data,
-                                    backgroundColor : ['#81C784', '#FFCC80', '#FFA000', '#E57373'],
-                                    borderColor     : '#ffffff',
-                                    borderWidth     : 2,
-                                }],
-                            }}
-                            options={{
-                                maintainAspectRatio : false,
-                                plugins : {
-                                    legend: {
-                                        display  : true,
-                                        position : 'bottom',
-                                        labels   : {
-                                            font    : { size: 12, family: 'Roboto' },
-                                            color   : '#555',
-                                            padding : 12,
-                                            boxWidth: 12,
-                                        },
-                                    },
+        <TarjetaGrafico
+            titulo="Presión arterial"
+            subtitulo={
+                serie.total_paciente > 0
+                    ? `${serie.total_paciente} deportistas`
+                    : 'Sin mediciones registradas'
+            }
+            estado={estado}
+            tabla={
+                <TablaAccesible
+                    titulo="Presión arterial: distribución de deportistas"
+                    columnas={['Categoría', 'Cantidad', 'Porcentaje']}
+                    filas={serie.labels.map((etiqueta, indice) => [
+                        etiqueta,
+                        serie.data[indice] ?? 0,
+                        `${total > 0 ? Math.round(((serie.data[indice] ?? 0) / total) * 100) : 0}%`,
+                    ])}
+                />
+            }
+        >
+            <Bar
+                data={{
+                    labels   : serie.labels,
+                    datasets : [{
+                        label           : 'Deportistas',
+                        data            : serie.data,
+                        backgroundColor : colores,
+                        borderColor     : COLORES.fondoTarjeta,
+                        borderWidth     : 2,
+                        borderRadius    : 6,
+                    }],
+                }}
+                options={{
+                    maintainAspectRatio : false,
+                    plugins : {
+                        // Una sola serie: la leyenda repetiría lo que ya dice el título.
+                        legend  : { display: false },
+                        tooltip : {
+                            callbacks: {
+                                label: (contexto) => {
+                                    const valor = Number(contexto.parsed.y) || 0;
+                                    const porcentaje = total > 0
+                                        ? Math.round((valor / total) * 100)
+                                        : 0;
+                                    return ` ${valor} deportistas (${porcentaje}%)`;
                                 },
-                                scales: {
-                                    y: { beginAtZero: true, ticks: { precision: 0 } },
-                                },
-                            }}
-                        />
-                    )}
-                </Box>
-            </CardContent>
-        </Card>
+                            },
+                        },
+                    },
+                    scales: {
+                        x : { grid: { display: false } },
+                        y : { beginAtZero: true, ticks: { precision: 0 } },
+                    },
+                }}
+            />
+        </TarjetaGrafico>
     );
 };

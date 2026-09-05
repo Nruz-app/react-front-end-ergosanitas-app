@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
+import { COLORES } from '../config/tema';
 import { ChequeoForm, ChequeoFormUpdate } from '../components';
 
 interface Props {
@@ -21,7 +22,7 @@ export const ChequeoPage = ({ rut_paciente, id_paciente, handleUpdateStatus, han
         <Box sx={{ flexGrow: 1 }}>
             <Typography
                 component="h2"
-                sx={{ fontWeight: 700, fontSize: { xs: 18, md: 20 }, color: '#0d47a1', mb: 0.5 }}
+                sx={{ fontWeight: 700, fontSize: { xs: 18, md: 20 }, color: COLORES.primarioOsc, mb: 0.5 }}
             >
                 { esEdicion ? 'Editar deportista' : 'Nuevo deportista' }
             </Typography>

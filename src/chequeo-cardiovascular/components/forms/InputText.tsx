@@ -1,6 +1,7 @@
 import { TextField } from '@mui/material';
 import { Control, Controller, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 
+import { COLORES } from '../../config/tema';
 import type { IChequeo } from '../../interface';
 import { UseCalculoIMC } from '../../hooks';
 
@@ -82,23 +83,23 @@ export const InputText = ({ control, multiline = false, setValue, getValues, ...
                         shrink : true,
                         sx     : {
                             fontWeight : 'bold',
-                            color      : error ? 'error.main' : '#1976d2',
+                            color      : error ? 'error.main' : COLORES.primario,
                             fontSize   : '1rem',
                         },
                     }}
                     InputProps={{
                         sx: {
                             '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: error ? 'error.main' : '#1976d2',
+                                borderColor: error ? 'error.main' : COLORES.primario,
                             },
                             '&:hover .MuiOutlinedInput-notchedOutline': {
-                                borderColor: error ? 'error.main' : '#115293',
+                                borderColor: error ? 'error.main' : COLORES.primarioHover,
                             },
                             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                borderColor: error ? 'error.main' : '#0d47a1',
+                                borderColor: error ? 'error.main' : COLORES.primarioOsc,
                             },
                             '& .MuiInputBase-input': {
-                                color      : error ? 'error.main' : '#0d47a1',
+                                color      : error ? 'error.main' : COLORES.primarioOsc,
                                 fontWeight : 'bold',
                                 fontSize   : '1rem',
                             },

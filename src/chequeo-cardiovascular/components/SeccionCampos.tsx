@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Box, Divider, Grid, Typography } from '@mui/material';
+import { COLORES } from '../config/tema';
 
 interface Props {
     titulo   : string;
@@ -26,7 +27,7 @@ export const SeccionCampos = ({ titulo, cantidad, children }: Props) => {
                 sx={{
                     fontWeight    : 700,
                     fontSize      : { xs: 15, md: 16 },
-                    color         : '#0d47a1',
+                    color         : COLORES.primarioOsc,
                     textTransform : 'uppercase',
                     letterSpacing : '0.06em',
                     mb            : 1,
@@ -35,7 +36,7 @@ export const SeccionCampos = ({ titulo, cantidad, children }: Props) => {
                 { titulo }
             </Typography>
 
-            <Divider sx={{ mb: 3, borderColor: '#bbdefb' }} />
+            <Divider sx={{ mb: 3, borderColor: COLORES.divisor }} />
 
             <Grid container spacing={3}>
                 { children }

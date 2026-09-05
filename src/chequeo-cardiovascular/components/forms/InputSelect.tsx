@@ -1,6 +1,7 @@
 import { MenuItem, TextField } from '@mui/material';
 import { Control, Controller } from 'react-hook-form';
 
+import { COLORES, UI } from '../../config/tema';
 import type { IChequeo, IOpcionCampo } from '../../interface';
 
 interface Props {
@@ -41,9 +42,9 @@ export const InputSelect = ({ control, ...props }: Props) => {
                         display: props.disabled ? 'none' : 'block',
                         '& .MuiOutlinedInput-root': {
                             borderRadius    : 2,
-                            backgroundColor : '#f9f9f9',
-                            '&.Mui-focused fieldset' : { borderColor: '#1976d2' },
-                            '&:hover fieldset'       : { borderColor: '#1976d2' },
+                            backgroundColor : UI.fondoSutil,
+                            '&.Mui-focused fieldset' : { borderColor: COLORES.primario },
+                            '&:hover fieldset'       : { borderColor: COLORES.primario },
                         },
                         '& .MuiFormHelperText-root': {
                             color     : error ? 'error.main' : 'text.secondary',
@@ -56,9 +57,9 @@ export const InputSelect = ({ control, ...props }: Props) => {
                             key={opcion}
                             value={opcion}
                             sx={{
-                                '&.Mui-selected'       : { backgroundColor: '#1976d2', color: '#fff' },
-                                '&.Mui-selected:hover' : { backgroundColor: '#0d47a1' },
-                                '&:hover'              : { backgroundColor: '#e3f2fd' },
+                                '&.Mui-selected'       : { backgroundColor: COLORES.primario, color: COLORES.fondoTarjeta },
+                                '&.Mui-selected:hover' : { backgroundColor: COLORES.primarioOsc },
+                                '&:hover'              : { backgroundColor: COLORES.fondoSuave },
                             }}
                         >
                             { nombre }

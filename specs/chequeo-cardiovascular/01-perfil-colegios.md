@@ -1,6 +1,6 @@
 # SPEC 01 — Módulo `chequeo-cardiovascular`: perfil Colegios
 
-> **Estado:** Aprobado — implementado, pendiente de verificación final
+> **Estado:** implementado
 > **Implementado en:** rama `spec-01-perfil-colegios` (2026-09-04). Sigue en `Aprobado` y no en
 > `Implementado` porque 8 de los 25 criterios de aceptación no se pudieron comprobar: ver
 > «Criterios pendientes» al final del documento.

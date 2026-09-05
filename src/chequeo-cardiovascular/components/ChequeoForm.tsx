@@ -2,6 +2,7 @@ import { useContext, useMemo, useState } from 'react';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 
+import { COLORES } from '../config/tema';
 import { LoginContext } from '../../common/context';
 import { SECCIONES_FORMULARIO } from '../config/secciones';
 import { useChequeo } from '../hooks';
@@ -214,7 +215,7 @@ export const ChequeoForm = ({ chequeo, handleUpdateStatus, handleReloadTable }: 
                 sx={{
                     p            : { xs: 2.5, md: 4 },
                     borderRadius : 3,
-                    border       : '1px solid #e3f2fd',
+                    border       : `1px solid ${COLORES.fondoSuave}`,
                     boxShadow    : '0 4px 20px rgba(0,0,0,0.06)',
                 }}
             >

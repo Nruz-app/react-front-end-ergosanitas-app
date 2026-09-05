@@ -3,6 +3,7 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 
+import { COLORES } from '../../config/tema';
 import { LikeTextContext } from '../../context';
 import camposLike from '../../config/custom-likes.json';
 
@@ -66,7 +67,7 @@ export const LikeTextChequeo = () => {
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <SearchIcon fontSize="small" sx={{ color: '#1976d2' }} aria-hidden="true" />
+                        <SearchIcon fontSize="small" sx={{ color: COLORES.primario }} aria-hidden="true" />
                     </InputAdornment>
                 ),
                 endAdornment: texto ? (

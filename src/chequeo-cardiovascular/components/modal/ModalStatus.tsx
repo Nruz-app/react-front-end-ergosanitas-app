@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 
+import { COLORES } from '../../config/tema';
 import { ModalBarContext } from '../../context';
 
 /**
@@ -31,7 +32,7 @@ export const ModalStatus = () => {
                     maxHeight : '90vh',
                     overflowY : 'auto',
                     p         : { xs: 2.5, md: 3.5 },
-                    backgroundColor : '#fff',
+                    backgroundColor : COLORES.fondoTarjeta,
                     borderRadius    : 3,
                     boxShadow       : 24,
                     outline         : 'none',
@@ -40,12 +41,12 @@ export const ModalStatus = () => {
                 <Typography
                     id="titulo-detalle-clinico"
                     component="h2"
-                    sx={{ fontSize: 19, fontWeight: 700, color: '#0d47a1', mb: 1 }}
+                    sx={{ fontSize: 19, fontWeight: 700, color: COLORES.primarioOsc, mb: 1 }}
                 >
                     Detalle del estado general
                 </Typography>
 
-                <Divider sx={{ mb: 2, borderColor: '#bbdefb' }} />
+                <Divider sx={{ mb: 2, borderColor: COLORES.divisor }} />
 
                 <Typography sx={{ fontSize: 14, color: 'text.secondary', mb: 2 }}>
                     El estado general es un indicador de salud del deportista. Un estado normal
@@ -53,7 +54,7 @@ export const ModalStatus = () => {
                     puede variar según la edad, el sexo y otros factores individuales.
                 </Typography>
 
-                <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#0d47a1', mb: 1 }}>
+                <Typography sx={{ fontSize: 14, fontWeight: 700, color: COLORES.primarioOsc, mb: 1 }}>
                     Recomendaciones
                 </Typography>
 
@@ -73,8 +74,8 @@ export const ModalStatus = () => {
                             fontWeight    : 600,
                             borderRadius  : 2,
                             px            : 3,
-                            backgroundColor : '#1976d2',
-                            '&:hover'       : { backgroundColor: '#115293' },
+                            backgroundColor : COLORES.primario,
+                            '&:hover'       : { backgroundColor: COLORES.primarioHover },
                         }}
                     >
                         Cerrar

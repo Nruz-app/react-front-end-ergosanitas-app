@@ -2,6 +2,7 @@ import { Box, Chip, IconButton, Paper, Tooltip, Typography } from '@mui/material
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+import { COLORES, UI } from '../config/tema';
 import type { IChequeo } from '../interface';
 import { capitalizarPalabras, esReciente, getEstadoProps } from '../utilities';
 import { DownloadPDF } from './DownloadPDF';
@@ -30,15 +31,15 @@ export const ChequeoTarjeta = ({ row, handleVer, handleDescargarPDF, handleDesca
                 p            : 2,
                 mb           : 1.5,
                 borderRadius : 2,
-                border       : '1px solid #e0e0e0',
+                border       : `1px solid ${COLORES.borde}`,
                 // El «reciente» se marca con una barra lateral, no con fondo rojo pleno:
                 // el rojo completo dejaba el texto ilegible.
-                borderLeft   : reciente ? '5px solid #d32f2f' : '5px solid transparent',
+                borderLeft   : reciente ? `5px solid ${UI.atencion}` : '5px solid transparent',
             }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, alignItems: 'flex-start' }}>
                 <Box sx={{ minWidth: 0 }}>
-                    <Typography sx={{ fontWeight: 700, fontSize: 15, color: '#0d47a1', wordBreak: 'break-word' }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 15, color: COLORES.primarioOsc, wordBreak: 'break-word' }}>
                         { capitalizarPalabras(row.nombre) }
                     </Typography>
                     <Typography sx={{ fontSize: 13, color: 'text.secondary', mt: 0.3 }}>
@@ -60,8 +61,8 @@ export const ChequeoTarjeta = ({ row, handleVer, handleDescargarPDF, handleDesca
                         aria-label={`Ver detalle de ${row.nombre}`}
                         size="small"
                         sx={{
-                            color: '#fff', backgroundColor: '#2e7d32',
-                            '&:hover': { backgroundColor: '#1b5e20' },
+                            color: COLORES.fondoTarjeta, backgroundColor: UI.accionVer,
+                            '&:hover': { backgroundColor: UI.accionVerHover },
                         }}
                     >
                         <VisibilityIcon fontSize="small" />
@@ -80,8 +81,8 @@ export const ChequeoTarjeta = ({ row, handleVer, handleDescargarPDF, handleDesca
                         aria-label={`Descargar ECG de ${row.rut}`}
                         size="small"
                         sx={{
-                            color: '#fff', backgroundColor: '#0288d1',
-                            '&:hover': { backgroundColor: '#01579b' },
+                            color: COLORES.fondoTarjeta, backgroundColor: UI.accionEcg,
+                            '&:hover': { backgroundColor: UI.accionEcgHover },
                         }}
                     >
                         <AssignmentTurnedInIcon fontSize="small" />

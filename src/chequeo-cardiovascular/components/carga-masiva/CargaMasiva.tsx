@@ -4,6 +4,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import Swal from 'sweetalert2';
 
+import { COLORES } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
 import { ExportToExcel } from '../../hooks';
 import type { ResponseCargaMasiva } from '../../interface';
@@ -107,7 +108,7 @@ export const CargaMasiva = ({ handleReloadTable }: Props) => {
 
             <Typography
                 component="h2"
-                sx={{ fontWeight: 700, fontSize: { xs: 18, md: 20 }, color: '#0d47a1', mb: 0.5 }}
+                sx={{ fontWeight: 700, fontSize: { xs: 18, md: 20 }, color: COLORES.primarioOsc, mb: 0.5 }}
             >
                 Carga masiva de deportistas
             </Typography>
@@ -117,9 +118,9 @@ export const CargaMasiva = ({ handleReloadTable }: Props) => {
 
             <Paper
                 elevation={0}
-                sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3, border: '1px solid #e3f2fd' }}
+                sx={{ p: { xs: 2.5, md: 3.5 }, borderRadius: 3, border: `1px solid ${COLORES.fondoSuave}` }}
             >
-                <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#0d47a1', mb: 1.5 }}>
+                <Typography sx={{ fontSize: 13, fontWeight: 700, color: COLORES.primarioOsc, mb: 1.5 }}>
                     1 · El archivo debe traer estas columnas
                 </Typography>
 
@@ -129,7 +130,7 @@ export const CargaMasiva = ({ handleReloadTable }: Props) => {
                             key={columna}
                             label={columna}
                             size="small"
-                            sx={{ backgroundColor: '#e3f2fd', color: '#0d47a1', fontWeight: 500 }}
+                            sx={{ backgroundColor: COLORES.fondoSuave, color: COLORES.primarioOsc, fontWeight: 500 }}
                         />
                     ))}
                 </Box>
@@ -139,14 +140,14 @@ export const CargaMasiva = ({ handleReloadTable }: Props) => {
                     startIcon={<PostAddIcon />}
                     variant="text"
                     size="small"
-                    sx={{ textTransform: 'none', fontWeight: 600, color: '#1976d2', mb: 1 }}
+                    sx={{ textTransform: 'none', fontWeight: 600, color: COLORES.primario, mb: 1 }}
                 >
                     Descargar plantilla vacía
                 </Button>
 
-                <Divider sx={{ my: 2.5, borderColor: '#e3f2fd' }} />
+                <Divider sx={{ my: 2.5, borderColor: COLORES.fondoSuave }} />
 
-                <Typography sx={{ fontSize: 13, fontWeight: 700, color: '#0d47a1', mb: 1.5 }}>
+                <Typography sx={{ fontSize: 13, fontWeight: 700, color: COLORES.primarioOsc, mb: 1.5 }}>
                     2 · Sube el archivo
                 </Typography>
 
@@ -163,8 +164,8 @@ export const CargaMasiva = ({ handleReloadTable }: Props) => {
                             fontWeight    : 600,
                             borderRadius  : 2,
                             px            : 3,
-                            backgroundColor : '#1976d2',
-                            '&:hover'       : { backgroundColor: '#115293' },
+                            backgroundColor : COLORES.primario,
+                            '&:hover'       : { backgroundColor: COLORES.primarioHover },
                         }}
                     >
                         { subiendo ? 'Cargando…' : 'Cargar deportistas' }

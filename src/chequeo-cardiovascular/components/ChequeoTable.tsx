@@ -7,6 +7,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Swal from 'sweetalert2';
 
+import { COLORES, UI } from '../config/tema';
 import { LoginContext, ModalContext } from '../../common/context';
 import { LikeTextContext } from '../context';
 import type { IChequeo } from '../interface';
@@ -173,7 +174,7 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                 <TableContainer
                     component={Paper}
                     elevation={0}
-                    sx={{ borderRadius: 3, border: '1px solid #e0e0e0', overflowX: 'auto' }}
+                    sx={{ borderRadius: 3, border: `1px solid ${COLORES.borde}`, overflowX: 'auto' }}
                 >
                     <Table stickyHeader size="small" aria-label="Lista de deportistas">
                         <TableHead>
@@ -183,8 +184,8 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                                         key={column.id}
                                         sx={{
                                             width           : column.ancho,
-                                            backgroundColor : '#1976d2',
-                                            color           : '#fff',
+                                            backgroundColor : COLORES.primario,
+                                            color           : COLORES.fondoTarjeta,
                                             fontWeight      : 700,
                                             fontSize        : 13,
                                             letterSpacing   : '0.03em',
@@ -195,7 +196,7 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                                 ))}
                                 <TableCell
                                     align="right"
-                                    sx={{ backgroundColor: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 13, width: '170px' }}
+                                    sx={{ backgroundColor: COLORES.primario, color: COLORES.fondoTarjeta, fontWeight: 700, fontSize: 13, width: '170px' }}
                                 >
                                     Acciones
                                 </TableCell>
@@ -226,11 +227,11 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                                         key={row.id}
                                         hover
                                         sx={{
-                                            '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                                            '&:hover': { backgroundColor: '#e3f2fd' },
+                                            '&:nth-of-type(odd)': { backgroundColor: UI.fondoSutil },
+                                            '&:hover': { backgroundColor: COLORES.fondoSuave },
                                             // Indicador lateral en vez del fondo rojo pleno del
                                             // módulo original, que dejaba el texto ilegible.
-                                            borderLeft: reciente ? '5px solid #d32f2f' : '5px solid transparent',
+                                            borderLeft: reciente ? `5px solid ${UI.atencion}` : '5px solid transparent',
                                         }}
                                     >
                                         <TableCell sx={{ fontSize: 13, fontWeight: 500 }}>
@@ -253,8 +254,8 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                                                         aria-label={`Ver detalle de ${row.nombre}`}
                                                         size="small"
                                                         sx={{
-                                                            color: '#fff', backgroundColor: '#2e7d32',
-                                                            '&:hover': { backgroundColor: '#1b5e20' },
+                                                            color: COLORES.fondoTarjeta, backgroundColor: UI.accionVer,
+                                                            '&:hover': { backgroundColor: UI.accionVerHover },
                                                         }}
                                                     >
                                                         <VisibilityIcon fontSize="small" />
@@ -273,8 +274,8 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                                                         aria-label={`Descargar ECG de ${row.rut}`}
                                                         size="small"
                                                         sx={{
-                                                            color: '#fff', backgroundColor: '#0288d1',
-                                                            '&:hover': { backgroundColor: '#01579b' },
+                                                            color: COLORES.fondoTarjeta, backgroundColor: UI.accionEcg,
+                                                            '&:hover': { backgroundColor: UI.accionEcgHover },
                                                         }}
                                                     >
                                                         <AssignmentTurnedInIcon fontSize="small" />
@@ -325,7 +326,7 @@ export const ChequeoTable = ({ handleViewData, reloadTable }: Props) => {
                 labelDisplayedRows={({ from, to, count }) =>
                     `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
                 }
-                sx={{ borderTop: '1px solid #eee' }}
+                sx={{ borderTop: `1px solid ${UI.bordeSuave}` }}
             />
         </Box>
     );

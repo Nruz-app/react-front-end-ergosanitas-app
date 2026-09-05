@@ -2,23 +2,29 @@ import { useContext } from 'react';
 import { Box, Button, Chip, Divider, Grid, Modal, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
+import { COLORES } from '../config/tema';
 import { ModalContext } from '../../common/context';
 import type { IChequeo } from '../interface';
-import { getEstadoProps } from '../utilities';
+import { formatearPresion, getEstadoProps, oGuion } from '../utilities';
 
 interface Props {
     chequeoView: IChequeo;
 }
 
-/** Un dato del detalle. `null`/vacío se muestra como «—», nunca como 0 ni en blanco. */
+/**
+ * Un dato del detalle. La ausencia se muestra como «—», nunca en blanco.
+ *
+ * Delega en `oGuion` para no tener un tercer criterio de «vacío» en el módulo: el backend
+ * usa `null`, cadena vacía y el centinela `'-'`, y los tres tienen que verse igual.
+ */
 const Dato = ({ label, value }: { label: string; value?: string | number | null }) => (
 
     <Box sx={{ mb: 1.5 }}>
         <Typography sx={{ fontSize: 11, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             { label }
         </Typography>
-        <Typography sx={{ fontSize: 15, fontWeight: 500, color: '#0d47a1' }}>
-            { value === null || value === undefined || value === '' ? '—' : value }
+        <Typography sx={{ fontSize: 15, fontWeight: 500, color: COLORES.primarioOsc }}>
+            { oGuion(value) }
         </Typography>
     </Box>
 );
@@ -37,9 +43,7 @@ export const ChequeoView = ({ chequeoView }: Props) => {
         ? dayjs(chequeoView.fechaNacimiento).format('DD-MM-YYYY')
         : null;
 
-    const presion = (chequeoView.presion_sistolica || chequeoView.presionArterial)
-        ? `${chequeoView.presion_sistolica ?? '—'}/${chequeoView.presionArterial ?? '—'}`
-        : null;
+    const presion = formatearPresion(chequeoView.presion_sistolica, chequeoView.presionArterial);
 
     return (
         <Modal
@@ -69,14 +73,14 @@ export const ChequeoView = ({ chequeoView }: Props) => {
                     <Typography
                         id="titulo-detalle-chequeo"
                         component="h2"
-                        sx={{ fontSize: 20, fontWeight: 700, color: '#0d47a1' }}
+                        sx={{ fontSize: 20, fontWeight: 700, color: COLORES.primarioOsc }}
                     >
                         { chequeoView.nombre || 'Detalle del chequeo' }
                     </Typography>
                     <Chip {...getEstadoProps(chequeoView.estado_paciente ?? '')} size="small" />
                 </Box>
 
-                <Divider sx={{ mb: 3, borderColor: '#bbdefb' }} />
+                <Divider sx={{ mb: 3, borderColor: COLORES.divisor }} />
 
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -102,7 +106,7 @@ export const ChequeoView = ({ chequeoView }: Props) => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Divider sx={{ mb: 2, borderColor: '#e3f2fd' }} />
+                        <Divider sx={{ mb: 2, borderColor: COLORES.fondoSuave }} />
                         <Dato label="Enfermedades anteriores" value={chequeoView.enfermedadesAnteriores} />
                         <Dato label="Recuperación" value={chequeoView.Recuperacion} />
                         <Dato label="Grado de incidencia posterior" value={chequeoView.gradoIncidenciaPosterio} />
@@ -118,8 +122,8 @@ export const ChequeoView = ({ chequeoView }: Props) => {
                             fontWeight    : 600,
                             borderRadius  : 2,
                             px            : 3,
-                            backgroundColor : '#1976d2',
-                            '&:hover'       : { backgroundColor: '#115293' },
+                            backgroundColor : COLORES.primario,
+                            '&:hover'       : { backgroundColor: COLORES.primarioHover },
                         }}
                     >
                         Cerrar

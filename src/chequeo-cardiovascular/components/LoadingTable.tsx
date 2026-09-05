@@ -1,4 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
+import { COLORES } from '../config/tema';
 
 /** Indicador de carga de la lista, centrado dentro de la propia tabla. */
 export const LoadingTable = () => {
@@ -13,7 +14,7 @@ export const LoadingTable = () => {
                 py             : 6,
             }}
         >
-            <CircularProgress size={36} sx={{ color: '#1976d2' }} />
+            <CircularProgress size={36} sx={{ color: COLORES.primario }} />
         </Box>
     );
 };

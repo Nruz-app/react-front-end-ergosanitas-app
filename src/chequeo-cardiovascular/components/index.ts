@@ -6,6 +6,7 @@ export { ChequeoView } from './ChequeoView';
 export { DownloadPDF } from './DownloadPDF';
 export { LoadingTable } from './LoadingTable';
 export { SeccionCampos } from './SeccionCampos';
+export { SeccionHome } from './SeccionHome';
 
 export { FilterTable } from './filters/FilterTable';
 export { LikeTextChequeo } from './filters/LikeTextChequeo';
@@ -18,8 +19,16 @@ export { FileUploadExcel } from './carga-masiva/FileUploadExcel';
 
 export { ExportarExcel } from './exportar-excel/ExportarExcel';
 
+export { ListaAlterados } from './alterados/ListaAlterados';
+export { TarjetaAlterado } from './alterados/TarjetaAlterado';
+
 export { BarPresion } from './estadisticas/BarPresion';
+export { Dona } from './estadisticas/Dona';
 export { GraficoTorta } from './estadisticas/GraficoTorta';
+export { LeyendaGrafico } from './estadisticas/LeyendaGrafico';
+export { PiramideEdadSexo } from './estadisticas/PiramideEdadSexo';
+export { TablaAccesible } from './estadisticas/TablaAccesible';
+export { TarjetaGrafico } from './estadisticas/TarjetaGrafico';
 export { PieChartImc } from './estadisticas/PieChartImc';
 export { PieChartHemoglucotest } from './estadisticas/PieChartHemoglucotest';
 export { PieChartSaturacion } from './estadisticas/PieChartSaturacion';

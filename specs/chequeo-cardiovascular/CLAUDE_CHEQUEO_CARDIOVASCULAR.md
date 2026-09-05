@@ -1,14 +1,18 @@
 # CLAUDE_CHEQUEO_CARDIOVASCULAR.md
 
-Guía del módulo `src/chequeo-cardiovascular/`. Recoge el estado consolidado tras la Spec 01 y
-lo que **no** hay que romper. Léela antes de tocar el módulo.
+Guía del módulo `src/chequeo-cardiovascular/`. Recoge el estado consolidado tras las Specs 01 y
+02, y lo que **no** hay que romper. Léela antes de tocar el módulo.
+
+El módulo tiene además **agente y skill propios**, `ergo-chequeo-cardiovascular`, con perímetro
+cerrado a `src/chequeo-cardiovascular/`. Si esta guía y la skill discrepan, **manda esta guía**.
 
 Estado de las specs de esta carpeta:
 
-| Spec | Perfil | Estado |
+| Spec | Qué hizo | Estado |
 |---|---|---|
-| `01-perfil-colegios.md` | `Colegios` | Implementado |
-| — | `Medicos`, `Administrador`, `Usuario` | Siguen en `src/Chequeo/` |
+| `01-perfil-colegios.md` | Creó el módulo para el perfil `Colegios` | Implementado |
+| `02-home-colegio.md` | Rediseñó el Home: 2 secciones, 4 gráficos nuevos, accesibilidad | Aprobado (código completo; 4 criterios visuales sin verificar) |
+| — | `Medicos`, `Administrador`, `Usuario` siguen en `src/Chequeo/` | — |
 
 ---
 
@@ -40,7 +44,7 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
    se migra otro perfil aquí, la decisión de cómo convivir se toma en su spec — no se replica
    el `if (user_perfil === …)` por dentro sin pensarlo.
 
-4. **La lógica clínica no se toca.** Ver §6.
+4. **La lógica clínica no se toca.** Ver §7.
 
 ## 3. Estructura y responsabilidades
 
@@ -48,17 +52,18 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
 src/chequeo-cardiovascular/
 ├── pages/       AppChequeoCardiovascular (orquestador, 4 tabs) · HomePage · ChequeoPage
 ├── components/  ChequeoTable · ChequeoTarjeta · ChequeoForm · ChequeoFormUpdate ·
-│                ChequeoView · SeccionCampos · DownloadPDF · LoadingTable
+│                ChequeoView · SeccionCampos · SeccionHome · DownloadPDF · LoadingTable
 │                filters/ · date-pickers/ · forms/ · carga-masiva/ · exportar-excel/ ·
 │                estadisticas/ · statistics-global/ · modal/ · tabs/
 ├── config/      custom-form.json (25 campos + `seccion`) · custom-likes.json ·
-│                excel-data.json · secciones.ts
+│                excel-data.json · secciones.ts · tema.ts (tokens visuales)
 ├── context/     like-text/ (búsqueda) · modal-bar/ (modal del Home) — barril COMPLETO
-├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel
-├── interface/   8 archivos de tipos + barril
+├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel ·
+│                useResumenColegio
+├── interface/   9 archivos de tipos + barril
 ├── services/    useChequeoCardiovascularService (9) · useEstadisticasService (4) ·
 │                useCertificadoService (1)
-└── utilities/   chequeo-validation.utility · chequeo.utility
+└── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
 ```
 
 Los 4 tabs, con índices **estables**: 0 Home · 1 Lista · 2 Alta/Edición · 3 Carga masiva.
@@ -105,7 +110,124 @@ Dos consecuencias que se descubrieron al activar la validación de verdad:
   se veían con «Masculino» y «No Pagado» elegidos mientras la validación los daba por vacíos.
   En alta se hace `reset(defaults)`, nunca `reset({})`.
 
-## 5. Datos: dos claves, ningún id relacional
+## 5. El Home: dos secciones y dos fuentes de datos (Spec 02)
+
+El tab 0 tiene **6 contadores, una lista y 5 gráficos**, en dos secciones con encabezado
+(`SeccionHome`). La lista va primero porque es **lo único accionable**: el resto describe a la
+población, ella nombra a quien hay que atender.
+
+| Sección | Contenido | Fuente |
+|---|---|---|
+| **Requiere atención** | `ListaAlterados` — quiénes tienen diagnóstico alterado, con sus signos vitales | Derivada de `chequeo-all` |
+| **Salud de los deportistas** | IMC · Hemoglucotest · Presión | `estadisticas/*` (backend) |
+| | Saturación de oxígeno · Pirámide edad/sexo | Derivadas de `chequeo-all` |
+
+### La asimetría de los fetch es deliberada
+
+- **Los tres del backend piden su serie cada uno**, porque cada uno consulta un endpoint distinto.
+- **Las tres derivadas no llaman a ningún servicio**: son presentacionales y reciben lo suyo por
+  props. `HomePage` llama a **`useResumenColegio` una sola vez** y reparte. Si cada una pidiera lo
+  suyo, serían varias descargas del histórico completo para pintar una pantalla.
+
+`Dona.tsx` es la parte visual que comparten los dos bandos: dona, total al centro, leyenda y tabla
+accesible. `GraficoTorta` le añade el fetch al backend; `PieChartSaturacion` le pasa la serie ya
+derivada. No lo «unifiques» en un solo patrón sin leer esto.
+
+### 🔴 La saturación NO viene del backend
+
+`GET /estadisticas/estadistica-saturacion/{user_email}` devuelve **HTTP 500** desde que existe el
+módulo (`Call to undefined method ChequeoCardiovascular::SP_estadistica_saturacion()`). El dato,
+en cambio, **sí viene**: está en `saturacionOxigeno` de cada fila de `chequeo-all`. Por eso el
+gráfico se deriva en el front con `resumirPorSaturacion` y `getEstadisticaSaturacion` ya no existe
+en el servicio.
+
+⚠️ **Sus tramos son una decisión clínica sin validar**: normal ≥ 95 %, leve 91-94 %, moderada
+88-90 %, severa < 88 %. Son los de referencia habituales de pulsioximetría y están **pendientes
+del visto bueno médico**. Cambiarlos va en su propia spec, igual que los umbrales de IMC.
+
+### ⚠️ Dos fuentes de verdad en la misma pantalla
+
+Los contadores de `StatisticsGlobal` vienen de `estado-general` (backend) y las series derivadas
+se calculan en el front. **Pueden discrepar** si el backend filtra distinto. Por eso cada tarjeta
+derivada declara en su subtítulo sobre cuántos deportistas está calculada
+(`subtituloResumen`): la discrepancia queda a la vista y explicada, no escondida.
+
+### `utilities/resumen.utility.ts` — nada se descarta en silencio
+
+Tres derivaciones puras (`filtrarAlterados`, `resumirPorSaturacion`, `resumirPorEdadSexo`),
+`parsearFecha` y los ayudantes (`estadoDeTarjeta`, `colorClinico`, `colorPorIndice`,
+`subtituloResumen`). Una lectura ausente o ilegible **se resta del `usadas`** que la tarjeta
+declara en su subtítulo. Un dato que desaparece del gráfico es un error que nadie ve.
+
+⚠️ **`chequeo-all` NO devuelve** `division_paciente`, `created_at`, `derivacion_paciente`,
+`observacion_paciente`, `email_paciente` ni `pulso`. No derives nada de esos campos: llegarán
+siempre vacíos. Fue la razón de retirar el gráfico «Avance por curso».
+
+⚠️ **`fecha_atencion` llega como `DD-MM-YYYY`**, que `dayjs()` da por inválida sin plugin. Para eso
+está `parsearFecha`, que además rechaza los desbordes: `'31-02-2026'` no es el 3 de marzo.
+
+Los ayudantes de presentación viven en `chequeo.utility.ts` y **los comparten la tabla y la
+tarjeta** para que no discrepen: `hayDato` (un `0` es una medición; `''` y `'-'` no lo son),
+`oGuion` y `formatearPresion`. El backend usa **`'-'` como centinela de «sin medir»** en
+`frecuencia_cardiaca_paciente`, que es `string`, no `number`.
+
+En la pirámide, `Masculino` llega **en negativo**: es cómo chart.js dibuja una pirámide, no un
+dato. El eje y el tooltip aplican `Math.abs`.
+
+Los ayudantes de presentación viven en `chequeo.utility.ts` y **los comparten la tabla y la
+tarjeta** para que no discrepen: `hayDato` (un `0` es una medición, `''` y `'-'` no lo son),
+`oGuion` y `formatearPresion`. El backend usa **`'-'` como centinela de «sin medir»** en
+`frecuencia_cardiaca_paciente`, que es `string`, no `number`.
+
+### Las cuatro tarjetas de estado
+
+`TarjetaGrafico` envuelve las ocho y tiene cuatro estados: `cargando`, `sin-datos`,
+`no-disponible` y `ok`. **`sin-datos` y `no-disponible` dicen cosas distintas a propósito**: el
+primero es un colegio que aún no mide, el segundo un servicio caído. Hoy la diferencia es real
+—`estadistica-saturacion` devuelve 500— y confundirlas escondería el fallo.
+
+Un 200 con sobre de error cuenta como **`no-disponible`**, igual que una excepción.
+
+### 🔴 El color clínico va por etiqueta, NUNCA por posición
+
+`colorClinico` decide el color leyendo **el texto de la etiqueta**. No es un capricho: el backend
+**no** devuelve las series ordenadas de normal a alterado. Verificado contra
+`http://127.0.0.1:8000/api`:
+
+| Serie | Orden real de las etiquetas |
+|---|---|
+| `estadistica-imc` | `Bajo Peso` · `Normal` · `Sobre Peso` · `Obesidad` |
+| `estadistica-hemoglucotest` | `Bajo` · `Normal` · `Alterado` |
+| `estadistica-presion` | `Normal` · `Elevada` · `HTA Grado 1` · `HTA Grado 2` |
+
+En **dos de las tres**, la posición 0 no es «normal»: son curvas de campana, no escalas monótonas.
+Colorear por índice pintaba «Bajo Peso» de verde y «Normal» de ámbar. **Si alguien lo vuelve
+posicional, reintroduce el bug.**
+
+Una etiqueta que no reconoce ninguna regla sale en **gris**, que no afirma nada: es preferible una
+categoría sin color a una mal pintada de sana. `colorPorIndice` sí es cíclica, pero solo se usa en
+series sin significado clínico (cursos, meses).
+
+### Accesibilidad y color
+
+- **Cada gráfico lleva su `TablaAccesible`**: un `<canvas>` de chart.js es invisible para un
+  lector de pantalla. La tabla va oculta con `sxSoloLectores` —token propio, **no
+  `visuallyHidden` de `@mui/utils`**, que no está declarado en `package.json`.
+- **`config/tema.ts` es la única fuente de color de TODO el módulo.** Ningún `.tsx` escribe un
+  hex: comprobable con
+  `grep -rc '#[0-9a-fA-F]\{3,8\}' --include=*.tsx src/chequeo-cardiovascular/`, que solo debe
+  señalar a `tema.ts`.
+- **Dos familias de color, separadas a propósito.** `COLORES` es el significado de un resultado
+  (normal, límite, alterado) más el azul de marca; `UI` es la interfaz (`accionVer`, `accionEcg`,
+  `atencion`, fondos y bordes). El verde de un botón de «ver» no significa «normal»: significa
+  «pulsa aquí». Mezclarlas es lo que hacía que el mismo verde tuviera dos sentidos en la misma
+  pantalla.
+- El archivo expone además `DEGRADADOS`, `SOMBRAS`, `PALETA_CATEGORICA`, `sxFocoVisible` —que se
+  compone dentro de otro `sx`, no lo sustituye— y los `sx` de tarjeta y títulos.
+- Las tres **donas apagan la leyenda de chart.js** y usan `LeyendaGrafico`: la leyenda nativa vive
+  dentro del canvas y descentraría el total del medio. Barras y línea sí usan la nativa.
+
+## 6. Datos: dos claves, ningún id relacional
 
 Sin cambios respecto al resto del proyecto: **`user_email`** identifica al colegio (filtra los
 listados) y **`rut`** identifica a la persona.
@@ -137,7 +259,7 @@ saberlas): `porcentaje_imc_normal` y `porcentaje_estado_normal` llegan como **st
 **fuera del componente**. Si se llama dentro, la identidad de la función cambia en cada render
 del padre y `GraficoTorta` vuelve a pedir la serie en cada cambio de tab.
 
-## 6. Lógica clínica: clonada y NO corregida
+## 7. Lógica clínica: clonada y NO corregida
 
 `hooks/useCalculoIMC.ts` se copia con su comportamiento actual. Cambiar una fórmula o un umbral
 es una decisión médica, no una refactorización: va en su propia spec.
@@ -155,7 +277,7 @@ es una decisión médica, no una refactorización: va en su propia spec.
 único consumidor era la calculadora IMC, que no se portó. Se clonaron por decisión explícita de
 la Spec 01, para que el módulo esté listo cuando se migre `Administrador`.
 
-## 7. Ruteo
+## 8. Ruteo
 
 Tres archivos, y son los **únicos** fuera del módulo:
 
@@ -170,7 +292,7 @@ las entradas de `routesCol` llevan el perfil literal.
 ⚠️ `NavigationApp` decide por `user_perfil` **antes** de mirar `valid`, igual que los otros tres
 perfiles con navegador propio. Se replicó tal cual: **no uses `valid` para proteger esta vista.**
 
-## 8. Deuda que sí se corrigió al clonar
+## 9. Deuda que sí se corrigió al clonar
 
 Nada de esto cambia lo que ve el usuario, salvo donde se indica:
 
@@ -186,13 +308,21 @@ Nada de esto cambia lo que ve el usuario, salvo donde se indica:
 - Los tres gráficos de torta comparten `GraficoTorta` en vez de ser tres archivos de ~145 líneas
   casi idénticos.
 
-## 9. Al trabajar en este módulo
+## 10. Al trabajar en este módulo
 
 - **Un campo nuevo del formulario** → `config/custom-form.json`, con su `seccion`. Si su `type`
   es nuevo, además una rama en `renderCampo` de `ChequeoForm`.
 - **Una sección nueva** → `config/secciones.ts`. El orden del array es el orden de pintado.
 - **Una validación nueva** → `utilities/chequeo-validation.utility.ts`.
 - **Un endpoint nuevo** → `services/`, patrón `ApiAdapter`. **Nunca uno de borrado.**
+- **Un gráfico nuevo en el Home** → decide primero la fuente. Si sale de `chequeo-all`, una
+  agregación pura en `resumen.utility.ts` + su serie en `useResumenColegio` + un componente
+  presentacional; **no añadas otro fetch**. Si viene de un endpoint propio, sigue el patrón de
+  `GraficoTorta`.
+- **Un color** → `config/tema.ts`, y decide primero la familia: `COLORES` si describe un
+  resultado clínico o es el azul de marca, `UI` si es una acción, un realce o un fondo.
+- **Un gráfico cualquiera** → lleva su `TablaAccesible`. No es opcional: sin ella el dato no
+  existe para un lector de pantalla.
 - **Columnas o acciones de la lista** → `ChequeoTable.tsx` **y** `ChequeoTarjeta.tsx`: son la
   misma fila en dos formatos y hay que cambiarlas juntas. El corte es `md` (900 px).
 - **Un estado clínico nuevo** → `getEstadoProps` en `utilities/chequeo.utility.ts` **y** el
@@ -202,7 +332,7 @@ Nada de esto cambia lo que ve el usuario, salvo donde se indica:
   este proyecto: no inventes un comando de test.** Prueba a mano con un usuario `Colegios` real
   y comprueba además que `Administrador` y `Medicos` siguen entrando a `src/Chequeo/` sin cambios.
 
-## 10. Duplicación aceptada a propósito
+## 11. Duplicación aceptada a propósito
 
 Se asumió al elegir un módulo autocontenido, y queda anotada para que nadie la "arregle" sin
 querer:
@@ -212,6 +342,6 @@ querer:
 | `components/forms/InputText.tsx` | `src/components/forms/InputText.tsx` | Rompe el acoplamiento raro en el que un componente compartido dependía de `Chequeo/hooks`. La copia de `src/components/` queda intacta para el resto del repo. |
 | Los 4 gráficos | `src/Estadisticas/pages/` | Módulo autocontenido. |
 | `getCertificadoRut` | `src/Certificados/services/` | Idem. |
-| `useCalculoIMC.ts` | `src/Chequeo/hooks/` | Idem, con el bug incluido (§6). |
+| `useCalculoIMC.ts` | `src/Chequeo/hooks/` | Idem, con el bug incluido (§7). |
 
 Si se corrige un bug en cualquiera de estos, **hay que corregirlo en los dos sitios**.

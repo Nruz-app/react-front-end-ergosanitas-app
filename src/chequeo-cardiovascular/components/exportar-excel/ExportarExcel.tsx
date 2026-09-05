@@ -5,6 +5,7 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2';
 
+import { COLORES, sxFocoVisible } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
 import { UseChequeoCardiovascularService } from '../../services';
 import type { IChequeo } from '../../interface';
@@ -110,10 +111,10 @@ export const ExportarExcel = () => {
                 textTransform : 'none',
                 fontWeight    : 600,
                 borderRadius  : 2,
-                borderColor   : '#1976d2',
-                color         : '#1976d2',
-                '&:hover'     : { borderColor: '#0d47a1', backgroundColor: '#e3f2fd' },
-                '&:focus-visible': { outline: '3px solid #90caf9', outlineOffset: 2 },
+                borderColor   : COLORES.primario,
+                color         : COLORES.primario,
+                '&:hover'     : { borderColor: COLORES.primarioOsc, backgroundColor: COLORES.fondoSuave },
+                ...sxFocoVisible,
             }}
         >
             { exportando ? 'Exportando…' : 'Exportar a Excel' }

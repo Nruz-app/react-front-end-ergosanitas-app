@@ -2,6 +2,7 @@ import { ChangeEvent, DragEvent, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { COLORES, UI } from '../../config/tema';
 
 const TIPOS_ACEPTADOS = [
     '.xlsx', '.xls',
@@ -44,8 +45,8 @@ export const FileUploadExcel = ({ archivo, onSeleccionar }: Props) => {
             onDrop={handleDrop}
             sx={{
                 border          : '2px dashed',
-                borderColor     : arrastrando ? '#1976d2' : '#c5cae9',
-                backgroundColor : arrastrando ? '#e3f2fd' : '#fafafa',
+                borderColor     : arrastrando ? COLORES.primario : UI.bordePunteado,
+                backgroundColor : arrastrando ? COLORES.fondoSuave : UI.fondoSutil,
                 borderRadius    : 2.5,
                 p               : { xs: 3, md: 4 },
                 textAlign       : 'center',
@@ -53,9 +54,9 @@ export const FileUploadExcel = ({ archivo, onSeleccionar }: Props) => {
                 '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
             }}
         >
-            <UploadFileIcon sx={{ fontSize: 38, color: '#1976d2', mb: 1 }} aria-hidden="true" />
+            <UploadFileIcon sx={{ fontSize: 38, color: COLORES.primario, mb: 1 }} aria-hidden="true" />
 
-            <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#0d47a1', mb: 0.5 }}>
+            <Typography sx={{ fontSize: 15, fontWeight: 600, color: COLORES.primarioOsc, mb: 0.5 }}>
                 Arrastra aquí el archivo Excel
             </Typography>
             <Typography sx={{ fontSize: 13, color: 'text.secondary', mb: 2 }}>
@@ -78,9 +79,9 @@ export const FileUploadExcel = ({ archivo, onSeleccionar }: Props) => {
                         textTransform : 'none',
                         fontWeight    : 600,
                         borderRadius  : 2,
-                        borderColor   : '#1976d2',
-                        color         : '#1976d2',
-                        '&:hover'     : { borderColor: '#0d47a1', backgroundColor: '#e3f2fd' },
+                        borderColor   : COLORES.primario,
+                        color         : COLORES.primario,
+                        '&:hover'     : { borderColor: COLORES.primarioOsc, backgroundColor: COLORES.fondoSuave },
                     }}
                 >
                     Seleccionar archivo
@@ -96,12 +97,12 @@ export const FileUploadExcel = ({ archivo, onSeleccionar }: Props) => {
                         gap            : 1,
                         mt             : 2,
                         p              : 1.5,
-                        backgroundColor: '#fff',
-                        border         : '1px solid #e0e0e0',
+                        backgroundColor: COLORES.fondoTarjeta,
+                        border         : `1px solid ${COLORES.borde}`,
                         borderRadius   : 2,
                     }}
                 >
-                    <InsertDriveFileIcon sx={{ color: '#1976d2' }} aria-hidden="true" />
+                    <InsertDriveFileIcon sx={{ color: COLORES.primario }} aria-hidden="true" />
                     <Typography sx={{ fontSize: 13, wordBreak: 'break-all' }}>
                         <strong>{ archivo.name }</strong>
                     </Typography>

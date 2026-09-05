@@ -6,6 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Control, Controller, UseFormSetValue } from 'react-hook-form';
 
+import { COLORES } from '../../config/tema';
 import type { IChequeo } from '../../interface';
 
 interface Props {
@@ -76,9 +77,9 @@ export const DatePickers = ({ control, setValue, ...props }: Props) => {
                                 sx: {
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius : '8px',
-                                        '& fieldset'              : { borderColor: '#1976d2' },
-                                        '&:hover fieldset'        : { borderColor: '#115293' },
-                                        '&.Mui-focused fieldset'  : { borderColor: '#0d47a1' },
+                                        '& fieldset'              : { borderColor: COLORES.primario },
+                                        '&:hover fieldset'        : { borderColor: COLORES.primarioHover },
+                                        '&.Mui-focused fieldset'  : { borderColor: COLORES.primarioOsc },
                                     },
                                 },
                             },

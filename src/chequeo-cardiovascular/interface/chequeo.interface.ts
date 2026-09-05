@@ -38,7 +38,13 @@ export interface IChequeo {
     medio_pago_paciente?          : string;
     /** Estado clínico del backend: 'ingresado', 'Testiado', 'ECG FOTO', 'REVISION MEDICA', … */
     estado_paciente?              : string;
-    frecuencia_cardiaca_paciente? : number;
+    /**
+     * ⚠️ Llega como **`string`**, no como número, y con `'-'` de centinela cuando no se ha
+     * medido: comprobado en `chequeo-all` y en `search-chequeo` de `brisas@ergosanitas.com`.
+     * `src/Chequeo/` lo declara `number`, que es lo que se clonó y era falso. Quien lo pinte
+     * tiene que pasar por `hayDato`, o el centinela acaba en pantalla como «- lpm».
+     */
+    frecuencia_cardiaca_paciente? : string;
     derivacion_paciente?          : string;
     observacion_paciente?         : string;
     fecha_atencion?               : string;

@@ -1,5 +1,6 @@
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { Button } from '@mui/material';
+import { COLORES, sxFocoVisible } from '../../config/tema';
 
 interface Props {
     onSubmit  : () => void;
@@ -19,8 +20,8 @@ export const ButtonsForm = ({ title, btnStatus, onSubmit }: Props) => {
             disabled={btnStatus}
             fullWidth
             sx={{
-                backgroundColor : '#1976d2',
-                color           : '#fff',
+                backgroundColor : COLORES.primario,
+                color           : COLORES.fondoTarjeta,
                 borderRadius    : '12px',
                 py              : 1.5,
                 textTransform   : 'none',
@@ -28,9 +29,9 @@ export const ButtonsForm = ({ title, btnStatus, onSubmit }: Props) => {
                 fontWeight      : 'bold',
                 fontSize        : 16,
                 transition      : 'all 0.3s ease',
-                '&:hover'       : { backgroundColor: '#115293', boxShadow: '0 8px 20px rgba(13, 71, 161, 0.3)' },
-                '&:active'      : { backgroundColor: '#0d47a1' },
-                '&:focus-visible': { outline: '3px solid #90caf9', outlineOffset: 2 },
+                '&:hover'       : { backgroundColor: COLORES.primarioHover, boxShadow: '0 8px 20px rgba(13, 71, 161, 0.3)' },
+                '&:active'      : { backgroundColor: COLORES.primarioOsc },
+                ...sxFocoVisible,
                 '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
             }}
         >

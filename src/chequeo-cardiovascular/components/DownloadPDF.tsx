@@ -1,5 +1,6 @@
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { IconButton, Tooltip } from '@mui/material';
+import { COLORES, sxFocoVisible } from '../config/tema';
 
 interface Props {
     handleClickDownload : (id_paciente: number) => void;
@@ -17,10 +18,10 @@ export const DownloadPDF = ({ handleClickDownload, id_paciente, title }: Props) 
                 aria-label={title}
                 size="small"
                 sx={{
-                    color           : '#fff',
-                    backgroundColor : '#1976d2',
-                    '&:hover'       : { backgroundColor: '#115293' },
-                    '&:focus-visible': { outline: '3px solid #90caf9', outlineOffset: 2 },
+                    color           : COLORES.fondoTarjeta,
+                    backgroundColor : COLORES.primario,
+                    '&:hover'       : { backgroundColor: COLORES.primarioHover },
+                    ...sxFocoVisible,
                 }}
             >
                 <SimCardDownloadIcon fontSize="small" />

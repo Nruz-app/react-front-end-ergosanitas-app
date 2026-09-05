@@ -5,6 +5,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
+import { COLORES, DEGRADADOS, SOMBRAS, sxFocoVisible } from '../config/tema';
 import { ModalProvider } from '../../common/context';
 import { CargaMasiva, ChequeoTable, ChequeoView, TabPanel } from '../components';
 import { LikeTextProvider, ModalBarProvider } from '../context';
@@ -83,7 +84,7 @@ export const AppChequeoCardiovascular = () => {
                 sx={{
                     display    : 'flex',
                     minHeight  : '100%',
-                    background : 'linear-gradient(135deg, #eef2ff, #f8fafc)',
+                    background : DEGRADADOS.fondo,
                     p          : { xs: 1, md: 3 },
                     justifyContent: 'center',
                 }}
@@ -92,10 +93,10 @@ export const AppChequeoCardiovascular = () => {
                     sx={{
                         display      : 'flex',
                         width        : '100%',
-                        background   : '#fff',
+                        background   : COLORES.fondoTarjeta,
                         borderRadius : 3,
                         overflow     : 'hidden',
-                        boxShadow    : '0 10px 30px rgba(0,0,0,0.08)',
+                        boxShadow    : SOMBRAS.tarjeta,
                     }}
                 >
                     <Tabs
@@ -107,8 +108,8 @@ export const AppChequeoCardiovascular = () => {
                         sx={{
                             width       : { xs: 64, md: 90 },
                             flexShrink  : 0,
-                            borderRight : '1px solid #e0e0e0',
-                            bgcolor     : '#f9fafc',
+                            borderRight : `1px solid ${COLORES.borde}`,
+                            bgcolor     : COLORES.fondoRail,
                             pt          : 1,
 
                             '& .MuiTab-root': {
@@ -116,20 +117,20 @@ export const AppChequeoCardiovascular = () => {
                                 minWidth     : 'auto',
                                 m            : '8px',
                                 borderRadius : '16px',
-                                color        : '#6b7280',
+                                color        : COLORES.textoSuave,
                                 transition   : 'all 0.25s ease',
                                 '& .MuiSvgIcon-root': { fontSize: 26 },
                                 '&:hover': {
-                                    background : 'linear-gradient(135deg, #42a5f5, #1976d2)',
-                                    color      : '#fff',
+                                    background : DEGRADADOS.hover,
+                                    color      : COLORES.fondoTarjeta,
                                 },
-                                '&:focus-visible': { outline: '3px solid #90caf9', outlineOffset: 2 },
+                                ...sxFocoVisible,
                                 '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
                             },
                             '& .Mui-selected': {
-                                background : 'linear-gradient(135deg, #1976d2, #0d47a1)',
-                                color      : '#fff !important',
-                                boxShadow  : '0 10px 25px rgba(13, 71, 161, 0.35)',
+                                background : DEGRADADOS.primario,
+                                color      : `${COLORES.fondoTarjeta} !important`,
+                                boxShadow  : SOMBRAS.seleccion,
                             },
                             '& .MuiTabs-indicator': { display: 'none' },
                         }}

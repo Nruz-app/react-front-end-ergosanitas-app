@@ -10,7 +10,6 @@ export const PieChartHemoglucotest = () => (
     <GraficoTorta
         titulo="Hemoglucotest"
         etiqueta="Deportistas"
-        colores={['#81C784', '#FFCC80', '#FFA000', '#E57373']}
         fetchSerie={getEstadisticaHemoglucotest}
     />
 );

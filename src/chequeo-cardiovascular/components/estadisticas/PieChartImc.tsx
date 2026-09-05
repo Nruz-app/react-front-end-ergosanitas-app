@@ -12,7 +12,6 @@ export const PieChartImc = () => (
     <GraficoTorta
         titulo="Nutrición (IMC)"
         etiqueta="Deportistas"
-        colores={['#81C784', '#FFCC80', '#FFA000', '#E57373']}
         fetchSerie={getEstadisticaIMC}
     />
 );
