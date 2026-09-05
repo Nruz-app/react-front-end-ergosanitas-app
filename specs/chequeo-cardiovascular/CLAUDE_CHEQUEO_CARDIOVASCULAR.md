@@ -157,6 +157,32 @@ Lo que hay que saber antes de tocarlo:
 - El servicio exige que `response` sea un string con contenido antes de pintarlo, por la misma
   razón que los gráficos comprueban `Array.isArray`: **este backend responde 200 con sobres de
   error**.
+
+#### El chat es **una sola pieza**, no tres cajas
+
+Su primera versión eran un botón suelto, un panel blanco y una caja de texto, apiladas. Se veía
+sin acabar. Ahora es un único bloque con `borderRadius: 3` y `overflow: hidden`, en tres franjas:
+
+| Franja | Qué lleva | Fondo |
+|---|---|---|
+| Cabecera | Avatar, «Asistente Ergo», el estado en texto y «Nueva conversación» | `DEGRADADOS.cabeceraChat` |
+| Lienzo | El hilo, con scroll propio | `DEGRADADOS.lienzoChat` |
+| Pie | Micrófono e input, tras un `borderTop` | `COLORES.fondoTarjeta` |
+
+Tres decisiones que conviene no deshacer:
+
+- 🔴 **La burbuja del asistente es blanca sobre lienzo tintado**, no gris sobre blanco. El gris
+  translúcido heredado (`rgba(0,0,0,0.06)`) solo funciona sobre un panel blanco; invertir la
+  relación es lo que hace que el turno del asistente **destaque por ser el más claro**.
+- **Las esquinas recogidas apuntan al avatar**: `4px 16px 16px 16px` en el asistente y su espejo
+  en el usuario. Es lo que evita que las burbujas parezcan tarjetas sueltas.
+- **El estado de la cabecera se escribe** («Listo para responder» / «Escribiendo…» /
+  «No disponible»), no se codifica en un punto de color. En una pantalla donde el verde ya
+  significa «resultado normal», un punto verde de «en línea» mezclaría las dos familias.
+
+Las sombras del chat van **teñidas de azul** (`SOMBRAS.chat`, `.burbuja`, `.burbujaUsuario`): una
+sombra gris sobre fondo azulado se ve sucia. Y el loader se dibuja **con forma de burbuja del
+asistente**, para que la respuesta no haga saltar el hilo al llegar.
 - 🔴 **El micrófono se corta con la prop `activo`, no con el desmontaje.** `TabPanel` oculta los
   paneles con `display: none` en vez de desmontarlos —así la lista conserva sus filtros y su
   página—, así que el cleanup de `useReconocimientoVoz` **nunca se dispara al cambiar de tab**.

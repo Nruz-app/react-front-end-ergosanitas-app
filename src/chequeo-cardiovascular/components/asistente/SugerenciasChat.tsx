@@ -1,6 +1,7 @@
 import { Box, Chip, Typography } from '@mui/material';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
-import { COLORES, sxFocoVisible } from '../../config/tema';
+import { COLORES, SOMBRAS, sxFocoVisible, UI } from '../../config/tema';
 
 interface Props {
     sugerencias : string[];
@@ -23,33 +24,60 @@ export const SugerenciasChat = ({ sugerencias, onElegir, disabled = false }: Pro
 
     if (sugerencias.length === 0) return null;
 
+    // El sangrado izquierdo alinea los chips con la burbuja de bienvenida en vez de con su
+    // avatar: así se leen como continuación de lo que el asistente acaba de decir.
     return (
-        <Box sx={{ px: 2, pb: 2 }}>
-            <Typography
-                component="p"
-                sx={{ fontSize: 12, color: 'text.secondary', mb: 1 }}
-            >
-                Prueba con una de estas:
-            </Typography>
+        <Box sx={{ pl: { xs: 2, sm: 9.25 }, pr: 2, pb: 2, mt: -0.5 }}>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.25 }}>
+                <AutoAwesomeIcon
+                    sx={{ fontSize: 15, color: COLORES.primarioClaro }}
+                    aria-hidden="true"
+                />
+                <Typography
+                    component="p"
+                    sx={{
+                        fontSize      : 11.5,
+                        fontWeight    : 700,
+                        color         : COLORES.primario,
+                        letterSpacing : '0.06em',
+                        textTransform : 'uppercase',
+                    }}
+                >
+                    Prueba con una de estas
+                </Typography>
+            </Box>
 
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 { sugerencias.map((pregunta) => (
                     <Chip
                         key={pregunta}
                         label={pregunta}
-                        variant="outlined"
                         clickable={!disabled}
                         disabled={disabled}
                         onClick={() => onElegir(pregunta)}
                         sx={{
-                            borderColor : COLORES.divisor,
-                            color       : COLORES.primarioOsc,
-                            fontSize    : 13,
-                            height      : 'auto',
-                            py          : 0.75,
-                            '& .MuiChip-label': { whiteSpace: 'normal' },
-                            '&:hover': { backgroundColor: COLORES.fondoSuave },
+                            backgroundColor : UI.burbujaGpt,
+                            border          : `1px solid ${COLORES.divisor}`,
+                            color           : COLORES.primarioOsc,
+                            fontSize        : 13,
+                            fontWeight      : 500,
+                            height          : 'auto',
+                            py              : 0.85,
+                            borderRadius    : 5,
+                            boxShadow       : SOMBRAS.burbuja,
+                            transition      : 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
+                            '& .MuiChip-label': { whiteSpace: 'normal', px: 1.75 },
+                            '&:hover': {
+                                backgroundColor : COLORES.fondoSuave,
+                                borderColor     : COLORES.primarioClaro,
+                                transform       : 'translateY(-1px)',
+                            },
                             ...sxFocoVisible,
+                            '@media (prefers-reduced-motion: reduce)': {
+                                transition : 'none',
+                                '&:hover'  : { transform: 'none' },
+                            },
                         }}
                     />
                 )) }

@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 
-import { COLORES, UI } from '../../config/tema';
+import { COLORES, DEGRADADOS, SOMBRAS } from '../../config/tema';
 
 interface Props {
     text: string;
@@ -28,22 +28,26 @@ export const BurbujaUsuario = ({ text }: Props) => {
         >
             <Avatar
                 sx={{
-                    bgcolor    : COLORES.primario,
-                    width      : 40,
-                    height     : 40,
+                    bgcolor    : COLORES.primarioOsc,
+                    width      : 36,
+                    height     : 36,
                     flexShrink : 0,
+                    boxShadow  : SOMBRAS.burbuja,
                 }}
             >
                 <PersonIcon fontSize="small" />
             </Avatar>
             <Box
                 sx={{
-                    marginRight     : 2,
-                    padding         : '12px 16px',
-                    backgroundColor : UI.burbujaUsuario,
-                    color           : 'common.white',
-                    borderRadius    : '12px',
-                    boxShadow       : 2,
+                    marginRight  : 1.75,
+                    padding      : '12px 18px',
+                    background   : DEGRADADOS.burbujaUsuario,
+                    color        : 'common.white',
+
+                    // Espejo de la burbuja del asistente: la esquina recogida es la que mira a
+                    // su avatar, aquí la superior derecha.
+                    borderRadius : '16px 4px 16px 16px',
+                    boxShadow    : SOMBRAS.burbujaUsuario,
 
                     maxWidth : { xs: '75%', sm: '70%', md: '60%' },
 
@@ -51,14 +55,14 @@ export const BurbujaUsuario = ({ text }: Props) => {
                     overflowWrap : 'break-word',
                     whiteSpace   : 'pre-wrap',
 
-                    transition : 'background-color 0.3s ease',
+                    transition : 'box-shadow 0.3s ease',
 
-                    '&:hover' : { backgroundColor: UI.burbujaUsuarioHover },
+                    '&:hover' : { boxShadow: SOMBRAS.burbujaUsuarioHover },
 
                     '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
                 }}
             >
-                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
+                <Typography variant="body2" sx={{ lineHeight: 1.6, fontSize: 14.5 }}>
                     { text }
                 </Typography>
             </Box>

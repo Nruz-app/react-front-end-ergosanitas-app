@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 
-import { COLORES, UI } from '../../config/tema';
+import { COLORES, SOMBRAS, UI } from '../../config/tema';
 
 interface Props {
     text: string;
@@ -28,21 +28,26 @@ export const BurbujaGpt = ({ text }: Props) => {
                 src="/logoTrans.png"
                 alt="Asistente Ergo"
                 sx={{
-                    width       : 50,
-                    height      : 50,
+                    width       : 42,
+                    height      : 42,
                     flexShrink  : 0,
                     bgcolor     : COLORES.fondoTarjeta,
                     border      : '2px solid',
-                    borderColor : COLORES.primario,
+                    borderColor : COLORES.divisor,
+                    boxShadow   : SOMBRAS.burbuja,
                 }}
             />
             <Box
                 sx={{
-                    marginLeft      : 2,
-                    padding         : '16px',
+                    marginLeft      : 1.75,
+                    padding         : '14px 18px',
                     backgroundColor : UI.burbujaGpt,
-                    borderRadius    : '16px',
-                    boxShadow       : 2,
+                    border          : `1px solid ${UI.burbujaGptBorde}`,
+
+                    // Esquina superior izquierda recogida: apunta al avatar y evita que la
+                    // burbuja parezca una tarjeta suelta flotando al lado.
+                    borderRadius    : '4px 16px 16px 16px',
+                    boxShadow       : SOMBRAS.burbuja,
                     position        : 'relative',
 
                     maxWidth : { xs: '85%', sm: '80%', md: '75%' },
@@ -54,7 +59,11 @@ export const BurbujaGpt = ({ text }: Props) => {
                     whiteSpace   : 'pre-wrap',
                 }}
             >
-                <Typography variant="body1" color="text.primary" sx={{ lineHeight: 1.6 }}>
+                <Typography
+                    variant="body2"
+                    color="text.primary"
+                    sx={{ lineHeight: 1.7, fontSize: 14.5 }}
+                >
                     { text }
                 </Typography>
             </Box>

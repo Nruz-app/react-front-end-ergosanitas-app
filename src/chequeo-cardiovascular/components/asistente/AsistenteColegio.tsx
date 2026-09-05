@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Box, Button, Grid, IconButton, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
-import { COLORES, sxFocoVisible, sxTarjeta } from '../../config/tema';
+import { COLORES, DEGRADADOS, SOMBRAS, sxFocoVisible, UI } from '../../config/tema';
 import { LoginContext } from '../../../common/context';
 import { SUGERENCIAS_ASISTENTE } from '../../config/sugerencias-asistente';
 import { UseAsistenteColegioService } from '../../services';
@@ -181,28 +181,101 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
     const bloqueado = sinColegio || cargando;
 
     return (
-        <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+        <Box
+            sx={{
+                borderRadius : 3,
+                overflow     : 'hidden',
+                border       : `1px solid ${COLORES.divisor}`,
+                boxShadow    : SOMBRAS.chat,
+                backgroundColor : COLORES.fondoTarjeta,
+            }}
+        >
+            {/*
+                Cabecera. Es lo que convierte tres cajas sueltas en una sola pieza: antes el
+                botón de reinicio flotaba arriba a la derecha sin nada que lo sujetara, y el
+                panel empezaba en blanco sin decir de qué iba.
+            */}
+            <Box
+                sx={{
+                    display        : 'flex',
+                    alignItems     : 'center',
+                    gap            : 1.5,
+                    px             : { xs: 2, md: 2.5 },
+                    py             : 1.75,
+                    background     : DEGRADADOS.cabeceraChat,
+                }}
+            >
+                <Avatar
+                    src="/logoTrans.png"
+                    alt=""
+                    sx={{
+                        width       : 40,
+                        height      : 40,
+                        flexShrink  : 0,
+                        bgcolor     : COLORES.fondoTarjeta,
+                        border      : '2px solid',
+                        borderColor : UI.sobreCabeceraBorde,
+                    }}
+                />
+
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography
+                        sx={{
+                            fontSize   : 15,
+                            fontWeight : 700,
+                            color      : COLORES.fondoTarjeta,
+                            lineHeight : 1.25,
+                        }}
+                    >
+                        Asistente Ergo
+                    </Typography>
+                    <Typography
+                        sx={{
+                            fontSize : 12,
+                            color    : UI.sobreCabecera,
+                            // El estado se escribe, no se codifica solo en un punto de color.
+                            whiteSpace   : 'nowrap',
+                            overflow     : 'hidden',
+                            textOverflow : 'ellipsis',
+                        }}
+                    >
+                        { sinColegio
+                            ? 'No disponible'
+                            : cargando ? 'Escribiendo…' : 'Listo para responder' }
+                    </Typography>
+                </Box>
+
                 <Button
                     onClick={handleNuevaConversacion}
                     disabled={sinColegio || mensajes.length === 0}
                     startIcon={<RestartAltIcon />}
-                    variant="outlined"
                     size="small"
                     sx={{
-                        textTransform : 'none',
-                        fontWeight    : 600,
-                        borderRadius  : 2,
-                        borderColor   : COLORES.primario,
-                        color         : COLORES.primario,
-                        '&:hover'     : {
-                            borderColor     : COLORES.primarioOsc,
-                            backgroundColor : COLORES.fondoSuave,
+                        flexShrink      : 0,
+                        textTransform   : 'none',
+                        fontWeight      : 600,
+                        fontSize        : 13,
+                        borderRadius    : 2,
+                        color           : COLORES.fondoTarjeta,
+                        backgroundColor : UI.sobreCabeceraSuave,
+                        border          : `1px solid ${UI.sobreCabeceraBorde}`,
+                        px              : 1.5,
+                        '&:hover'       : { backgroundColor: UI.sobreCabeceraHover },
+                        '&.Mui-disabled': {
+                            color       : UI.sobreCabecera,
+                            opacity     : 0.45,
+                            borderColor : UI.sobreCabeceraSuave,
                         },
+                        // El texto se esconde en móvil: el icono ya lo dice y el `aria-label`
+                        // mantiene el nombre completo para el lector de pantalla.
+                        '& .MuiButton-startIcon': { mr: { xs: 0, sm: 0.75 } },
                         ...sxFocoVisible,
                     }}
+                    aria-label="Nueva conversación"
                 >
-                    Nueva conversación
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                        Nueva conversación
+                    </Box>
                 </Button>
             </Box>
 
@@ -220,15 +293,15 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
                 aria-label="Conversación con el Asistente Ergo"
                 tabIndex={0}
                 sx={{
-                    ...sxTarjeta,
-                    height      : { xs: 380, md: 440 },
-                    overflowY   : 'auto',
-                    borderColor : COLORES.borde,
-                    boxShadow   : 1,
+                    height     : { xs: 380, md: 440 },
+                    overflowY  : 'auto',
+                    background : DEGRADADOS.lienzoChat,
+                    px         : { xs: 0.5, md: 1 },
+                    py         : 1,
                     ...sxFocoVisible,
                 }}
             >
-                <Grid container spacing={1}>
+                <Grid container spacing={0.5}>
 
                     {/* Fija, fuera del historial: no es un turno de la conversación. */}
                     <Grid item xs={12}>
@@ -264,10 +337,23 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
                         <Grid item xs={12}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 1 }}>
                                 <Button
-                                    variant="outlined"
                                     startIcon={<RefreshIcon />}
                                     onClick={handleReintentar}
-                                    sx={{ textTransform: 'none', ...sxFocoVisible }}
+                                    sx={{
+                                        textTransform   : 'none',
+                                        fontWeight      : 600,
+                                        borderRadius    : 5,
+                                        px              : 2.5,
+                                        color           : COLORES.primarioOsc,
+                                        backgroundColor : UI.burbujaGpt,
+                                        border          : `1px solid ${COLORES.divisor}`,
+                                        boxShadow       : SOMBRAS.burbuja,
+                                        '&:hover'       : {
+                                            backgroundColor : COLORES.fondoSuave,
+                                            borderColor     : COLORES.primarioClaro,
+                                        },
+                                        ...sxFocoVisible,
+                                    }}
                                 >
                                     Reintentar
                                 </Button>
@@ -281,8 +367,18 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
                 <Box ref={finDelChatRef} />
             </Box>
 
-            {/* Micrófono e input */}
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 2 }}>
+            {/* Pie: micrófono e input, dentro de la misma pieza y separados por el borde. */}
+            <Box
+                sx={{
+                    display         : 'flex',
+                    gap             : 1,
+                    alignItems      : 'center',
+                    px              : { xs: 1.5, md: 2 },
+                    py              : 1.5,
+                    borderTop       : `1px solid ${COLORES.divisor}`,
+                    backgroundColor : COLORES.fondoTarjeta,
+                }}
+            >
                 <Tooltip
                     title={escuchando ? 'Detener el dictado' : 'Dictar por voz'}
                     arrow
@@ -296,7 +392,14 @@ export const AsistenteColegio = ({ activo = true }: Props) => {
                             disabled={bloqueado}
                             aria-label={escuchando ? 'Detener el dictado' : 'Dictar por voz'}
                             onClick={() => (escuchando ? detener() : iniciar())}
-                            sx={sxFocoVisible}
+                            sx={{
+                                border          : `1px solid ${COLORES.divisor}`,
+                                backgroundColor : COLORES.fondoSuave,
+                                width           : 44,
+                                height          : 44,
+                                '&:hover'       : { backgroundColor: COLORES.divisor },
+                                ...sxFocoVisible,
+                            }}
                         >
                             { escuchando ? <MicOffIcon /> : <MicIcon /> }
                         </IconButton>

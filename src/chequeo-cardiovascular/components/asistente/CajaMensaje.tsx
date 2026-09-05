@@ -2,7 +2,7 @@ import { FormEvent } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
-import { COLORES, DEGRADADOS, sxFocoVisible } from '../../config/tema';
+import { COLORES, DEGRADADOS, SOMBRAS, sxFocoVisible } from '../../config/tema';
 
 interface Props {
     value              : string;
@@ -45,13 +45,10 @@ export const CajaMensaje = ({
             component="form"
             onSubmit={handleSubmit}
             sx={{
-                display         : 'flex',
-                minHeight       : '64px',
-                alignItems      : 'flex-end',
-                backgroundColor : COLORES.fondoTarjeta,
-                borderRadius    : '16px',
-                padding         : '0 12px',
-                boxShadow       : 1,
+                display    : 'flex',
+                minHeight  : '56px',
+                alignItems : 'flex-end',
+                gap        : 1,
             }}
         >
             <Box sx={{ flexGrow: 1 }}>
@@ -75,12 +72,20 @@ export const CajaMensaje = ({
                         '& .MuiOutlinedInput-root': {
                             borderRadius    : '24px',
                             backgroundColor : COLORES.fondoTarjeta,
+                            transition      : 'box-shadow 0.2s ease',
+                            '& fieldset'    : { borderColor: COLORES.divisor },
+                            '&:hover fieldset' : { borderColor: COLORES.primarioClaro },
+                            '&.Mui-focused': {
+                                boxShadow : SOMBRAS.burbuja,
+                                '& fieldset': { borderWidth: 2, borderColor: COLORES.primario },
+                            },
+                            '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
                         },
                     }}
                 />
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', ml: 1, mb: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.25 }}>
                 <Button
                     type="submit"
                     variant="contained"
