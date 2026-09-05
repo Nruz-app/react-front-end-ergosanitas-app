@@ -63,6 +63,18 @@ export const UI = {
     bordeSuave     : '#eeeeee',
     /** Borde punteado de la zona de arrastre del Excel. */
     bordePunteado  : '#c5cae9',
+
+    /**
+     * Los dos turnos del chat del Home (Spec 03).
+     *
+     * Van en `UI` y no en `COLORES` porque no significan nada clínico: separan quién habla. El
+     * azul del usuario es Material Indigo 700 literal — el original de `src/presentation/` lo
+     * pedía como `'indigo.700'`, que **no existe** en la paleta por defecto de MUI y se emitía
+     * como CSS inválido, dejando la burbuja sin fondo.
+     */
+    burbujaGpt          : 'rgba(0, 0, 0, 0.06)',
+    burbujaUsuario      : '#303f9f',
+    burbujaUsuarioHover : '#283593',
 };
 
 /** Paleta para series sin orden clínico —cursos, meses—, donde el color solo separa. */
@@ -75,6 +87,10 @@ export const DEGRADADOS = {
     fondo    : `linear-gradient(135deg, ${COLORES.fondoApp}, ${COLORES.fondoAppSuave})`,
     hover    : `linear-gradient(135deg, ${COLORES.primarioClaro}, ${COLORES.primario})`,
     primario : `linear-gradient(135deg, ${COLORES.primario}, ${COLORES.primarioOsc})`,
+
+    /** Los dos estados del botón de enviar del chat (Spec 03). */
+    boton      : `linear-gradient(135deg, ${COLORES.primario}, ${COLORES.primarioHover})`,
+    botonHover : `linear-gradient(135deg, ${COLORES.primarioHover}, ${COLORES.primarioOsc})`,
 };
 
 /** Sombras del módulo. Las dos que había, con nombre. */

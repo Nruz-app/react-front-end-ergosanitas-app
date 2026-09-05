@@ -1,5 +1,7 @@
 export type { IChequeo, IData, IDataAll } from './chequeo.interface';
 
+export type { IMensajeChat, IRespuestaAsistenteColegio } from './asistente.interface';
+
 export type { EstadoGenerales } from './estado-generales.interface';
 
 export type { FormDataChequeo } from './form-data.interface';

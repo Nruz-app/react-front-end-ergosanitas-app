@@ -34,7 +34,8 @@ export { PieChartHemoglucotest } from './estadisticas/PieChartHemoglucotest';
 export { PieChartSaturacion } from './estadisticas/PieChartSaturacion';
 
 export { StatisticsGlobal } from './statistics-global/StatisticsGlobal';
-export { ModalStatus } from './modal/ModalStatus';
 export { TabPanel } from './tabs/TabPanel';
+
+export * from './asistente';
 
 export * from './forms';

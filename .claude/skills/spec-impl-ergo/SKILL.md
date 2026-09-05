@@ -50,13 +50,15 @@ Y a partir de ahí **sigue sus cuatro fases al pie de la letra**, sin alterarlas
 
 **Dos precisiones propias de este repositorio**, que la skill genérica no conoce:
 
-- **Las specs se agrupan por módulo**: `specs/ficha-clinica/` y `specs/home-ergo/`. La numeración
-  es correlativa **dentro de cada carpeta**, así que existen dos specs `01` distintas. Si el
-  argumento es ambiguo (solo un número, o un slug que aparece en dos carpetas), **muestra las
-  coincidencias y pregunta cuál es**, indicando el módulo. No elijas por tu cuenta.
+- **Las specs se agrupan por módulo**: `specs/ficha-clinica/`, `specs/home-ergo/` y
+  `specs/chequeo-cardiovascular/`. La numeración es correlativa **dentro de cada carpeta**, así
+  que existen tres specs `01` distintas. Si el argumento es ambiguo (solo un número, o un slug que
+  aparece en dos carpetas), **muestra las coincidencias y pregunta cuál es**, indicando el módulo.
+  No elijas por tu cuenta.
 - **Mientras implementas, aplica las skills del proyecto**: invoca `ergo-code` antes de escribir
   el primer archivo `.ts`/`.tsx`, y la skill del módulo si existe (`ergo-login`, `ergo-chequeo`,
-  `ergo-common`). Implementar en el estilo equivocado obliga a rehacer trabajo en la Fase 2.
+  `ergo-chequeo-cardiovascular`, `ergo-common`). Implementar en el estilo equivocado obliga a
+  rehacer trabajo en la Fase 2.
 
 Cuando `/spec-impl` llegue a su mensaje final ("todos los pasos del plan están implementados"),
 **no termines**: continúa con la Fase 2.
@@ -98,10 +100,17 @@ Para **cada módulo tocado**, lanza su agente con la herramienta Agent. Este es 
 |---|---|
 | `src/Login/` | `ergo-login` |
 | `src/Chequeo/` | `ergo-chequeo` |
+| `src/chequeo-cardiovascular/` | `ergo-chequeo-cardiovascular` |
 | `src/common/` | `ergo-common` |
 | `src/ficha-clinica/`, `src/home-ergo/` | `ergosanitas-developer` (y su guía `specs/<modulo>/CLAUDE_<MODULO>.md`) |
 | Cualquier otro módulo | `ergosanitas-developer` |
 | Cambios que cruzan varios módulos o tocan el modelo de datos | añade `ergosanitas-architect` |
+
+⚠️ **`ergo-chequeo` y `ergo-chequeo-cardiovascular` son dueños de módulos distintos** y ninguno
+puede tocar el del otro: el primero lleva `src/Chequeo/` (perfiles `Administrador`, `Medicos`,
+`Usuario`), el segundo `src/chequeo-cardiovascular/` (perfil `Colegios`). El **ruteo**
+(`routesCOL.tsx`, `NavigationCol.tsx`, `NavigationApp.tsx`) queda fuera de ambos perímetros y lo
+revisa `ergosanitas-developer`.
 
 **Los agentes de módulo tienen perímetro cerrado** (solo modifican su carpeta), así que son
 seguros para esto. Lanza en paralelo los que sean independientes.
@@ -131,7 +140,8 @@ bloques de perfil (`Colegios`, `Medicos`, resto), porque los índices de tab no 
 ### 2.5 — Documentación
 
 1. **Si el módulo tiene guía propia**, actualízala con lo que la spec decidió:
-   `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md` · `specs/home-ergo/CLAUDE_HOME_ERGO.md`.
+   `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md` · `specs/home-ergo/CLAUDE_HOME_ERGO.md` ·
+   `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.
 2. **Si la spec cambió el modelo de datos, un endpoint o una convención transversal**,
    actualiza `.claude/ARQUITECTURA.md`; si cambió una regla de estilo o de proyecto, `CLAUDE.md`.
 3. **Si aparecieron entidades, trampas o deuda nuevas en un módulo con skill propia**, actualiza
@@ -176,10 +186,11 @@ menos que un ❌ explicado.
 Todos los agentes y skills de Ergosanitas están **en este repositorio**, no en la carpeta
 personal del usuario:
 
-- Agentes → `.claude/agents/` : `ergo-login`, `ergo-chequeo`, `ergo-common`,
-  `ergosanitas-developer`, `ergosanitas-architect`.
-- Skills → `.claude/skills/` : `ergo-code`, `ergo-login`, `ergo-chequeo`, `ergo-common`,
-  `spec`, `spec-impl` (estas dos, enlazadas a `.agents/skills/`).
+- Agentes → `.claude/agents/` : `ergo-login`, `ergo-chequeo`, `ergo-chequeo-cardiovascular`,
+  `ergo-common`, `ergosanitas-developer`, `ergosanitas-architect`.
+- Skills → `.claude/skills/` : `ergo-code`, `ergo-login`, `ergo-chequeo`,
+  `ergo-chequeo-cardiovascular`, `ergo-common`, `spec`, `spec-impl` (estas dos, enlazadas a
+  `.agents/skills/`).
 - Referencia de arquitectura → `.claude/ARQUITECTURA.md`.
 
 En `~/.claude/skills/` solo hay skills genéricas ajenas al proyecto (`frontend-design`,

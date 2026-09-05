@@ -142,7 +142,15 @@ cada servicio; no hay una constante global).
 | **Incidentes** | `incidencia-deportivos/create` · `/find-by-user/{user_email}` · `/count-club/…` · `/count-liga/…` · `/count-gravedad/…` · `/liga-casos/…` · `/lesion-frecuente/…` · `/sp_estadistica_liga|_categoria|_lesiones|_lesiones_fechas|_parte_cuerpo/{user_email}` |
 | **Estadísticas** | `estadisticas/estadistica-imc|-presion|-saturacion|-hemoglucotest/{user_email}` · `estadisticas/agenda-mensual` · `estadisticas/pago-mensual` · `/estadistica-pago-mensual` · `/estadistica-pago-mdc` · `/update-pago-mensual` · `/delete-pago-mensual` |
 | **Agenda / servicios / pago** | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
-| **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico) · `chat-comercial/as-question` (**no existe aún**, eco) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
+| **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico, resuelve por RUT) · `sam-assistant-club/as-question` (**por institución**: body `{ email, prompt, sessionId }`, sin reset) · `chat-comercial/as-question` (**no existe aún**, eco) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
+
+⚠️ **Los asistentes están separados por endpoint a propósito, y es una separación de seguridad.**
+`sam-assistant` resuelve por RUT (un paciente), `sam-assistant-club` por `email` (una
+institución) y `chat-comercial` no ve datos clínicos (visitantes anónimos). Reutilizar uno en el
+sitio de otro expondría datos que ese consumidor no debe ver. Cada uno lleva además **su propia
+clave de sesión en localStorage** —`chat_session_id`, `ficha_chat_session_id`,
+`colegio_chat_session_id`, `home_chat_session_id`—: compartirlas contaminaría el contexto entre
+un paciente y un colegio.
 
 Patrones observables, útiles al diseñar endpoints nuevos: los listados por institución terminan
 en `/{user_email}`, los históricos por persona en `/{rut_paciente}`, los PDF se abren con

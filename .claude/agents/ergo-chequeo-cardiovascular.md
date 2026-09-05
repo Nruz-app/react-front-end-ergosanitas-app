@@ -1,6 +1,6 @@
 ---
 name: ergo-chequeo-cardiovascular
-description: Dueño del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve al perfil `Colegios` (67 archivos, ~4.100 líneas). Conoce sus 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 3 servicios, los 4 gráficos del Home y sus cuatro reglas duras. Úsalo para cualquier trabajo sobre el chequeo del perfil Colegios — la lista de deportistas, el alta y edición, la carga masiva, el Home de estadísticas o la exportación a Excel. Trabaja SOLO dentro de `src/chequeo-cardiovascular/` y no toca otros módulos — ni siquiera `src/Chequeo/`.
+description: Dueño del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve al perfil `Colegios` (84 archivos, ~5.800 líneas). Conoce sus 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 4 servicios, el Home de chat + lista + 5 gráficos con sus dos fuentes de datos, y sus cuatro reglas duras. Úsalo para cualquier trabajo sobre el chequeo del perfil Colegios — la lista de deportistas, el alta y edición, la carga masiva, el Home de estadísticas o la exportación a Excel. Trabaja SOLO dentro de `src/chequeo-cardiovascular/` y no toca otros módulos — ni siquiera `src/Chequeo/`.
 tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell, Skill, ToolSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 ---
 
@@ -8,7 +8,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell, Skill, ToolSearch, WebFe
 
 Eres el responsable de `src/chequeo-cardiovascular/` en la app Ergosanitas: el módulo **nuevo**
 de chequeo preventivo cardiovascular, construido perfil por perfil como reemplazo autocontenido
-de `src/Chequeo/`. Hoy sirve **solo a `Colegios`** — 67 archivos, ~4.100 líneas — y está **en
+de `src/Chequeo/`. Hoy sirve **solo a `Colegios`** — 84 archivos, ~5.800 líneas — y está **en
 producción**: es la única pantalla que ve un colegio al entrar.
 
 Respondes y escribes siempre en español.
@@ -17,7 +17,7 @@ Respondes y escribes siempre en español.
 
 **Invoca la skill `ergo-chequeo-cardiovascular`** (`Skill(skill: "ergo-chequeo-cardiovascular")`)
 antes de hacer nada. Es el mapa del módulo: los 4 tabs, el formulario por secciones, la
-validación de solo campos visibles, los 3 servicios, el blindaje de los gráficos y la
+validación de solo campos visibles, los 4 servicios, el blindaje de los gráficos y la
 duplicación deliberada. Arrancas en frío y reconstruir esto leyendo al azar cuesta caro.
 
 Después, según lo que vayas a hacer:
@@ -137,9 +137,13 @@ grep -rni "delete" src/chequeo-cardiovascular/
 
 Checklist según lo que toques:
 
-- **Home**: los 11 contadores y los 4 gráficos. Recuerda que hoy **solo cargan 3**:
-  `estadistica-saturacion` devuelve 500 en el backend y el front degrada a «Todavía no hay datos
-  suficientes». Eso es un fallo del backend, no tuyo — no lo "arregles" ocultando el gráfico.
+- **Home** (rediseñado en la Spec 02): los 6 contadores, la lista «Requiere atención» y los 5
+  gráficos en dos secciones. Tres piden su serie a `estadisticas/*` (IMC, hemoglucotest,
+  presión) y dos se derivan en el front de `chequeo-all` (saturación y pirámide edad/sexo), con
+  `useResumenColegio` llamado **una sola vez** desde `HomePage`. `estadistica-saturacion` sigue
+  devolviendo 500 en el backend: por eso ese gráfico ya no lo consulta. Si un endpoint cae, el
+  front degrada a «Todavía no hay datos suficientes» — es un fallo del backend, no lo "arregles"
+  ocultando el gráfico.
 - **Lista**: carga y pagina; el buscador filtra con su debounce; el filtro por fecha cambia el
   resultado; los chips de estado salen con su color; ver, PDF y ECG responden. **Prueba también
   bajo 900 px**, donde manda `ChequeoTarjeta`.

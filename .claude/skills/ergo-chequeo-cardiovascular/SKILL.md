@@ -1,11 +1,11 @@
 ---
 name: ergo-chequeo-cardiovascular
-description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (78 archivos, ~5.300 líneas). Cubre los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 3 servicios, el Home de lista + 5 gráficos con sus dos fuentes de datos, las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas o su ruteo por `NavigationCol`.
+description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (84 archivos, ~5.800 líneas). Cubre los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 4 servicios, el Home de chat + lista + 5 gráficos con sus dos fuentes de datos, las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas o su ruteo por `NavigationCol`.
 ---
 
 # ergo-chequeo-cardiovascular — el chequeo del perfil Colegios
 
-Mapa de `src/chequeo-cardiovascular/`: **79 archivos, ~5.100 líneas** (tras la Spec 02). Es el reemplazo
+Mapa de `src/chequeo-cardiovascular/`: **84 archivos, ~5.800 líneas** (tras la Spec 03). Es el reemplazo
 autocontenido de `src/Chequeo/`, construido **perfil por perfil**. Hoy sirve **solo a
 `Colegios`**; `Administrador`, `Medicos` y `Usuario` siguen en el módulo viejo, que queda
 intacto.
@@ -76,18 +76,22 @@ src/chequeo-cardiovascular/
 │   ├── filters/           FilterTable (48) · LikeTextChequeo (82)
 │   ├── date-pickers/      DatePickers (91, del form) · DatePickerInput (57, del filtro)
 │   ├── forms/             InputText (118) · InputSelect (71) · ButtonsForm (40)
-│   ├── modal/             ModalStatus (86)
-│   ├── statistics-global/ StatisticsGlobal (166)
+│   ├── asistente/         AsistenteColegio (el chat del Home) · SugerenciasChat ·
+│   │                      BurbujaGpt · BurbujaUsuario · CajaMensaje · LoaderEscribiendo
+│   │                      (los 4 últimos, clones de `src/ficha-clinica/`)
+│   ├── statistics-global/ StatisticsGlobal (140)
 │   └── tabs/              TabPanel (29)
 ├── config/      custom-form.json (25 campos, con `seccion`) · custom-likes.json (1) ·
 │                excel-data.json (fila de ejemplo) · secciones.ts (5 secciones) ·
-│                tema.ts (tokens visuales: paleta, sx compartidos)
-├── context/     like-text/ (búsqueda) · modal-bar/ (modal del Home) — barril COMPLETO
+│                tema.ts (tokens visuales: paleta, sx compartidos) ·
+│                sugerencias-asistente.ts (ejemplos del chat)
+├── context/     like-text/ (búsqueda) — el único que queda
 ├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel ·
-│                useResumenColegio
-├── interface/   9 archivos de tipos + barril
+│                useResumenColegio · useReconocimientoVoz
+├── interface/   10 archivos de tipos + barril
 ├── services/    useChequeoCardiovascularService (9 métodos) ·
-│                useEstadisticasService (4) · useCertificadoService (1)
+│                useEstadisticasService (4) · useCertificadoService (1) ·
+│                useAsistenteColegioService (2)
 └── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
 ```
 
@@ -121,7 +125,7 @@ Layout de `Tabs` **vertical** (rail de iconos a la izquierda, 64/90 px según br
 
 | Índice | Tab | Contenido | Provider que lo envuelve |
 |---|---|---|---|
-| 0 | Home | `HomePage` → `StatisticsGlobal` + 2 secciones de gráficos + `ModalStatus` | `ModalBarProvider` |
+| 0 | Home | `HomePage` → `StatisticsGlobal` + 3 secciones (chat, lista, gráficos) | — |
 | 1 | Lista de deportistas | `ChequeoTable` | `LikeTextProvider` |
 | 2 | Agregar deportista | `ChequeoPage` → `ChequeoForm` o `ChequeoFormUpdate` | — |
 | 3 | Carga masiva | `CargaMasiva` | — |
@@ -235,7 +239,7 @@ eran tres acordeones y el filtro por fecha estaba oculto para todos salvo `Admin
 350 ms** y limpieza del timer al desmontar. Escribe en `LikeTextContext`; es `ChequeoTable` quien
 reacciona y vuelve a pedir la página.
 
-## 7. Servicios — 14 métodos en 3 archivos, ningún endpoint nuevo
+## 7. Servicios — 16 métodos en 4 archivos, un endpoint nuevo
 
 Patrón `ApiAdapter` de siempre: `const API = ${VITE_API}${VITE_API_PATH}`.
 
@@ -270,9 +274,9 @@ Las dos claves del modelo, sin cambios: **`user_email`** filtra los listados (el
 
 ## 8. El Home — dos secciones, dos fuentes de datos, y dónde está el blindaje
 
-`HomePage` = `StatisticsGlobal` (los 11 contadores de `estado-general` en 6 tarjetas KPI) + **dos
-secciones** (`SeccionHome`) + `ModalStatus`. Son **una lista y 5 gráficos**, y la división no es
-estética: cada tarjeta viene de un sitio distinto.
+`HomePage` = `StatisticsGlobal` (los 11 contadores de `estado-general` en 6 tarjetas KPI) + **tres
+secciones** (`SeccionHome`): el chat, la lista y los gráficos. La división no es estética: cada
+tarjeta viene de un sitio distinto.
 
 | Sección | Contenido | Fuente |
 |---|---|---|
@@ -423,11 +427,13 @@ se dispara**, porque peso, estatura e IMC están ocultos.
   `selectClub` se conserva aunque este perfil no tenga selector de club: **viaja en el cuerpo de
   `search-chequeo` y quitarlo cambiaría la forma que espera el backend.** Para `Colegios` va
   siempre vacío. Envuelve al tab 1.
-- **`ModalBarProvider`** (`context/modal-bar/`) — `{ isModalOpen, typePresion }` para el modal
-  informativo del Home. Envuelve al tab 0.
+⚠️ **`ModalBarProvider` y `context/modal-bar/` ya no existen** (Spec 03). Se borraron junto con
+`ModalStatus` y el botón «Detalle clínico», que eran sus dos únicos consumidores: sin el botón,
+el contexto entero quedaba inalcanzable. **El tab 0 ya no lleva provider.** Si vienes copiando de
+`src/Chequeo/`, que sí lo conserva, no lo reintroduzcas.
 
-✅ A diferencia de `src/Chequeo/context/index.ts`, **este barril exporta los dos** contextos con
-sus providers, reducers y tipos. No hay que importar nada por ruta directa.
+✅ El barril `context/index.ts` exporta el contexto que queda con su provider, reducer y tipos.
+No hay que importar nada por ruta directa.
 
 ## 11. Duplicación aceptada a propósito
 
@@ -437,9 +443,10 @@ corregirlo en los dos sitios.**
 | Duplicado aquí | Original | Por qué |
 |---|---|---|
 | `components/forms/InputText.tsx` | `src/components/forms/InputText.tsx` | Rompe el acoplamiento raro en el que un componente compartido dependía de `Chequeo/hooks`. La copia compartida queda intacta para el resto del repo. |
-| Los 4 gráficos | `src/Estadisticas/pages/` | Módulo autocontenido. |
+| Los gráficos de estadísticas | `src/Estadisticas/pages/` | Módulo autocontenido. |
 | `getCertificadoRut` | `src/Certificados/services/` | Ídem. |
 | `useCalculoIMC.ts` | `src/Chequeo/hooks/` | Ídem, con el bug incluido (§9). |
+| `components/asistente/` (las 4 piezas del chat) y `hooks/useReconocimientoVoz.ts` | `src/ficha-clinica/` | Regla dura 1. Además van a divergir: aquel chat habla de **un paciente** y este de **una institución**. |
 | `ColumnaTabla` (tipo local en `ChequeoTable`) | `common/table/` | `common/table/` es **código muerto**: de sus 595 líneas solo se usaba un tipo. |
 
 ## 12. Deuda que sí se corrigió al clonar
@@ -448,7 +455,7 @@ Anotada para que nadie la reintroduzca copiando del módulo viejo:
 
 - El `console.log` de `postChequeoSearch` que imprimía `user_email` en producción.
 - El `alert()` nativo de la descarga de ECG → **Swal**.
-- `context/index.ts` incompleto → ahora exporta `like-text` **y** `modal-bar`.
+- `context/index.ts` incompleto → exporta todo lo que hay (`modal-bar` se retiró en la Spec 03).
 - `==` → `===` en todas las comparaciones de perfil.
 - `control._formValues` y `control._reset()` (API privada de react-hook-form) → `getValues()`,
   `handleSubmit(datos)` y `reset()`.

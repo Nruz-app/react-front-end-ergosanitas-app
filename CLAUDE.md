@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Responde y escribe en español. El dominio, los perfiles y gran parte del código y comentarios están en español.
 
+## Los tres documentos del repositorio
+
+Este archivo son **las convenciones y las trampas**. No repite lo que ya está en los otros dos:
+
+| Documento | Qué contiene |
+|---|---|
+| `CLAUDE.md` (este) | Cómo se trabaja aquí: comandos, convenciones, trampas por módulo, agentes y skills. |
+| `README.md` | Documentación general: instalación, variables de entorno, dependencias reales, inventario de módulos, despliegue (Docker/k8s/CI), MCP y roles. |
+| `.claude/ARQUITECTURA.md` | Modelo de dominio: entidades, las dos claves, catálogo de ~70 endpoints, patrón canónico de módulo. |
+
+Los módulos construidos por spec añaden su `specs/<modulo>/CLAUDE_<MODULO>.md`, que **manda sobre
+la skill homónima** si discrepan.
+
 ## Comandos
 
 ```bash
@@ -21,7 +34,25 @@ npm run preview    # Sirve el build de dist/ localmente
 
 ## Stack
 
-Vite + React 18 + TypeScript (SPA, `"type": "module"`). UI principalmente **MUI 5** (`@mui/material`, `@mui/x-data-grid`, `@mui/x-date-pickers`) con `@emotion`. También react-bootstrap en partes. Formularios con react-hook-form + yup y en módulos antiguos formik. HTTP con axios. Gráficos con chart.js. PDFs con react-pdf / @react-pdf-viewer. Mapas con mapbox-gl. Feedback al usuario con sweetalert2 (Swal) en casi todo el repo.
+Vite 5 + React 18 + TypeScript 5 (SPA, `"type": "module"`). UI **MUI 5** (`@mui/material` en 229
+archivos, `@mui/icons-material` en 85, `@mui/x-data-grid` y `-premium`, `@mui/x-date-pickers`),
+con Emotion solo como peer. Ruteo con `react-router-dom` 6 en `HashRouter`. Formularios con
+react-hook-form + yup (formik sobrevive en 5 archivos antiguos). HTTP con axios, importado **en un
+solo archivo** (`common/api/api.adapter.ts`). Gráficos con chart.js + react-chartjs-2. Excel con
+exceljs + file-saver. Fechas con dayjs. Mapas con mapbox-gl. Calendario con `@fullcalendar/*`.
+Feedback con `Swal` de sweetalert2 en 25 archivos.
+
+⚠️ **Tres cosas que el `package.json` insinúa y son falsas** (verificado contando imports en
+`src/`):
+
+- **`sweetalert2` no está declarada como dependencia.** Llega como transitiva de
+  `react-sweetalert2` —que no se usa en ningún archivo—. Funciona, pero es frágil: no quites
+  `react-sweetalert2` sin declarar `sweetalert2` primero.
+- **`react-bootstrap`, `react-pdf` y `@react-pdf-viewer/*` no se usan en ningún archivo.** Los
+  PDF no se renderizan en el front: se abren con `window.open(url, '_blank', 'noopener,noreferrer')`.
+- **`@fortawesome/*` tampoco se importa**: Font Awesome y el CSS de Mapbox entran por **CDN**
+  desde `index.html`. Sin uso también: `lodash`, `moment`, `animate.css`, `pro-gallery`,
+  `react-modal`, `react-markdown`, `react-date-picker`.
 
 **Gestión de estado — la realidad, no el `package.json`:** `@tanstack/react-query` y
 `@reduxjs/toolkit` están declarados como dependencias pero **no se usan en ni un solo archivo de
@@ -99,6 +130,34 @@ también las comparaciones `user_perfil === "..."` dentro de los módulos, no so
 
 Cada carpeta de primer nivel en `src/` (ej. `Chequeo`, `Bioimpedancia`, `Certificados`, `AgendarHora`, `Incidentes`, `pagos-mensual`, `asistente-voz`, `ficha-clinica`, `User`, `Url`, `Estadisticas`, `EmergenciaDeportivas`) es un módulo autocontenido, típicamente con: `components/`, `config/`, `context/`, `hooks/`, `interface/` (tipos TS), `pages/`, `services/`, `utilities/` y un `index.ts` de barril. Mantén nuevas features dentro de esta estructura y reexporta desde el `index.ts` del módulo.
 
+Inventario, para ubicarse rápido (archivos · líneas TS/TSX; el total de `src/` son 554 archivos
+y ~39.300 líneas). Los tres primeros tienen **guía propia** y regla de aislamiento:
+
+| Módulo | Tamaño | Qué es |
+|---|---|---|
+| `chequeo-cardiovascular/` | 84 · 5.832 | Chequeo del perfil `Colegios` (reemplazo de `Chequeo/`, por perfil) |
+| `ficha-clinica/` | 55 · 5.681 | Ficha del paciente por RUT: 5 tabs, 3 capas de datos, silueta SVG, asistente |
+| `home-ergo/` | 43 · 2.920 | Portada comercial pública, contenido en 6 JSON de `config/` |
+| `Chequeo/` | 75 · 5.887 | Chequeo de `Administrador`, `Medicos` y `Usuario` (el módulo viejo) |
+| `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
+| `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
+| `Servicios/` | 22 · 1.859 | Página pública de servicios |
+| `Certificados/` | 21 · 995 | Certificados PDF por RUT |
+| `Home/` | 21 · 1.354 | Portada anterior — **intacta y sin rutear**, vía de reversa |
+| `pagos-mensual/` | 14 · 1.798 | Resumen mensual de pagos y variante MDC |
+| `routes/` | 14 · 2.706 | Los 6 navegadores y sus 6 tablas de rutas |
+| `asistente-voz/` · `presentation/` | 13 · 1.336 / 610 | Asistente por voz · asistente clínico SAM |
+| `Login/` | 13 · 481 | Modal dual login/registro |
+| `Estadisticas/` | 12 · 807 | Gráficos agregados por institución |
+| `LoginGoogle/` · `User/` · `reserva-hora/` · `components/` | 10 c/u | Google OAuth · usuarios · agenda mensual (sin ruta) · forms compartidos |
+| `Bioimpedancia/` · `Incidentes/` · `Url/` | 8 c/u | Composición corporal · lesiones · URLs de certificados |
+| `common/` | 21 · 929 | Infraestructura transversal — **64 archivos dependen de él** |
+| `Maps/` · `AsistenteVirtual/` · `Footer/` | 4 · 2 · 1 | Mapa · envoltorio · pie de página |
+
+- ⚠️ **Que un módulo exista en `src/` no significa que tenga pantalla.** En `routesErgo.ts` las
+  entradas de `AgendarHora` (`/agendarHora`) y de `src/reserva-hora/` (`/reserva-hora`, perfil
+  `Administrador`) están **comentadas en bloque** junto con su import, y `src/Home/` quedó sin
+  rutear al entrar `home-ergo`. Antes de dar por rota una vista, comprueba si su ruta existe.
 - `src/common/` — código transversal (api adapter, contexts, tabla, storage).
 - `src/components/` — componentes compartidos (`forms/`). ⚠️ `InputText` está acoplado a Chequeo:
   recalcula el IMC en cada cambio llamando a `Chequeo/hooks/UseCalculoIMC`.
@@ -218,7 +277,7 @@ Lo mínimo que hay que saber:
 
 - **Regla dura:** el módulo **no importa nada de `src/Chequeo/`**, ni de `src/Estadisticas/`,
   `src/Certificados/` o `src/components/`. Lo único externo es `src/common/`. Clona lo que
-  necesita (los 4 gráficos, `getCertificadoRut`, `InputText`) para no quedar atado al módulo
+  necesita (los gráficos, `getCertificadoRut`, `InputText`) para no quedar atado al módulo
   que algún día se retirará.
 - **Ninguna operación de borrado**: ni endpoint, ni handler, ni botón. `Colegios` tampoco la
   tenía. El botón de limpiar el buscador usa `ClearIcon`, nunca `DeleteIcon`.
@@ -230,9 +289,30 @@ Lo mínimo que hay que saber:
 - ⚠️ **El esquema yup valida solo los campos visibles.** Ocho campos ocultos declaran `required`;
   validarlos todos haría el formulario imposible de enviar. El módulo viejo esquivaba esto no
   validando nada (su botón saltaba `handleSubmit`).
-- ⚠️ **El backend devuelve 200 con sobres de error** en estadísticas, y `estadistica-saturacion`
-  da 500. Los gráficos comprueban `Array.isArray(response?.data)`: sin eso, un gráfico caído
-  tumba el Home entero.
+- **El Home (tab 0) tiene tres secciones y dos fuentes de datos** (Specs 02 y 03): 6 contadores,
+  el chat `AsistenteColegio`, la lista `ListaAlterados` y 5 gráficos.
+- **El chat del Home es un clon**, no un import de `src/ficha-clinica/` (Spec 03). Usa endpoint
+  propio `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }` y su propia
+  clave de sesión, `colegio_chat_session_id`. **No consulta nada al montarse**: saluda y ofrece
+  chips de ejemplo. Sustituyó al botón «Detalle clínico», y con él se borraron `ModalStatus` y
+  el contexto `context/modal-bar/` —sus dos únicos consumidores—.
+  IMC, hemoglucotest y presión piden su serie a `estadisticas/*`; **saturación y pirámide
+  edad/sexo se derivan en el front** de `chequeo-all`. `HomePage` llama a `useResumenColegio`
+  **una sola vez** y reparte por props: las derivadas no consultan ningún servicio. La asimetría
+  es deliberada; no la «unifiques» sin leer §5 de la guía.
+- ⚠️ **El backend devuelve 200 con sobres de error** en estadísticas. Los gráficos comprueban
+  `Array.isArray(response?.data)`: sin eso, un gráfico caído tumba el Home entero. Y
+  `estadistica-saturacion` **da 500 desde siempre**: por eso ese gráfico ya no lo consulta y
+  `getEstadisticaSaturacion` no existe en el servicio.
+- 🔴 **El color clínico va por etiqueta, nunca por posición.** El backend no devuelve las series
+  ordenadas de normal a alterado (en IMC y hemoglucotest la posición 0 no es «normal»): colorear
+  por índice pintaba «Bajo Peso» de verde. `colorClinico` lee el texto de la etiqueta y lo
+  desconocido sale gris. `colorPorIndice` sí es cíclico, pero solo para series sin significado
+  clínico.
+- **`config/tema.ts` es la única fuente de color del módulo** —ningún `.tsx` escribe un hex— y
+  separa dos familias: `COLORES` (significado clínico) y `UI` (interfaz). Cada gráfico lleva
+  además su `TablaAccesible`, oculta con el token propio `sxSoloLectores` (no `visuallyHidden`
+  de `@mui/utils`, que no está declarado en `package.json`).
 - **La lógica clínica de IMC se clonó sin corregir**, bug de adultos incluido, documentado en un
   JSDoc. Cambiar un umbral es una decisión médica y va en su propia spec.
 - Ruteo: `src/routes/routesCOL.tsx` + `NavigationCol.tsx` + un `case 'Colegios'` en
@@ -299,11 +379,35 @@ presente, y renderiza un `<Modal>` de MUI que abre `routes/Navigation.tsx`.
   devuelve las mismas recomendaciones que la de bajo peso. No toques fórmulas ni umbrales sin
   pedirlo: es una decisión médica, no una refactorización.
 
+## Servidores MCP
+
+Tres, configurados **a nivel de usuario para esta carpeta**. No hay `.mcp.json` versionado: si
+alguien clona el repo, no los tiene hasta instalarlos.
+
+| Servidor | Paquete | Para qué |
+|---|---|---|
+| `context7` | `@upstash/context7-mcp` | Documentación al día de MUI, React, Vite y demás librerías. Prefiérelo a buscar en la web. |
+| `github` | `@modelcontextprotocol/server-github` | Issues, PRs y búsqueda de código. |
+| `playwright` | `@playwright/mcp` | Manejar el navegador para revisar la UI en marcha. **No es un runner de tests**: aquí no hay tests. |
+
+```bash
+claude mcp add context7   -- npx -y @upstash/context7-mcp@latest
+claude mcp add github     -- npx -y @modelcontextprotocol/server-github
+claude mcp add playwright -- npx @playwright/mcp@latest
+```
+
+El de GitHub necesita `GITHUB_PERSONAL_ACCESS_TOKEN`: pásalo con `--env` al agregarlo y **nunca lo
+escribas en un archivo versionado**.
+
 ## Agentes y skills del proyecto (`.claude/`)
 
 El repositorio trae sus propios agentes y skills, **todos versionados dentro del proyecto**. No
 están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skills genéricas
 (`frontend-design`, `find-skills`) que **no aplican a este proyecto**.
+
+Las dos skills del flujo spec-driven (`spec`, `spec-impl`) son **importadas**, no propias: vienen
+de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se reinstalan con
+`npx skills@latest add Klerith/fernando-skills`.
 
 ### Documento de referencia
 
@@ -319,7 +423,7 @@ están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skill
 | `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`. Cárgala antes de crear o modificar cualquier `.ts`/`.tsx`. |
 | `ergo-login` | Conocimiento completo de `src/Login/` (13 archivos): modal dual login/registro, `custom-form.json`, `UseRegister` y sus 5 consumidores externos, sesión. |
 | `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
-| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (67 archivos): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 3 servicios, el blindaje de los gráficos y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
+| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (84 archivos, ~5.800 líneas): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 4 servicios, el Home de chat + lista + 5 gráficos con sus dos fuentes de datos, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
 | `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
@@ -364,7 +468,7 @@ Convenciones del repo:
 
 - **Las specs se agrupan por módulo**: hoy hay tres carpetas,
   `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `03-…`) y
-  `specs/chequeo-cardiovascular/` (`01-…`).
+  `specs/chequeo-cardiovascular/` (`01-…` a `03-…`).
   La numeración es correlativa **dentro de cada carpeta**, así que existen tres specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
