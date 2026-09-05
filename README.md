@@ -345,7 +345,7 @@ localStorage para que los hilos no se contaminen entre sí:
 | Asistente | Endpoint | Alcance | Clave de sesión |
 |---|---|---|---|
 | Global / ficha clínica | `sam-assistant/as-question` | Un paciente, por RUT | `chat_session_id` · `ficha_chat_session_id` |
-| Home del colegio | `sam-assistant-club/as-question` | Una institución, por `email` | `colegio_chat_session_id` |
+| Colegio (tab «Asistente Virtual») | `sam-assistant-club/as-question` | Una institución, por `email` | `colegio_chat_session_id` |
 | Comercial (portada) | `chat-comercial/as-question` (**no existe aún**, responde en eco) | Sin datos clínicos | `home_chat_session_id` |
 
 Reutilizar uno en el sitio de otro expondría datos que ese consumidor no debe ver: el chat
@@ -438,7 +438,7 @@ Las del proyecto viven en `.claude/skills/`; las genéricas de terceros se insta
 |---|---|
 | `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`, comentarios en español que explican el porqué. |
 | `ergo-chequeo` | `src/Chequeo/` completo (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, el servicio de 23 métodos, la lógica clínica de IMC. |
-| `ergo-chequeo-cardiovascular` | `src/chequeo-cardiovascular/` completo (84 archivos): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, el Home de chat + lista + 5 gráficos, las cuatro reglas duras. |
+| `ergo-chequeo-cardiovascular` | `src/chequeo-cardiovascular/` completo (84 archivos): los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, el Home de chat + lista + 5 gráficos, las cuatro reglas duras. |
 | `ergo-common` | `src/common/` completo (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos, localStorage, y por qué `table/` es código muerto. |
 | `ergo-login` | `src/Login/` completo (13 archivos): modal dual, `custom-form.json`, `UseRegister` y sus 5 consumidores externos. |
 | `spec-impl-ergo` | `/spec-impl` más el cierre propio del proyecto: build, lint, revisión por el agente dueño de cada módulo y actualización de la documentación. |

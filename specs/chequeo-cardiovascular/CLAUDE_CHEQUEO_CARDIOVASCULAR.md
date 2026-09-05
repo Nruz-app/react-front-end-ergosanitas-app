@@ -12,7 +12,7 @@ Estado de las specs de esta carpeta:
 |---|---|---|
 | `01-perfil-colegios.md` | Creó el módulo para el perfil `Colegios` | Implementado |
 | `02-home-colegio.md` | Rediseñó el Home: 2 secciones, 4 gráficos nuevos, accesibilidad | Aprobado (código completo; 4 criterios visuales sin verificar) |
-| `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional en el Home | Implementado (10 de 18 criterios verificados; 8 de comportamiento pendientes de prueba manual — ver §8 de la spec) |
+| `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional, hoy en el tab «Asistente Virtual» | Implementado, **revisada** (§9 de la spec: rediseño visual y mudanza a tab propio). 10 de 20 criterios verificados; 10 de comportamiento pendientes de prueba manual — §8 y §9.4 |
 | — | `Medicos`, `Administrador`, `Usuario` siguen en `src/Chequeo/` | — |
 
 ---

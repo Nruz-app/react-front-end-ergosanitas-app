@@ -281,9 +281,14 @@ Las dos claves del modelo, sin cambios: **`user_email`** filtra los listados (el
 
 ## 8. El Home — dos secciones, dos fuentes de datos, y dónde está el blindaje
 
-`HomePage` = `StatisticsGlobal` (los 11 contadores de `estado-general` en 6 tarjetas KPI) + **tres
-secciones** (`SeccionHome`): el chat, la lista y los gráficos. La división no es estética: cada
-tarjeta viene de un sitio distinto.
+`HomePage` = `StatisticsGlobal` (los 11 contadores de `estado-general` en 6 tarjetas KPI) + **dos
+secciones** (`SeccionHome`): la lista y los gráficos. La división no es estética: cada tarjeta
+viene de un sitio distinto.
+
+⚠️ **El chat no está aquí.** Estuvo embebido entre los contadores y la lista, y desde la revisión
+de la Spec 03 vive en el **tab 1, «Asistente Virtual»** (`AsistentePage`). Competía con los datos
+del Home: había que bajar por encima de él para llegar a la lista de alterados, y el hilo se
+perdía al hacer scroll.
 
 | Sección | Contenido | Fuente |
 |---|---|---|
