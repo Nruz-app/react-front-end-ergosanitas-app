@@ -1,0 +1,13 @@
+[
+    {
+        "order"        : 1,
+        "type"         : "text",
+        "name"         : "textoValue",
+        "placeholder"  : "Buscardor Rut o Nombre",
+        "label"        : "Ingresa Rut o Nombre",
+        "helperText"   : "Ingrese el Rut o Nombre",
+        "defaultValue" : "",
+        "value"        : "",
+        "validations" : []      
+    }
+]

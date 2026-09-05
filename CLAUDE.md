@@ -21,7 +21,18 @@ npm run preview    # Sirve el build de dist/ localmente
 
 ## Stack
 
-Vite + React 18 + TypeScript (SPA, `"type": "module"`). UI principalmente **MUI 5** (`@mui/material`, `@mui/x-data-grid`, `@mui/x-date-pickers`) con `@emotion`. También react-bootstrap en partes. Estado servidor con `@tanstack/react-query` y algo de Redux Toolkit. Formularios con react-hook-form + yup y en módulos antiguos formik. HTTP con axios. Gráficos con chart.js. PDFs con react-pdf / @react-pdf-viewer. Mapas con mapbox-gl.
+Vite + React 18 + TypeScript (SPA, `"type": "module"`). UI principalmente **MUI 5** (`@mui/material`, `@mui/x-data-grid`, `@mui/x-date-pickers`) con `@emotion`. También react-bootstrap en partes. Formularios con react-hook-form + yup y en módulos antiguos formik. HTTP con axios. Gráficos con chart.js. PDFs con react-pdf / @react-pdf-viewer. Mapas con mapbox-gl. Feedback al usuario con sweetalert2 (Swal) en casi todo el repo.
+
+**Gestión de estado — la realidad, no el `package.json`:** `@tanstack/react-query` y
+`@reduxjs/toolkit` están declarados como dependencias pero **no se usan en ni un solo archivo de
+`src/`** (verificado). El patrón real es:
+
+- **Estado de servidor**: llamada directa al servicio (`await UseXService()`) desde un `useEffect`
+  o un handler, guardada con `useState`. Sin caché ni invalidación.
+- **Estado global**: React Context + reducer (los tres providers de `src/common/context/`).
+
+No introduzcas react-query ni Redux "porque ya están": sería estrenar una arquitectura nueva
+dentro de una tarea que pedía otra cosa. Si crees que hace falta, plantéalo como decisión aparte.
 
 ## Variables de entorno (`.env`)
 
@@ -43,6 +54,7 @@ La app no tiene un router único. `src/routes/NavigationApp.tsx` elige el **nave
 | `Emergencia Deportiva`| `NavigationED`  | `routesED.ts`  |
 | `Paciente`            | `NavigationPA`  | `routesPA.tsx` |
 | `Medicos`             | `NavigationMe`  | `routesME.tsx` |
+| `Colegios`            | `NavigationCol` | `routesCOL.tsx`|
 | (autenticado, resto)  | `NavigationErgo`| `routesErgo.ts`|
 | (no autenticado)      | `Navigation`    | `routes.ts`    |
 
@@ -56,16 +68,31 @@ La app no tiene un router único. `src/routes/NavigationApp.tsx` elige el **nave
 - Al agregar una vista para un rol, edita el `routes*` correspondiente **y** comprueba cómo filtra *ese* navegador, no solo la ruta.
 - `NavigationApp` decide por `user_perfil` **antes** de mirar `valid`: los tres perfiles con nombre entran a su navegador aunque la sesión no sea válida. Hoy no se nota porque el estado inicial de `LoginProvider` trae `user_perfil: ''`, pero no te apoyes en `valid` para proteger una vista.
 
+**Los perfiles de las rutas no son todos los perfiles.** `user_perfil` es un **string libre**, no
+un enum, y llega del backend. En los `routes*` aparecen `Administrador`, `Medicos`, `Paciente`,
+`Emergencia Deportiva`, `Usuario`, `Colegios` y el comodín `'All'` (`Colegios` entró en
+`routesCOL.tsx` con la Spec 01 de `chequeo-cardiovascular`; antes **no figuraba en ninguna
+ruta** y existía solo como valor que ramifica la UI dentro de `src/Chequeo/`). Se declara además
+como opción en `src/User/config/custom-form.json`. Al buscar dónde se decide qué ve un rol, mira
+también las comparaciones `user_perfil === "..."` dentro de los módulos, no solo los `routes*`:
+`src/Chequeo/` sigue ramificando por `Colegios` para los perfiles que aún no se han migrado.
+
 ### Sesión / autenticación
 
 - Estado global de login en `src/common/context/login` (Context + reducer). `LoginProvider` expone `{ valid, user, ValidLogin }`. `ValidLogin(false, {...})` cierra sesión (se dispara al hacer click en el avatar).
 - Providers globales en `src/App.tsx`, en este orden: `HelmetProvider → LoginProvider → ModalProvider → SubMenuProvider`.
-- Helpers de persistencia en `src/common/services/local-storage/storage.service.ts` (`setLocalStorage`/`getLocalStorage`/`removeLocalStorage`, con `JSON.parse` defensivo).
+- Helpers de persistencia en `src/common/services/local-storage/storage.service.ts` (`setLocalStorage`/`getLocalStorage`/`removeLocalStorage`; solo `getLocalStorage` es defensivo — comprueba `window` y envuelve el `JSON.parse`, devolviendo `null`).
+- ⚠️ **La sesión NO se persiste**: `LoginProvider` arranca siempre en `INITIAL_STATE`, así que
+  **un F5 desloguea al usuario**. El único que escribe en localStorage es
+  `LoginGoogle/components/GoogleOAuth.tsx` (clave `"AuthRegister"`) y **nadie la lee al arrancar**.
+  Si hay que mantener la sesión, el trabajo es en `src/common/context/login/` y hay que decidir
+  qué se guarda — nunca la contraseña.
 - **No hay interceptor de axios ni header `Authorization` global** en el front. La autenticación efectiva va por cookie/sesión del backend; no asumas un patrón Bearer al tocar servicios.
 
 ### Capa HTTP y servicios
 
-- `src/common/api/api.adapter.ts` define la interfaz `HttpAdapter` y la clase `ApiAdapter` que envuelve axios (`getToken/get/post/put/delete`). `get` acepta `limit`/`offset` (paginación por query params).
+- `src/common/api/api.adapter.ts` define la interfaz `HttpAdapter` y la clase `ApiAdapter` que envuelve axios (`getToken/get/post/put/delete`). `get` acepta `limit`/`offset` (paginación por query params, defaults `10`/`1`); `getToken` es un `get` sin params — el nombre engaña, no gestiona tokens. **No hay manejo de errores**: un 4xx/5xx propaga la excepción de axios al llamador, por eso los módulos envuelven las llamadas en `try/catch` + Swal. El genérico `<T>` no valida nada: si el backend cambia de forma, TypeScript no se entera.
+- **El catálogo completo de endpoints está en `.claude/ARQUITECTURA.md`.** Patrones: los listados por institución terminan en `/{user_email}`, los históricos por persona en `/{rut_paciente}`, y los PDF se abren con `window.open(url, '_blank', 'noopener,noreferrer')` en vez de descargarse por axios.
 - Patrón de servicio por módulo: una función `UseXService` (async) que instancia `new ApiAdapter()`, arma `const API = ${import.meta.env.VITE_API}${import.meta.env.VITE_API_PATH}` y expone métodos que llaman al adapter. Ver `src/Chequeo/services/useChequeoService.ts` como referencia. Sigue este patrón para nuevos endpoints en vez de usar axios directo.
 
 ### Módulos de features
@@ -73,8 +100,30 @@ La app no tiene un router único. `src/routes/NavigationApp.tsx` elige el **nave
 Cada carpeta de primer nivel en `src/` (ej. `Chequeo`, `Bioimpedancia`, `Certificados`, `AgendarHora`, `Incidentes`, `pagos-mensual`, `asistente-voz`, `ficha-clinica`, `User`, `Url`, `Estadisticas`, `EmergenciaDeportivas`) es un módulo autocontenido, típicamente con: `components/`, `config/`, `context/`, `hooks/`, `interface/` (tipos TS), `pages/`, `services/`, `utilities/` y un `index.ts` de barril. Mantén nuevas features dentro de esta estructura y reexporta desde el `index.ts` del módulo.
 
 - `src/common/` — código transversal (api adapter, contexts, tabla, storage).
-- `src/components/` — componentes compartidos (`forms/`).
+- `src/components/` — componentes compartidos (`forms/`). ⚠️ `InputText` está acoplado a Chequeo:
+  recalcula el IMC en cada cambio llamando a `Chequeo/hooks/UseCalculoIMC`.
 - `src/presentation/` — módulo del asistente/IA (`pages/assistant`, `core/`, `hooks/`).
+
+### Modelo de datos: las dos claves (concepto central)
+
+Casi ninguna entidad se cruza con un id relacional. El modelo se articula sobre **dos claves de
+texto**, y entenderlo ahorra la mitad del trabajo al diseñar algo nuevo:
+
+| Clave | Qué identifica |
+|---|---|
+| `rut_paciente` (o `rut`) | **La persona evaluada.** Clave natural del paciente. |
+| `user_email` | **El dueño de los datos** — colegio, club o médico. Funciona como clave de multi-tenencia. |
+
+Por eso los endpoints terminan en `/{rut_paciente}` o `/{user_email}`. **No inventes un
+`id_institucion` ni un `id_paciente` relacional: el backend no los tiene.** Los RUT viajan como
+`string` sin normalización garantizada, y `IUser.rut_paciente` es opcional (solo el perfil
+`Paciente` lo trae).
+
+Entidades centrales: `IChequeo` (la núcleo, casi todo `string` opcional — deuda heredada),
+`IBioimpedanciaAll` (la mejor tipada, `number | null` en todos los numéricos: **el modelo a
+imitar**), `IIncidentes` (con la jerarquía liga → club → categoría), `IAgendaHora`/`IServicios`,
+e `IFichaClinica` (el agregado con tres capas). **Nunca mapees ausencia de dato a `0`**: se usa
+`number | null` y la UI muestra `—`. El detalle completo está en `.claude/ARQUITECTURA.md`.
 
 ### `src/ficha-clinica/` — ficha clínica (módulo con guía propia)
 
@@ -156,21 +205,170 @@ Lo mínimo que hay que saber:
   en cada push a `main`. Sacar los videos del repositorio es justo lo que evita que sean
   139 MB más, subidos tres veces en paralelo por la matriz de Node.
 
-## Flujo Spec-Driven (skills `/spec` y `/spec-impl`)
+### `src/chequeo-cardiovascular/` — chequeo por perfil (skill `ergo-chequeo-cardiovascular`)
+
+Reemplazo autocontenido de `src/Chequeo/`, que se está construyendo **perfil por perfil**. Hoy
+sirve solo a `Colegios`; `Administrador`, `Medicos` y `Usuario` siguen en el módulo viejo, que
+queda intacto. **Antes de tocarlo, lee `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`**
+—la guía viva, que manda si discrepa de la skill— y carga la skill `ergo-chequeo-cardiovascular`.
+Tiene además agente propio con perímetro cerrado, `ergo-chequeo-cardiovascular`; el ruteo queda
+fuera de él.
+
+Lo mínimo que hay que saber:
+
+- **Regla dura:** el módulo **no importa nada de `src/Chequeo/`**, ni de `src/Estadisticas/`,
+  `src/Certificados/` o `src/components/`. Lo único externo es `src/common/`. Clona lo que
+  necesita (los 4 gráficos, `getCertificadoRut`, `InputText`) para no quedar atado al módulo
+  que algún día se retirará.
+- **Ninguna operación de borrado**: ni endpoint, ni handler, ni botón. `Colegios` tampoco la
+  tenía. El botón de limpiar el buscador usa `ClearIcon`, nunca `DeleteIcon`.
+- **No ramifica por perfil.** `AppChequeoCardiovascular` tiene 4 tabs fijos con índices
+  estables, que es justo lo que hacía insoportable a `AppChequeo`.
+- **El formulario se agrupa por el campo `seccion`** de `custom-form.json` —el único cambio de
+  forma respecto al JSON original—, y una sección sin campos visibles **no se renderiza**. Para
+  `Colegios` eso deja solo «Identificación», con 7 de los 25 campos.
+- ⚠️ **El esquema yup valida solo los campos visibles.** Ocho campos ocultos declaran `required`;
+  validarlos todos haría el formulario imposible de enviar. El módulo viejo esquivaba esto no
+  validando nada (su botón saltaba `handleSubmit`).
+- ⚠️ **El backend devuelve 200 con sobres de error** en estadísticas, y `estadistica-saturacion`
+  da 500. Los gráficos comprueban `Array.isArray(response?.data)`: sin eso, un gráfico caído
+  tumba el Home entero.
+- **La lógica clínica de IMC se clonó sin corregir**, bug de adultos incluido, documentado en un
+  JSDoc. Cambiar un umbral es una decisión médica y va en su propia spec.
+- Ruteo: `src/routes/routesCOL.tsx` + `NavigationCol.tsx` + un `case 'Colegios'` en
+  `NavigationApp.tsx`. Son los únicos tres archivos fuera del módulo.
+
+### `src/common/` — infraestructura transversal (skill `ergo-common`)
+
+21 archivos, 929 líneas, y **64 archivos del proyecto dependen de él**. Es el módulo más pequeño
+y el más peligroso de tocar. **Trabaja en modo aditivo**: agregar es seguro, cambiar una firma
+rompe en cadena y `tsc -b` no siempre lo atrapa (hay `any` en el adapter y en `setLocalStorage`).
+
+- `api/api.adapter.ts` (19 consumidores) — sin interceptores, sin retry, sin `baseURL`, sin
+  manejo de errores. `get` inyecta `limit`/`offset` con defaults `10`/`1`. `getToken` es un `get`
+  sin params: el nombre engaña, no gestiona tokens.
+- `context/` (47 consumidores) — Login, Modal y SubMenu. **`isDateModalOpen` es un solo booleano
+  compartido** por el modal de login, los modales de video de `src/Home/` y el `FormUpload` de
+  Chequeo; y `ModalProvider` se monta **tres veces anidado** (App, AppChequeo, HomePage) para
+  aislarlos a propósito.
+- **La sesión no se persiste**: `LoginProvider` arranca siempre vacío, así que un F5 desloguea.
+  `LoginGoogle` escribe la clave `"AuthRegister"` en localStorage y **nadie la lee**.
+- **Dependencia invertida**: `common/context/login` importa `IUser` desde `src/Login/interface`.
+- **`table/` es código muerto**: de sus 595 líneas solo se usa el tipo `IColumnsTable`. El propio
+  código explica por qué (`ERROR EN theme?.breakpoints?.up("lg")…` en `Filters.tsx`) y viene de
+  un proyecto Next.js. **No es el patrón de tablas del repo**: para un listado nuevo mira
+  `ChequeoTable` o `AgendarHoraTable` (MUI + `TablePagination`).
+
+### `src/Login/` — autenticación (skill `ergo-login`)
+
+13 archivos, 580 líneas. `AppLoginPages` se monta en `App.tsx` **fuera del router**, siempre
+presente, y renderiza un `<Modal>` de MUI que abre `routes/Navigation.tsx`.
+
+- **`services/useRegister.ts` es API pública del proyecto**: `getUserEmail` lo consumen 4 archivos
+  externos y `loadLogoUser` uno más. Cambiar sus firmas rompe Chequeo y los forms compartidos.
+- **`IUser` (en `interface/user.ts`) es el tipo más transversal de la app.**
+- El formulario está en `config/custom-form.json`; **`userName` es en realidad el email**.
+- **`REGEX_RUN` y `email` se declaran en el JSON pero no se implementan** en
+  `utilities/user.utility.ts` (solo `required`): hoy no se valida el formato del RUT ni del email.
+- ⚠️ `config/keys.json` tiene usuario y contraseña en texto plano, versionado y **sin uso**
+  (el login por JSON quedó comentado). Candidato a borrar.
+
+### `src/Chequeo/` — chequeo cardiovascular (skill `ergo-chequeo`)
+
+75 archivos, ~5.900 líneas: el módulo más grande y antiguo. Se monta en **dos rutas**
+(`routesErgo` `/Chequeos/*` con perfil `'All'`, y `routesME` `/chequeos/*` con perfil `Medicos`).
+
+- 🔴 **Los índices de tab NO coinciden entre perfiles.** `AppChequeo` ramifica toda la interfaz en
+  tres bloques (`Colegios` 4 tabs, `Medicos` 2, resto 7), y el array de `<Tab>` está **separado**
+  de los `<TabPanel>`. Agregar un tab obliga a revisar los tres bloques y ambas secciones.
+- ⚠️ **El bloque `Colegios` de este módulo ya no se usa**: desde la Spec 01 ese perfil entra a
+  `src/chequeo-cardiovascular/` por `NavigationCol`. El código sigue aquí, intacto y sin ruta que
+  lo alcance, como vía de reversa. No lo borres ni lo "limpies": se retira cuando los cuatro
+  perfiles estén migrados, y eso será su propia spec.
+- **Dos "status" distintos**: el numérico (`0` alta / `1` edición / `3` ECG) es navegación interna
+  de React; `estado_paciente` (`ingresado`, `Testiado`, `ECG FOTO`, `REVISION MEDICA`,
+  `En Rev. Cardio`, `Diag. Card. - Normal|Alterado`) es el estado clínico del backend.
+- Formularios en 5 JSON de `config/`; `custom-form.json` tiene 25 campos. Las validaciones se
+  implementan en `utilities/*-validation.utility.ts` (aquí sí están `REGEX_RUN`, `MAX`,
+  `NUMBER_DOT`; falta `LETRAS`, que el JSON declara).
+- `services/useChequeoService.ts` tiene **23 métodos** y cruza dominios (bioimpedancia,
+  certificados, GPT). Cinco módulos externos consumen este módulo.
+- ⚠️ **Lógica clínica delicada** en `hooks/useCalculoIMC.ts`: `UseCalculoIMC` exige la estatura en
+  **metros**; `UseCalcularPercentil` usa una aproximación lineal propia, **no tablas OMS/CDC**; y
+  `UseIMCRecomendaciones` tiene un bug conocido — en adultos, la rama de IMC normal (`< 25`)
+  devuelve las mismas recomendaciones que la de bajo peso. No toques fórmulas ni umbrales sin
+  pedirlo: es una decisión médica, no una refactorización.
+
+## Agentes y skills del proyecto (`.claude/`)
+
+El repositorio trae sus propios agentes y skills, **todos versionados dentro del proyecto**. No
+están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skills genéricas
+(`frontend-design`, `find-skills`) que **no aplican a este proyecto**.
+
+### Documento de referencia
+
+- **`.claude/ARQUITECTURA.md`** — mapa del modelo de dominio extraído del código: las dos claves
+  del modelo (`rut_paciente` y `user_email`), las entidades, el catálogo de ~70 endpoints, los
+  perfiles y el patrón canónico de módulo. Complementa a este archivo: aquí están las
+  convenciones, allí el modelo. Se actualiza cuando cambia el modelo o aparece un endpoint nuevo.
+
+### Skills (`.claude/skills/`)
+
+| Skill | Para qué |
+|---|---|
+| `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`. Cárgala antes de crear o modificar cualquier `.ts`/`.tsx`. |
+| `ergo-login` | Conocimiento completo de `src/Login/` (13 archivos): modal dual login/registro, `custom-form.json`, `UseRegister` y sus 5 consumidores externos, sesión. |
+| `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
+| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (67 archivos): los 4 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 3 servicios, el blindaje de los gráficos y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
+| `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
+| `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
+| `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
+
+### Agentes (`.claude/agents/`)
+
+| Agente | Misión | Perímetro |
+|---|---|---|
+| `ergosanitas-developer` | Desarrolla, modifica, prueba y corrige respetando las convenciones. El agente de uso general para implementar. | Todo el repo |
+| `ergosanitas-architect` | Conoce arquitectura y modelo; diseña módulos nuevos y revisa coherencia. Diseña, no implementa. | Todo el repo (diseño) |
+| `ergo-login` | Dueño de `src/Login/` | **Solo `src/Login/`** |
+| `ergo-chequeo` | Dueño de `src/Chequeo/` (módulo viejo, perfiles Administrador/Medicos/Usuario) | **Solo `src/Chequeo/`** |
+| `ergo-chequeo-cardiovascular` | Dueño de `src/chequeo-cardiovascular/` (módulo nuevo, perfil Colegios) | **Solo `src/chequeo-cardiovascular/`** |
+| `ergo-common` | Dueño de `src/common/` | **Solo `src/common/`** |
+
+Los cuatro agentes de módulo tienen **perímetro cerrado**: leen lo que haga falta para entender el
+flujo, pero solo modifican su carpeta. Si la tarea exige tocar algo fuera, se detienen y lo
+reportan en vez de improvisar. Cada uno carga su skill homónima al arrancar.
+
+⚠️ **`ergo-chequeo` y `ergo-chequeo-cardiovascular` son dueños de módulos distintos** y ninguno
+puede tocar el del otro. El perfil decide a quién llamar: `Colegios` → el nuevo; `Administrador`,
+`Medicos` y `Usuario` → el viejo. El **ruteo** (`routesCOL.tsx`, `NavigationCol.tsx`,
+`NavigationApp.tsx`) queda fuera de ambos perímetros y lo lleva `ergosanitas-developer` o
+`ergosanitas-architect`.
+
+**Módulos sin agente propio pero con guía**: `src/ficha-clinica/` y `src/home-ergo/` usan
+`ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
+
+## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo`)
 
 El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`:
 
 - **`/spec <descripción>`** — diseña una spec por fases (nunca escribe código). Guarda en `specs/<modulo>/NN-slug.md` en estado `Borrador`. Lee `template.md` de la skill para la estructura.
 - **`/spec-impl <NN-slug>`** — implementa una spec **ya aprobada** (`Aprobado`); crea/cambia a la rama `spec-NN-slug` (según `specs/.spec-config.yml`, `AutoCreateBranch: true` por defecto) e implementa por pasos con pausas para revisar diffs.
+- **`/spec-impl-ergo <NN-slug>`** — **el que conviene usar en este repo.** No reimplementa nada:
+  invoca `/spec-impl` tal cual y le añade el cierre propio del proyecto — detectar módulos
+  tocados, `npm run build` + `eslint`, **revisión por el agente dueño de cada módulo**, repaso de
+  los criterios de aceptación, y actualización de `CLAUDE_<MODULO>.md` / `ARQUITECTURA.md` /
+  estado de la spec. Marca `Implementado` solo si todos los criterios pasaron.
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: hoy hay dos carpetas,
-  `specs/ficha-clinica/` (`01-…` a `04-…`) y `specs/home-ergo/` (`01-…` y `02-…`).
-  La numeración es correlativa **dentro de cada carpeta**, así que existen dos specs `01`
+- **Las specs se agrupan por módulo**: hoy hay tres carpetas,
+  `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `03-…`) y
+  `specs/chequeo-cardiovascular/` (`01-…`).
+  La numeración es correlativa **dentro de cada carpeta**, así que existen tres specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
-  `CLAUDE_FICHA_CLINICA.md` y `CLAUDE_HOME_ERGO.md`.
+  `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md` y `CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a
