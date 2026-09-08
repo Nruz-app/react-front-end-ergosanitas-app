@@ -1,7 +1,7 @@
 # CLAUDE_CHEQUEO_CARDIOVASCULAR.md
 
 Guía del módulo `src/chequeo-cardiovascular/`. Recoge el estado consolidado tras las Specs 01,
-02 y 03, y lo que **no** hay que romper. Léela antes de tocar el módulo.
+02, 03 y 04, y lo que **no** hay que romper. Léela antes de tocar el módulo.
 
 El módulo tiene además **agente y skill propios**, `ergo-chequeo-cardiovascular`, con perímetro
 cerrado a `src/chequeo-cardiovascular/`. Si esta guía y la skill discrepan, **manda esta guía**.
@@ -12,7 +12,8 @@ Estado de las specs de esta carpeta:
 |---|---|---|
 | `01-perfil-colegios.md` | Creó el módulo para el perfil `Colegios` | Implementado |
 | `02-home-colegio.md` | Rediseñó el Home: 2 secciones, 4 gráficos nuevos, accesibilidad | Aprobado (código completo; 4 criterios visuales sin verificar) |
-| `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional en el Home | Implementado (10 de 18 criterios verificados; 8 de comportamiento pendientes de prueba manual — ver §8 de la spec) |
+| `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional, hoy en el tab «Asistente Virtual» | Implementado, **revisada** (§9 de la spec: rediseño visual y mudanza a tab propio). 10 de 20 criterios verificados; 10 de comportamiento pendientes de prueba manual — §8 y §9.4 |
+| `04-juego-cartas-nivel.md` | Añadió el tab «Nivel de alumnos»: cada deportista como una carta con nivel, atributos, estrellas y progreso de ficha | Implementado, **revisada** (§9 de la spec). 13 de 24 criterios verificados; 11 de comportamiento pendientes de prueba manual — §9.2 |
 | — | `Medicos`, `Administrador`, `Usuario` siguen en `src/Chequeo/` | — |
 
 ---
@@ -41,7 +42,7 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
    comprobación por `grep -rni delete` siga siendo significativa.
 
 3. **Este módulo es de un solo perfil.** `AppChequeoCardiovascular` **no ramifica por
-   `user_perfil`**: son 5 tabs fijos. Esa es la diferencia de fondo con `AppChequeo`. Si un día
+   `user_perfil`**: son 6 tabs fijos. Esa es la diferencia de fondo con `AppChequeo`. Si un día
    se migra otro perfil aquí, la decisión de cómo convivir se toma en su spec — no se replica
    el `if (user_perfil === …)` por dentro sin pensarlo.
 
@@ -51,33 +52,37 @@ Cada perfil siguiente será su propia spec en esta misma carpeta.
 
 ```
 src/chequeo-cardiovascular/
-├── pages/       AppChequeoCardiovascular (orquestador, 5 tabs) · HomePage ·
-│                AsistentePage · ChequeoPage
+├── pages/       AppChequeoCardiovascular (orquestador, 6 tabs) · HomePage ·
+│                AsistentePage · JuegoCartasPage · ChequeoPage
 ├── components/  ChequeoTable · ChequeoTarjeta · ChequeoForm · ChequeoFormUpdate ·
 │                ChequeoView · SeccionCampos · SeccionHome · DownloadPDF · LoadingTable
 │                filters/ · date-pickers/ · forms/ · carga-masiva/ · exportar-excel/ ·
-│                estadisticas/ · statistics-global/ · asistente/ · tabs/
+│                estadisticas/ · statistics-global/ · asistente/ · juego-cartas/ · tabs/
 ├── config/      custom-form.json (25 campos + `seccion`) · custom-likes.json ·
 │                excel-data.json · secciones.ts · tema.ts (tokens visuales) ·
 │                sugerencias-asistente.ts
 ├── context/     like-text/ (búsqueda) — el único; `modal-bar/` se retiró en la Spec 03
 ├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel ·
-│                useResumenColegio · useReconocimientoVoz
-├── interface/   10 archivos de tipos + barril
-├── services/    useChequeoCardiovascularService (9) · useEstadisticasService (4) ·
-│                useCertificadoService (1) · useAsistenteColegioService (2)
-└── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
+│                useResumenColegio · useReconocimientoVoz · useJuegoCartas
+├── interface/   11 archivos de tipos + barril
+├── services/    useChequeoCardiovascularService (9) · useEstadisticasService (3) ·
+│                useCertificadoService (1) · useAsistenteColegioService (2) ·
+│                useJuegoCartasService (3)
+└── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility ·
+                 juego.utility
 ```
 
-Los 5 tabs: **0** Home · **1** Asistente Virtual · **2** Lista · **3** Alta/Edición ·
-**4** Carga masiva.
+Los 6 tabs: **0** Home · **1** Asistente Virtual · **2** Nivel de alumnos · **3** Lista ·
+**4** Alta/Edición · **5** Carga masiva. El orden no es casual: los tres primeros son pantallas
+para **mirar** y los tres últimos para **gestionar**.
 
-🔴 **Los índices se usan a mano en dos handlers** del orquestador, así que insertar un tab en
-medio los desplaza en silencio — es exactamente lo que pasó al mover el asistente a la posición
-1, que empujó los tres siguientes. Por eso ya no hay literales: las cinco posiciones son
-constantes `TAB_HOME`, `TAB_ASISTENTE`, `TAB_LISTA`, `TAB_ALTA` y `TAB_CARGA`, declaradas junto
-al array `TABS`, y las usan tanto los `<TabPanel>` como `handleChange` y `handleUpdateStatus`.
-Si agregas un tab, **declara su constante**; no escribas el número.
+🔴 **Los índices se usan en dos handlers** del orquestador, así que insertar un tab en medio los
+desplaza — pasó al mover el asistente a la posición 1, que empujó los tres siguientes, y otra vez
+al meter «Nivel de alumnos» en la 2. Por eso ya no hay literales: las seis posiciones son
+constantes `TAB_HOME`, `TAB_ASISTENTE`, `TAB_JUEGO`, `TAB_LISTA`, `TAB_ALTA` y `TAB_CARGA`,
+declaradas junto al array `TABS`, y las usan tanto los `<TabPanel>` como `handleChange` y
+`handleUpdateStatus`. Si agregas un tab, **declara su constante**; no escribas el número. Con las
+constantes, renumerar es cambiar seis líneas y nada más.
 
 ## 4. El formulario: agrupado por `seccion` (concepto central)
 
@@ -208,6 +213,87 @@ asistente**, para que la respuesta no haga saltar el hilo al llegar.
   sin ella el navegador seguiría grabando con el chat fuera de pantalla. Se detiene pero **no se
   limpia**, para no borrar lo que el usuario llevaba dictado al volver.
 
+### El tab «Nivel de alumnos» (Spec 04)
+
+El tab 2 pinta a cada deportista como una **carta** con nivel clínico, cuatro atributos 0–100,
+estrellas y progreso de ficha. Es la lectura que faltaba: el Home describe a la población y la
+lista muestra la ficha administrativa fila a fila; ninguna responde «¿cómo va *este* alumno y qué
+le falta?».
+
+- 🔴 **Aquí no se calcula nada.** El puntaje, las bandas, las estrellas y el progreso los resuelve
+  `SP_juego_cartas_club` contra la tabla `juego_niveles`. Retunear una banda es un `UPDATE` en el
+  backend; recalcular en el front crearía una segunda verdad que divergiría al primer ajuste.
+- 🔴 **Tampoco se reordena.** Las cartas llegan por puntaje descendente, con desempate por
+  `atributos_medidos` y las `sin_evaluar` al final —el backend lo ordena en PHP justamente porque
+  MySQL 5.7 no lo garantiza—. Lo único que pasa en el front es el **filtrado, en memoria**: el
+  club más grande son 147 cartas en una sola respuesta.
+- **Dos ejes independientes, y no correlacionan**: el nivel clínico (`SIN EVALUAR` · `BAJO` ·
+  `MEDIO` · `ALTO`) y la completitud de la ficha (`Inicial` · `Evaluado` · `Completo`). Un alumno
+  puede estar sano con la ficha a medias, y al revés. Por eso hay **dos filas de chips**, y por
+  eso ninguna de las dos se escribe a mano: salen de `GET /juego-cartas/niveles`.
+- 🔴 **Los colores del badge vienen del backend**, no de `tema.ts`. Es la única excepción a «el
+  color sale de `tema.ts`», y es deliberada: la tabla `juego_niveles` existe justo para retunear
+  bandas y paleta con un `UPDATE`. La regla se mantiene verificable —ningún `.tsx` escribe un
+  hex— porque allí el color es un **dato**. Lo que sí vive en `tema.ts` es el armazón de la
+  carta, en el bloque `JUEGO`.
+- **`SIN EVALUAR` se pinta con `—`, nunca con `0`.** Son 201 alumnos en toda la base que solo
+  tienen la carga de Excel: un cero diría que sacaron cero, y lo que dice el dato es que nadie
+  los ha medido. Tampoco se ocultan por defecto: son la tarea pendiente del colegio.
+- **El modal es `Dialog` de MUI, no el `ModalProvider` del módulo.** Aquel comparte un único
+  `isDateModalOpen` con el detalle del deportista, y dos modales sobre el mismo booleano se
+  abrirían juntos. El `Dialog` ya atrapa el foco y cierra con `Esc`.
+- **`getToken` en vez de `get`** en el servicio: `ApiAdapter.get` inyecta siempre `limit`/`offset`,
+  que estos tres endpoints no aceptan.
+- **Render incremental de 24 en 24.** Montar 147 tarjetas MUI al entrar al tab es un coste que
+  nadie pidió; quien busca a alguien concreto usa el buscador. Cualquier cambio de filtro vuelve
+  a la primera tanda, por la misma razón que `ChequeoTable` hace `setPage(0)`.
+- 🔴 **La grilla también recibe `activo`, por el mismo motivo que el chat.** `TabPanel` oculta con
+  `display: none` en vez de desmontar, así que **sin esa señal las 118 cartas se pedirían y se
+  montarían nada más entrar el colegio al módulo**, aunque nunca abriera la pestaña — justo el
+  coste que el render incremental existe para evitar. `useJuegoCartas(activo)` carga en la
+  **primera** activación y no en cada vuelta al tab: los datos de una carta cambian cuando alguien
+  registra un chequeo, no mientras se navega. Para refrescar a mano está «Reintentar».
+- 🔴 **El modal descarta las respuestas que llegan tarde** (`ultimoRut` en un `useRef`). Pulsar
+  una carta lenta y luego otra rápida dejaba en pantalla el desglose de la primera al terminar:
+  se estaría mostrando la evaluación de **otro menor** bajo el nombre del que se pulsó. Un
+  `useState` no vale, porque el `handleAbrir` en vuelo ve el valor con el que se creó. La grilla es de
+  **3 / 2 / 1 columnas** en los cortes `md` (900 px) y `sm` (600 px), los mismos que ya usa la
+  lista.
+- 🔴 **La carga se dispara al abrir el tab, no al montarlo.** `AppChequeoCardiovascular` pasa
+  `activo={tab === TAB_JUEGO}` a `JuegoCartasPage` y esta se lo pasa a `useJuegoCartas`, que solo
+  llama en la **primera** activación. Es la misma señal que recibe `AsistentePage`, y por la misma
+  causa: `TabPanel` oculta los paneles con `display: none` **sin desmontarlos**, así que sin ella
+  las 118 cartas se pedirían y 24 tarjetas se montarían nada más entrar el colegio al módulo,
+  aunque nunca abriera esta pestaña — justo el coste que el render incremental existe para evitar.
+  Para refrescar a mano está «Reintentar», que llama a `recargar` sin pasar por la guarda.
+- **El desglose descarta respuestas que llegan tarde.** `handleAbrir` guarda el RUT pedido en un
+  `useRef` y compara al volver: sin eso, pulsar una carta lenta y luego otra rápida dejaría en el
+  modal la evaluación de **otro menor** bajo el nombre del que se pulsó.
+- ⚠️ **Un atributo puede valer 100 con un solo sub-indicador.** Es la contracara de normalizar
+  sobre lo presente. El modal lo delata mostrando `atributos_medidos` y los cinco bloques de
+  completitud, pero la carta de la grilla muestra un 100 que descansa en un campo de texto.
+- ⚠️ **Las bandas están calibradas sobre la distribución real de la base, no sobre criterio
+  clínico.** Por eso la grilla lleva una **nota permanente** al pie: el nivel no es un
+  diagnóstico. No la quites.
+- ⚠️ **`fecha_atencion` llega aquí como `YYYY-MM-DD HH:mm:ss.ffffff`**, no como el `DD-MM-YYYY`
+  de `chequeo-all`. Son dos formatos en el mismo backend: `parsearFecha` no sirve para las
+  cartas, y por eso existe `fechaDeCarta` en `utilities/juego.utility.ts`.
+- ⚠️ **Tres badges no llegan al contraste AA**, y el arreglo **no es de este módulo**: los colores
+  salen de `juego_niveles`. Medido sobre el dato real: `SIN EVALUAR` 2.31:1, `Inicial` 3.90:1 y
+  `BAJO` 3.95:1, con texto de 11–12 px, que exige 4.5:1. `ALTO` (4.57), `MEDIO` (4.51) y
+  `Evaluado` (5.10) sí pasan. Se corrige con un `UPDATE` sobre `color_texto`; oscurecerlos desde
+  el front rompería la razón de que la paleta viva en la tabla. El badge **sí** lleva el nombre de
+  la banda escrito dentro, así que no comunica solo por color.
+- 🔴 **Tres badges no llegan al contraste AA** con la paleta que hoy trae `juego_niveles`:
+  `SIN EVALUAR` 2.31:1, `Inicial` 3.90:1 y `BAJO` 3.95:1, con texto de 11–12 px que exige 4.5:1.
+  **El arreglo es un `UPDATE` en el backend, no código**: oscurecerlos desde el front rompería la
+  razón por la que la paleta vive en la tabla. Mitiga —no resuelve— que el nombre de la banda vaya
+  escrito dentro del badge.
+- ⚠️ **El SP puede no estar desplegado.** La spec del backend lo declara: un entorno levantado
+  solo con `php artisan migrate` tiene las tablas pero no `SP_juego_cartas_club`, y los tres
+  endpoints devuelven 500. Por eso la pantalla distingue «servicio no disponible» de «todavía no
+  hay alumnos evaluados», igual que las tarjetas del Home.
+
 ### La asimetría de los fetch es deliberada
 
 - **Los tres del backend piden su serie cada uno**, porque cada uno consulta un endpoint distinto.
@@ -325,15 +411,27 @@ listados) y **`rut`** identifica a la persona.
 `IChequeo` se clona **sin retipar**: casi todo `string` opcional. Es deuda conocida y heredada;
 retiparla obligaría a tocar el mapeo con el backend y sale del alcance de la Spec 01.
 
-### Endpoints (11, uno nuevo desde la Spec 03)
+### Endpoints (17: 13 heredados y 4 estrenados por specs)
 
 `postChequeoSearch` · `postChequeoAll` · `getChequeoRut` · `postCreateChequeo` ·
 `postUpdateChequeo` · `chequeoPDF` · `pathUrlCertificado` · `getEstadoGeneral` ·
-`postCargaMasiva` · `getCertificadoRut`, más los 4 de `estadisticas/estadistica-*`.
+`postCargaMasiva` · `getCertificadoRut`, más los 3 de `estadisticas/estadistica-*`
+(`saturacion` se retiró: da 500).
 
-**Nuevo (Spec 03):** `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }`
-→ `{ response }`. Es el **único endpoint que el módulo estrenó**: los otros 10 ya existían. No
-hay endpoint de reset del hilo.
+**Nuevo en la Spec 03:** `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }`
+→ `{ response }`. No hay endpoint de reset del hilo.
+
+**Nuevos en la Spec 04**, los tres bajo el **sobre A** `{success, message, data}` —el resto del
+módulo devuelve el dato pelado—:
+
+| Método | Endpoint |
+|---|---|
+| `getCartasClub(user_email, search?)` | `GET /juego-cartas/{user_email}?search=` |
+| `getCartaDetalle(rut)` | `GET /juego-cartas/detalle/{rut_paciente}` |
+| `getNiveles()` | `GET /juego-cartas/niveles` |
+
+`getCartaDetalle` devuelve `null` **sin lanzar** cuando el RUT no tiene chequeos: el backend
+responde 200 con `data: null`. Es un caso normal, no un error.
 
 ### ⚠️ El backend responde 200 con sobres de error
 
@@ -414,7 +512,12 @@ Nada de esto cambia lo que ve el usuario, salvo donde se indica:
   presentacional; **no añadas otro fetch**. Si viene de un endpoint propio, sigue el patrón de
   `GraficoTorta`.
 - **Un color** → `config/tema.ts`, y decide primero la familia: `COLORES` si describe un
-  resultado clínico o es el azul de marca, `UI` si es una acción, un realce o un fondo.
+  resultado clínico o es el azul de marca, `UI` si es una acción, un realce o un fondo, `JUEGO`
+  si es el armazón de una carta. La única excepción son los colores de las bandas del juego, que
+  llegan como dato desde `juego_niveles`.
+- **Algo del juego de cartas** → el cálculo vive en el backend. Si lo que falta es un dato de la
+  carta, es una spec del backend; si es cómo se pinta, `components/juego-cartas/` y
+  `utilities/juego.utility.ts`. **Nunca derives el puntaje ni una banda en el front.**
 - **Un gráfico cualquiera** → lleva su `TablaAccesible`. No es opcional: sin ella el dato no
   existe para un lector de pantalla.
 - **Columnas o acciones de la lista** → `ChequeoTable.tsx` **y** `ChequeoTarjeta.tsx`: son la

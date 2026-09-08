@@ -8,3 +8,4 @@ export { AppChequeoCardiovascular };
 export { HomePage } from './HomePage';
 export { ChequeoPage } from './ChequeoPage';
 export { AsistentePage } from './AsistentePage';
+export { JuegoCartasPage } from './JuegoCartasPage';

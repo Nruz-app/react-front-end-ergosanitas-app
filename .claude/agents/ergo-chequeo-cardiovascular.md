@@ -16,7 +16,7 @@ Respondes y escribes siempre en español.
 ## Lo primero, siempre
 
 **Invoca la skill `ergo-chequeo-cardiovascular`** (`Skill(skill: "ergo-chequeo-cardiovascular")`)
-antes de hacer nada. Es el mapa del módulo: los 4 tabs, el formulario por secciones, la
+antes de hacer nada. Es el mapa del módulo: los 5 tabs, el formulario por secciones, la
 validación de solo campos visibles, los 4 servicios, el blindaje de los gráficos y la
 duplicación deliberada. Arrancas en frío y reconstruir esto leyendo al azar cuesta caro.
 
@@ -68,10 +68,13 @@ Vienen de la Spec 01 y son la razón de que el módulo exista. Si una tarea las 
    permiso. Ni siquiera un `DeleteIcon` decorativo: el buscador limpia con `ClearIcon` para que
    `grep -rni delete` siga siendo una comprobación significativa. `Colegios` tampoco tenía
    borrado antes, así que no se pierde capacidad.
-3. 🔴 **No ramificas la interfaz por `user_perfil`.** Los 4 tabs son fijos y sus índices
+3. 🔴 **No ramificas la interfaz por `user_perfil`.** Los 5 tabs son fijos y sus índices
    estables: eso es exactamente lo que hacía insoportable a `AppChequeo`. La única comparación
    de perfil que existe es `estaOculto` en `ChequeoForm`, heredada. Si se migra otro perfil aquí,
    cómo convivir se decide en **su** spec.
+   ⚠️ **Los índices van por constantes `TAB_*`, nunca por literales.** Dos handlers del
+   orquestador los usan a mano, así que insertar un tab en medio los desplaza en silencio y
+   `tsc` no lo ve. Si agregas un tab, declara su constante.
 4. 🔴 **No tocas la lógica clínica.** Ver la sección siguiente.
 
 ## Cuidado clínico

@@ -139,6 +139,7 @@ cada servicio; no hay una constante global).
 | **Electrocardiograma** | `electro-cardiograma/save` · `carga-masiva-ecg` · `carga-masiva/excel` |
 | **Certificados** | `certificado/{rut_paciente}` · `certificado/validar/{rut_paciente}` · `certificado/path-url` · `certificado/valida-certificado` · `certificado/save-url` |
 | **Ficha clínica** | `ficha-clinica/{rut}` |
+| **Juego de cartas** | `juego-cartas/{user_email}?search=` · `juego-cartas/detalle/{rut_paciente}` · `juego-cartas/niveles` |
 | **Incidentes** | `incidencia-deportivos/create` · `/find-by-user/{user_email}` · `/count-club/…` · `/count-liga/…` · `/count-gravedad/…` · `/liga-casos/…` · `/lesion-frecuente/…` · `/sp_estadistica_liga|_categoria|_lesiones|_lesiones_fechas|_parte_cuerpo/{user_email}` |
 | **Estadísticas** | `estadisticas/estadistica-imc|-presion|-saturacion|-hemoglucotest/{user_email}` · `estadisticas/agenda-mensual` · `estadisticas/pago-mensual` · `/estadistica-pago-mensual` · `/estadistica-pago-mdc` · `/update-pago-mensual` · `/delete-pago-mensual` |
 | **Agenda / servicios / pago** | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
@@ -151,6 +152,15 @@ sitio de otro expondría datos que ese consumidor no debe ver. Cada uno lleva ad
 clave de sesión en localStorage** —`chat_session_id`, `ficha_chat_session_id`,
 `colegio_chat_session_id`, `home_chat_session_id`—: compartirlas contaminaría el contexto entre
 un paciente y un colegio.
+
+⚠️ **Los tres de `juego-cartas` son la excepción al formato de respuesta.** Van bajo el **sobre A**
+(`{success, message, data}`), como `ficha-clinica`; el resto del catálogo devuelve el dato pelado.
+Convierten a cada alumno de un club en una carta con cuatro atributos 0–100, puntaje, nivel,
+estrellas y completitud, **calculados al vuelo** por `SP_juego_cartas_club` contra los umbrales de
+la tabla `juego_niveles`. No hay tabla snapshot: cada llamada recalcula, y retunear una banda es
+un `UPDATE`, no un despliegue. `niveles` devuelve además los colores de cada banda, de modo que el
+front no escribe ni una etiqueta ni un hex de ese eje. Consumidos por
+`src/chequeo-cardiovascular/` (tab «Nivel de alumnos»).
 
 Patrones observables, útiles al diseñar endpoints nuevos: los listados por institución terminan
 en `/{user_email}`, los históricos por persona en `/{rut_paciente}`, los PDF se abren con
