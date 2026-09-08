@@ -22,3 +22,9 @@ export {
     resumirPorSaturacion,
     subtituloResumen,
 } from './resumen.utility';
+export {
+    fechaDeCarta,
+    filtrarCartas,
+    iniciales,
+    resumenDeCarta,
+} from './juego.utility';

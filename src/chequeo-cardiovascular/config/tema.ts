@@ -97,6 +97,35 @@ export const UI = {
     sobreCabeceraBorde  : 'rgba(255, 255, 255, 0.38)',
 };
 
+/**
+ * El juego de cartas por nivel (Spec 04).
+ *
+ * ⚠️ **Los colores del badge de nivel y de estado NO están aquí**: viajan dentro de cada carta,
+ * desde la tabla `juego_niveles`. Es para lo que existe esa tabla —retunear la paleta con un
+ * `UPDATE`, sin desplegar el front— y no rompe la regla del módulo, porque siguen sin aparecer
+ * hex en un `.tsx`: allí el color es un dato.
+ *
+ * Lo que sí vive aquí es el armazón de la carta, que es interfaz y no significado clínico. Por
+ * eso va en su propio bloque y no dentro de `COLORES`.
+ */
+export const JUEGO = {
+    /** Pista de una barra —progreso y atributos—, sobre la que se dibuja el relleno. */
+    pista           : '#eef2f7',
+    /** Relleno de la barra de un atributo medido. */
+    barraAtributo   : '#5c6bc0',
+    /** Estrella conseguida y estrella pendiente. */
+    estrellaLlena   : '#f5b301',
+    estrellaVacia   : '#dfe3e8',
+    /** Atributo sin ningún sub-indicador: ni verde ni rojo, porque no afirma nada. */
+    sinMedir        : '#b0b8c4',
+    /** Bloque de completitud conseguido y pendiente. */
+    bloqueHecho     : '#2e7d32',
+    bloquePendiente : '#c4cbd6',
+    /** Chip de la insignia «InBody». */
+    insigniaFondo   : '#ede7f6',
+    insigniaTexto   : '#4527a0',
+};
+
 /** Paleta para series sin orden clínico —cursos, meses—, donde el color solo separa. */
 export const PALETA_CATEGORICA = [
     '#1976d2', '#1B9E77', '#E6A700', '#7B5EA7', '#C2620A', '#4C9F70', '#6C8EBF', '#B3589A',
@@ -125,6 +154,10 @@ export const DEGRADADOS = {
 
     /** Turno del usuario. Plano se veía como una etiqueta; con volumen se lee como un mensaje. */
     burbujaUsuario : `linear-gradient(135deg, ${UI.burbujaUsuario}, ${COLORES.primarioHover})`,
+
+    /** Avatar de una carta y relleno de su barra de progreso (Spec 04). */
+    avatarCarta   : `linear-gradient(135deg, ${COLORES.primarioClaro}, ${UI.burbujaUsuario})`,
+    barraProgreso : `linear-gradient(90deg, ${COLORES.primario}, ${UI.burbujaUsuario})`,
 };
 
 /**
@@ -144,6 +177,10 @@ export const SOMBRAS = {
     /** El turno del usuario, que sí pesa: es el color más oscuro de la pieza. */
     burbujaUsuario      : '0 4px 14px rgba(48, 63, 159, 0.28)',
     burbujaUsuarioHover : '0 6px 18px rgba(48, 63, 159, 0.42)',
+
+    /** Una carta del juego, en reposo y al pasar por encima (Spec 04). */
+    carta      : '0 5px 18px rgba(13, 71, 161, 0.08)',
+    cartaHover : '0 12px 26px rgba(13, 71, 161, 0.18)',
 };
 
 /**

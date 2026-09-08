@@ -1,6 +1,7 @@
 import { SyntheticEvent, useState } from 'react';
 import { Box, Tab, Tabs } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import HomeIcon from '@mui/icons-material/Home';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -16,6 +17,7 @@ import { UseChequeoCardiovascularService } from '../services';
 import { AsistentePage } from './AsistentePage';
 import { ChequeoPage } from './ChequeoPage';
 import { HomePage } from './HomePage';
+import { JuegoCartasPage } from './JuegoCartasPage';
 
 const CHEQUEO_VACIO: IChequeo = {
     nombre : '', rut : '', fechaNacimiento : '', edad : '',
@@ -23,26 +25,33 @@ const CHEQUEO_VACIO: IChequeo = {
 };
 
 /**
- * Los índices son la navegación interna del módulo y **están escritos a mano en dos handlers**
+ * Los índices son la navegación interna del módulo y **los usan dos handlers**
  * (`handleChange` y `handleUpdateStatus`). Insertar un tab en medio obliga a revisar los dos:
- * es lo que pasó al meter «Asistente Virtual» en la posición 1, que empujó los tres siguientes.
+ * pasó al meter «Asistente Virtual» en la posición 1, que empujó los tres siguientes, y otra vez
+ * con «Nivel de alumnos» en la 2. Que ya no haya literales es justo lo que hace barata la
+ * operación: se renumera aquí y los paneles y los handlers siguen.
  */
 const TAB_HOME      = 0;
 const TAB_ASISTENTE = 1;
-const TAB_LISTA     = 2;
-const TAB_ALTA      = 3;
-const TAB_CARGA     = 4;
+const TAB_JUEGO     = 2;
+const TAB_LISTA     = 3;
+const TAB_ALTA      = 4;
+const TAB_CARGA     = 5;
 
 const TABS = [
     { indice: TAB_HOME,      titulo: 'Home',                 icono: <HomeIcon /> },
     { indice: TAB_ASISTENTE, titulo: 'Asistente Virtual',    icono: <SmartToyIcon /> },
+    { indice: TAB_JUEGO,     titulo: 'Nivel de alumnos',     icono: <EmojiEventsIcon /> },
     { indice: TAB_LISTA,     titulo: 'Lista de deportistas', icono: <ListAltIcon /> },
     { indice: TAB_ALTA,      titulo: 'Agregar deportista',   icono: <PersonAddIcon /> },
     { indice: TAB_CARGA,     titulo: 'Carga masiva',         icono: <CloudUploadIcon /> },
 ];
 
 /**
- * Orquestador del módulo: los 5 tabs del perfil `Colegios`.
+ * Orquestador del módulo: los 6 tabs del perfil `Colegios`.
+ *
+ * El orden no es casual: los tres primeros son pantallas para **mirar** —el Home agregado, el
+ * chat y las cartas por alumno— y los tres últimos para **gestionar** la lista.
  *
  * **No ramifica por perfil.** Esa es la diferencia de fondo con `AppChequeo`, que reparte una
  * sola pantalla entre tres bloques de perfil con índices de tab que no coinciden: agregar un
@@ -172,6 +181,10 @@ export const AppChequeoCardiovascular = () => {
                             escuchando tras cambiar de tab. */}
                         <TabPanel value={tab} index={TAB_ASISTENTE}>
                             <AsistentePage activo={tab === TAB_ASISTENTE} />
+                        </TabPanel>
+
+                        <TabPanel value={tab} index={TAB_JUEGO}>
+                            <JuegoCartasPage activo={tab === TAB_JUEGO} />
                         </TabPanel>
 
                         <TabPanel value={tab} index={TAB_LISTA}>

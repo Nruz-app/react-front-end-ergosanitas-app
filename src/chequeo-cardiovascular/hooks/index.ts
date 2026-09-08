@@ -4,3 +4,4 @@ export { UseCalculoIMC, UseCalcularPercentil, UseIMCRecomendaciones } from './us
 export { ExportToExcel } from './useExportToExcel';
 export { useResumenColegio } from './useResumenColegio';
 export { useReconocimientoVoz } from './useReconocimientoVoz';
+export { useJuegoCartas } from './useJuegoCartas';

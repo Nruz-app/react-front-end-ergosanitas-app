@@ -38,4 +38,6 @@ export { TabPanel } from './tabs/TabPanel';
 
 export * from './asistente';
 
+export * from './juego-cartas';
+
 export * from './forms';

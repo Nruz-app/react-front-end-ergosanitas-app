@@ -19,3 +19,8 @@ export type { ICampoFormulario, IOpcionCampo, IValidacionCampo } from './campo-f
 export type {
     EstadoTarjeta, PilaSerie, ResumenColegio, SerieApilada, SerieSimple,
 } from './resumen.interface';
+
+export type {
+    IAtributoCarta, IBadgeCarta, ICompletitudCarta, IConfiguracionJuego, IJuegoAtributoCatalogo,
+    IJuegoCarta, IJuegoNivel, IListadoCartas, ISobreJuego,
+} from './juego-carta.interface';
