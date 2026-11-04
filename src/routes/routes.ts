@@ -3,7 +3,10 @@ import { LazyExoticComponent } from 'react';
 import { AppHomeErgoPage } from '../home-ergo/pages';
 import { AppCertificadoPage } from '../Certificados/pages/';
 import { AppAgendarHoraPage } from '../AgendarHora/pages/';
-import { AppServiciosPage } from '../Servicios/pages';
+// Flujo anterior de /servicios: se conserva intacto como vía de reversa (basta descomentar y
+// volver a usar AppServiciosPage abajo). Spec 01 de servicio-cart-flow.
+// import { AppServiciosPage } from '../Servicios/pages';
+import { AppServicioCartFlowPage } from '../servicio-cart-flow';
 
 type JSXComponent = () => JSX.Element;
 
@@ -41,7 +44,8 @@ export const routes: Route[] = [
         name      : 'Servicios',
         to        : '/servicios',
         path      : '/servicios/*',
-        Component : AppServiciosPage
+        // Component : AppServiciosPage
+        Component : AppServicioCartFlowPage
     }
 
 ];

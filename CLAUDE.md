@@ -147,7 +147,8 @@ y regla de aislamiento:
 | `Chequeo/` | 75 · 5.887 | Chequeo de `Medicos` y `Usuario` (el módulo viejo; `Administrador` migró) |
 | `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
 | `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
-| `Servicios/` | 22 · 1.859 | Página pública de servicios |
+| `servicio-cart-flow/` | 36 · 2577 | Página pública `/servicios`: carro de servicios (reemplazo de `Servicios/`) |
+| `Servicios/` | 22 · 1.859 | Página pública anterior — **intacta y sin rutear**, vía de reversa |
 | `Certificados/` | 21 · 995 | Certificados PDF por RUT |
 | `Home/` | 21 · 1.354 | Portada anterior — **intacta y sin rutear**, vía de reversa |
 | `pagos-mensual/` | 14 · 1.798 | Resumen mensual de pagos y variante MDC |
@@ -220,6 +221,19 @@ Lo mínimo que hay que saber:
 - **El chat del tab «Asistente Ergo» es un clon**, no un import de `src/presentation/`
   ni de `src/AsistenteVirtual/`. Esas carpetas no se tocan; la duplicación es deliberada
   (Spec 04) y usa su propia clave de sesión, `ficha_chat_session_id`.
+
+### `src/servicio-cart-flow/` — carro de servicios en `/servicios` (módulo con guía propia)
+
+Página pública `/servicios`: comuna → catálogo completo → carro con varios pacientes → datos → agenda por bloques →
+pago (Webpay, transferencia o efectivo) → confirmación. Consume `api/cart-flow/*` (SPEC 04 del back). Reemplaza en
+`routes.ts` a `src/Servicios/`, que queda **intacto**, con su import comentado, como vía de reversa.
+**Antes de tocarlo, lee `specs/servicio-cart-flow/CLAUDE_SERVICIO_CART_FLOW.md`.**
+
+- **Regla dura:** el front nunca calcula precios; cada acción reemplaza el carro con la respuesta del back.
+- Solo importa de `src/common/` (más el lazy SEO `Servicios/SEO`). Colores en `config/tema.ts`.
+- En `localStorage` solo el `uuid` del carro, nunca datos del paciente.
+- En Git Bash, para apuntar Vite a un back local usa `MSYS_NO_PATHCONV=1`: si no, `VITE_API_PATH=/api` llega
+  convertido en una ruta de Windows.
 
 ### `src/home-ergo/` — portada comercial (módulo con guía propia)
 
