@@ -16,6 +16,7 @@ export {
     urlWhatsappPromo,
 } from './canales-contacto';
 
-// Los seis JSON de contenido no se reexportan aquí a propósito: cada sección importa el
-// suyo por ruta directa (`../config/home-videos.json`). Así, al abrir un componente se ve
-// de un vistazo qué archivo edita quien quiera cambiar ese contenido.
+// Los cuatro JSON de contenido (hero, servicios, videos y contacto) no se reexportan aquí a
+// propósito: cada sección importa el suyo por ruta directa (`../config/home-videos.json`). Así,
+// al abrir un componente se ve de un vistazo qué archivo edita quien quiera cambiar ese
+// contenido. Promociones, alianzas y galería ya no tienen JSON: vienen de la API (Spec 04).

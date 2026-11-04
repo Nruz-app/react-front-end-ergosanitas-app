@@ -163,3 +163,39 @@ export interface ICanalContacto {
     externo  : boolean;
     Icono    : ComponentType<SvgIconProps>;
 }
+
+/**
+ * Sección de una imagen del Home en el backend (Spec 04 de `home-ergo`, SPEC 03 del back).
+ *
+ * Reemplaza al `destacado` del JSON: `promocion` → carrusel de arriba, `alianza` → franja de
+ * abajo, `galeria` → operativos. Se compara siempre contra cada literal; un valor que no esté
+ * aquí se descarta, no cae en un grupo por defecto.
+ */
+export type SeccionImagenHome = 'promocion' | 'alianza' | 'galeria';
+
+/**
+ * Forma **cruda** de una fila de `GET api/home-imagenes`.
+ *
+ * A diferencia del resto de interfaces de este archivo, esta sí describe una respuesta de
+ * backend: desde la Spec 04 las promociones, alianzas y galería salen de la API para que el
+ * Administrador las cambie sin desplegar. Ningún componente la usa: `useImagenesHome` la
+ * traduce a `IPromocionHome` / `IImagenHome`, que es lo que ya pintaban los carruseles.
+ *
+ * `src` es una URL **absoluta** del backend, no una ruta de `/home-ergo/img/`.
+ */
+export interface IHomeImagenApi {
+    id      : number;
+    seccion : SeccionImagenHome;
+    src     : string;
+    alt     : string;
+    caption : string | null;
+    activo  : boolean;
+    orden   : number;
+}
+
+/** Sobre `{ success, message, data }` con el que responde `GET api/home-imagenes`. */
+export interface IRespuestaHomeImagenes {
+    success : boolean;
+    message : string;
+    data    : IHomeImagenApi[];
+}

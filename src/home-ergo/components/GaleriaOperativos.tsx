@@ -1,14 +1,19 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 
-import galeria from '../config/home-galeria.json';
 import { ANCHO_MAXIMO, TEMA_HOME } from '../config/tema-home';
 import { EncabezadoSeccion } from './EncabezadoSeccion';
 
+import type { EstadoImagenesHome } from '../hooks';
 import type { IImagenHome } from '../interface';
 
-const ACTIVAS = ( galeria as IImagenHome[] ).filter( ( img ) => img.activo );
+interface Props {
+    /** Fotos de la sección `galeria`, ya filtradas y ordenadas por el back (Spec 04). */
+    imagenes : IImagenHome[];
+    estado   : EstadoImagenesHome;
+}
 
 /**
  * Galería de operativos en terreno.
@@ -27,7 +32,14 @@ const ACTIVAS = ( galeria as IImagenHome[] ).filter( ( img ) => img.activo );
  * `objectPosition` carga el encuadre hacia arriba porque en una foto de gente trabajando
  * lo que importa está en el tercio superior; centrado, el recorte se comería las caras.
  */
-export const GaleriaOperativos = () => {
+export const GaleriaOperativos = ( { imagenes, estado }: Props ) => {
+
+    // Spec 04: con error o sin fotos la sección no se pinta, encabezado incluido.
+    if ( estado === 'error' || ( estado === 'listo' && imagenes.length === 0 ) ) return null;
+
+    // Mientras carga se reservan las cuatro celdas cuadradas, para que la página no salte.
+    const celdas = estado === 'cargando' ? [] : imagenes;
+
     return (
         <Box component="section" sx={{ bgcolor: TEMA_HOME.azulProfundo }}>
             <Container 
@@ -47,7 +59,16 @@ export const GaleriaOperativos = () => {
                         gap                : { xs: 2, md: 2.5 },
                     }}
                 >
-                    { ACTIVAS.map( ( imagen ) => (
+                    { estado === 'cargando' && [ 0, 1, 2, 3 ].map( ( n ) => (
+                        <Skeleton
+                            key={ n }
+                            aria-hidden
+                            variant="rounded"
+                            sx={{ width: '100%', height: 'auto', aspectRatio: '1 / 1', borderRadius: 3, bgcolor: 'rgba(255,255,255,0.08)' }}
+                        />
+                    ) ) }
+
+                    { celdas.map( ( imagen ) => (
                         <Box
                             key={ imagen.id }
                             sx={{
