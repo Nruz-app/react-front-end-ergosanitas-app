@@ -3,9 +3,9 @@
         "order"        : 1,
         "type"         : "text",
         "name"         : "textoValue",
-        "placeholder"  : "Buscardor Rut o Nombre",
-        "label"        : "Ingresa Rut o Nombre",
-        "helperText"   : "Ingrese el Rut o Nombre",
+        "placeholder"  : "RUT o nombre del deportista",
+        "label"        : "Buscar por RUT o nombre",
+        "helperText"   : "Busque por RUT o por nombre",
         "defaultValue" : "",
         "value"        : "",
         "validations" : []      
