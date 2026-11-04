@@ -1,0 +1,91 @@
+[
+    {
+        "order"        : 1,
+        "type"         : "selected",
+        "name"         : "sexo_paciente",
+        "placeholder"  : "Masculino",
+        "label"        : "Seleccion el Sexo",
+        "helperText"   : "Seleccione algun tipo de sexo",
+        "defaultValue" : "Masculino",
+        "values"       : [
+            {
+                "value" : "Masculino",
+                "nombre" : "Masculino"
+            },
+            {
+                "value" : "Femenino",
+                "nombre" : "Femenino"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Sexo es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 2,
+        "type"         : "number",
+        "name"         : "edad_paciente",
+        "placeholder"  : "20",
+        "label"        : "Ingresa Edad",
+        "helperText"   : "Ingrese el edad",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : false,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Edad es Requerido"
+            },
+            {
+                "type"    : "MAX",
+                "value"   : 100,
+                "message" : "La edad debe ser menor a 100"
+            }
+        ]      
+    },
+    {
+        "order"        : 3,
+        "type"         : "text",
+        "name"         : "peso_paciente",
+        "placeholder"  : "82.2",
+        "label"        : "Ingresa Peso",
+        "helperText"   : "Ingrese el peso",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Peso es Requerido"
+            },
+            {
+                "type"    : "NUMBER_DOT",
+                "message" : "Ingresa Numeros y Puntos"
+            }
+        ]      
+    },
+    {
+        "order"        : 4,
+        "type"         : "text",
+        "name"         : "estatura_paciente",
+        "placeholder"  : "1.70",
+        "label"        : "Ingresa Estatura",
+        "helperText"   : "Ingrese el estatura",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : true,
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Estatura es Requerido"
+            },
+            {
+                "type"    : "NUMBER_DOT",
+                "message" : "Ingresa Numeros y Puntos"
+            }
+        ]      
+    }
+]

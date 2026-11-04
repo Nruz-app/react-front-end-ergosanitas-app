@@ -1,7 +1,7 @@
 import { LazyExoticComponent } from 'react';
 
 
-import { AppChequeo } from '../Chequeo/pages';
+import { ChequeoSegunPerfil } from './ChequeoSegunPerfil';
 //import { AppAgendarHoraPage } from '../AgendarHora/pages/';
 //import { AppReservaHora } from '../reserva-hora';
 
@@ -43,8 +43,8 @@ export const routesErgo:Route[] = [
         to        : '/Chequeos',
         path      : '/Chequeos/*',
         perfil    : 'All',
-        status    : true,  
-        Component : AppChequeo
+        status    : true,
+        Component : ChequeoSegunPerfil
     },
     {
         name      : 'Bioimpedancia',

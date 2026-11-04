@@ -1,0 +1,1 @@
+export { ExportarExcel } from './ExportarExcel';

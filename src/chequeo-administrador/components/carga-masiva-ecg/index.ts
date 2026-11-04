@@ -1,0 +1,1 @@
+export { CargaMasivaEcg } from './CargaMasivaEcg';
