@@ -1,14 +1,14 @@
 # CLAUDE_HOME_ERGO.md — Guía del módulo `src/home-ergo/`
 
 Documento de referencia para trabajar sobre la portada comercial de ergosanitas.com.
-Recoge lo que decidieron las Specs 01 y 02, por qué, y qué **no** hay que romper.
+Recoge lo que decidieron las Specs 01 a 04, por qué, y qué **no** hay que romper.
 
 > **Lee esto antes de tocar `src/home-ergo/`.** Las specs
 > (`01-home-comercial-chat-ventas.md` y `02-promociones-arriba-y-contacto-visible.md`)
 > tienen el detalle y la justificación de cada decisión; este archivo es el estado
 > consolidado.
 
-**Última actualización:** 2026-09-01 (cierre de la Spec 03)
+**Última actualización:** 2026-11-03 (Spec 04: promociones, alianzas y galería desde la API)
 
 ---
 
@@ -27,8 +27,10 @@ Recoge lo que decidieron las Specs 01 y 02, por qué, y qué **no** hay que romp
    para alinear el color del `AppBar`; queda registrado ahí.
 5. **Sin dependencias nuevas.** Todo se resuelve con lo que ya está en `package.json`:
    MUI 5, Swiper 11, react-helmet-async.
-6. **El contenido vive en JSON, no en los componentes.** Ningún `.tsx` puede llevar una
-   ruta de imagen o de video escrita a mano.
+6. **El contenido vive en JSON o en la API, nunca en los componentes.** Ningún `.tsx` puede
+   llevar una ruta de imagen o de video escrita a mano. Desde la Spec 04, promociones,
+   alianzas y galería vienen de `GET api/home-imagenes`; hero, servicios, videos y contacto
+   siguen en JSON.
 7. **Sin tests.** El proyecto no tiene runner configurado. No inventes comandos de test.
 8. **`npm run build` debe quedar en verde.** `tsc -b` corre antes de Vite.
 
@@ -60,19 +62,22 @@ src/home-ergo/
 │   ├── canales-contacto.tsx      fuente única de los 6 enlaces de contacto
 │   ├── home-hero.json            hero + los 2 indicadores
 │   ├── home-servicios.json       7 servicios
-│   ├── home-galeria.json         4 fotografías reales
-│   ├── home-promociones.json     20 gráficas (11 destacadas + 8 alianzas + 1 apagada)
 │   ├── home-videos.json          5 videos (hay 7 archivos en el servidor)
 │   └── home-contacto.json        teléfono, WhatsApp, correo, redes, mensajes
 ├── interface/
 │   ├── index.ts
 │   ├── home.interface.ts         IHeroHome, IPortadaHome, IIndicadorHome,
 │   │                             IServicioHome, IImagenHome, IPromocionHome,
-│   │                             IVideoHome, IContactoHome, ICanalContacto
+│   │                             IVideoHome, IContactoHome, ICanalContacto,
+│   │                             SeccionImagenHome, IHomeImagenApi, IRespuestaHomeImagenes
 │   └── chat-home.interface.ts    IMensajeChatHome, IRespuestaChatHome
 ├── services/
 │   ├── index.ts
-│   └── UseChatComercialService.ts
+│   ├── UseChatComercialService.ts
+│   └── UseHomeImagenesService.ts GET home-imagenes (Spec 04)
+├── hooks/
+│   ├── index.ts
+│   └── useImagenesHome.ts        una petición, reparto por sección, estado (Spec 04)
 ├── components/
 │   ├── index.ts
 │   ├── TrazoEcg.tsx              elemento firma
@@ -108,28 +113,63 @@ src/home-ergo/
 
 ---
 
-## El contenido vive en JSON
+## El contenido vive en JSON… salvo las imágenes (Spec 04)
 
-Es el requisito central del módulo: **agregar una foto, un video o un servicio es agregar
-un objeto al JSON.** Ningún componente lleva rutas ni textos de negocio escritos a mano.
+Es el requisito central del módulo: **agregar un video o un servicio es agregar un objeto al
+JSON**, y **agregar una promoción, una alianza o una foto de galería es subirla desde el
+mantenedor del Administrador** (Spec 02 de `chequeo-administrador`). Ningún componente lleva
+rutas ni textos de negocio escritos a mano.
+
+### Promociones, alianzas y galería vienen de la API (Spec 04)
+
+- **Fuente:** `GET {VITE_API}{VITE_API_PATH}/home-imagenes` (SPEC 03 del back). Devuelve solo
+  las activas, ya ordenadas por sección y `orden`. `home-promociones.json` y
+  `home-galeria.json` **ya no existen**.
+- **Una sola petición por visita:** `HomeErgoPage` llama a `useImagenesHome` y reparte por
+  props a los dos `CarruselPromociones` y a `GaleriaOperativos`. Ninguna sección hace su
+  propio fetch.
+- **Sin respaldo JSON**, por decisión del usuario: un respaldo se desactualiza en silencio y
+  mostraría promociones que el Administrador ya quitó. Si la API falla —o una sección llega
+  vacía— **esa sección no se pinta, encabezado incluido**, y queda un `console.warn`. El resto
+  del Home sigue igual.
+- **Mientras carga**, cada sección pinta su encabezado y un esqueleto con las medidas reales
+  (3:4 en carruseles con los cortes del Swiper 600/960/1400; 1:1 en la galería) para que la
+  página no salte de alto.
+- **`seccion` reemplaza a `destacado`.** El hook traduce `promocion` → `IPromocionHome` con
+  `destacado: true`, `alianza` → `destacado: false`, `galeria` → `IImagenHome`, comparando
+  contra cada literal; una sección desconocida se descarta. Los componentes siguen recibiendo
+  la forma de antes.
+- **El front no reordena**: el `orden` lo decide el Administrador.
+- **`src` es una URL absoluta del back** (`.../HomeImagenes/...`), no `/home-ergo/img/...`. Las
+  imágenes de `public/home-ergo/img/` se quedan: los `poster` de los videos las usan.
+- ⚠️ **Despliegue:** este Home no debe llegar a producción antes de que el back tenga la tabla,
+  la carpeta `public/HomeImagenes/` sembrada en el hosting y `API_PATH_HOME` definida (paso 8
+  de la SPEC 03 del back). Sin eso, las tres secciones desaparecen.
 
 ### Cómo agregar material
 
-1. Copia el archivo a `public/home-ergo/img/` o `public/home-ergo/video/`, con nombre en
-   `kebab-case` ASCII y el prefijo que corresponda.
-2. Agrega un objeto al JSON de esa sección.
-3. Recarga. No se toca código ni se recompila nada a mano.
+- **Promoción, alianza o foto de galería:** desde el mantenedor del Administrador. No se toca
+  el repositorio.
+- **Video o servicio:**
+  1. Copia el archivo a `public/home-ergo/img/` o `public/home-ergo/video/`, con nombre en
+     `kebab-case` ASCII y el prefijo que corresponda.
+  2. Agrega un objeto al JSON de esa sección.
+  3. Recarga. No se toca código ni se recompila nada a mano.
 
 ### El campo `activo`
 
-Galería, promociones y videos lo llevan. En `false` la entrada no se renderiza pero no se
+Videos lo llevan en el JSON; galería, promociones y alianzas, en la tabla `home_imagenes` (el
+back solo devuelve las activas). En `false` la entrada no se renderiza pero no se
 borra. Existe para apagar una promoción vencida sin perder la línea: en septiembre se
 apagan las ofertas de agosto y el año siguiente se vuelven a encender.
 
-Hoy hay exactamente una entrada apagada: `info-holter-instrucciones`, que es material para
-pacientes que ya compraron, no material de venta.
+En la siembra del back hay exactamente una entrada apagada: `info-holter-instrucciones`, que
+es material para pacientes que ya compraron, no material de venta.
 
 ### El campo `destacado` (solo promociones)
+
+> **Desde la Spec 04 ya no viene en ningún JSON:** lo deriva `useImagenesHome` de la `seccion`
+> del back. La tabla y las reglas siguientes siguen valiendo para el reparto.
 
 Lo agregó la Spec 02 y **decide en qué carrusel aparece la gráfica**, no si aparece:
 
@@ -139,17 +179,21 @@ Lo agregó la Spec 02 y **decide en qué carrusel aparece la gráfica**, no si a
 | `true` | `false` | Franja de alianzas, abajo, entre los videos y la franja de redes |
 | `false` | cualquiera | En ninguna parte |
 
-Hoy son 11 destacadas —las de prefijo `promo-`— y 8 alianzas.
+Con la siembra del back son 24 filas: 11 promociones, 9 alianzas y 4 fotos de galería. Una
+alianza está inactiva (`info-holter-instrucciones`), así que **se ven 23: 11 + 8 + 4**
+(verificado en el navegador el 2026-11-03).
 
 Dos cosas que hay que respetar:
 
-- **El filtro se hace por el campo, nunca por el prefijo del `id`.** El prefijo se usó una
-  sola vez, en la migración del dato. Una promoción que mañana se llame distinto no debe
-  cambiar de sitio sola.
-- **Se compara contra `true` y `false` de forma explícita**, y no con la verdad o falsedad
-  del valor. El JSON se tipa con una aserción, así que TypeScript no obliga a que el campo
-  exista: con `!destacado`, una entrada nueva que lo olvide caería disimuladamente entre
-  las alianzas. Comparando contra `false` no aparece en ningún bloque, que es un error
+- **El filtro se hace por el campo (`seccion`, antes `destacado`), nunca por el prefijo del
+  `id`.** El prefijo se usó una sola vez, en la migración del dato. Una promoción que
+  mañana se llame distinto no debe cambiar de sitio sola.
+- **Se compara contra cada literal de forma explícita** (`'promocion'`, `'alianza'`,
+  `'galeria'`; antes `true`/`false`), y no con la verdad o falsedad del valor ni con un `else`
+  por defecto. La respuesta de la API se tipa con un genérico que no valida nada, igual que
+  antes el JSON con una aserción, así que TypeScript no garantiza el valor en tiempo de
+  ejecución. Con el JSON, la trampa era esta: con `!destacado`, una entrada nueva que lo
+  olvide caería disimuladamente entre las alianzas. Comparando contra `false` no aparece en ningún bloque, que es un error
   visible en vez de uno escondido.
 
 ### Los enlaces de contacto salen de `config/canales-contacto.tsx`
@@ -609,8 +653,9 @@ En el navegador, lo que no se puede verificar desde la terminal:
 - El chat responde «hola» a «hola», con el loader entre medio.
 - `localStorage` tiene `home_chat_session_id` y `chat_session_id` no se tocó.
 - A 360 px ninguna sección desborda horizontalmente.
-- Agregar una entrada a `home-galeria.json` y recargar hace aparecer la foto sin tocar
-  código.
+- Activar una foto de galería desde el mantenedor del Administrador y recargar `/` la hace
+  aparecer sin tocar código; con el back apagado, las tres secciones de imágenes no aparecen
+  y el resto del Home sí.
 - A 1280 px el rail acompaña todo el scroll y no tapa contenido; a 1100 px **no aparece**.
 - Abrir el chat no deja su panel por debajo del rail.
 - Pulsar una promoción abre WhatsApp con el `caption` dentro del mensaje; pulsar una

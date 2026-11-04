@@ -51,8 +51,15 @@ interface IUser {
 
 ⚠️ **`Colegios` estuvo mucho tiempo sin ruta propia**: llegaba del backend y solo ramificaba la
 UI dentro de `src/Chequeo/`. Desde la Spec 01 de `chequeo-cardiovascular` tiene su navegador
-(`NavigationCol` + `routesCOL.tsx`) y entra al módulo nuevo. Los otros tres perfiles del chequeo
-siguen en `src/Chequeo/`.
+(`NavigationCol` + `routesCOL.tsx`) y entra al módulo nuevo.
+
+**`Administrador` migró en la Spec 01 de `chequeo-administrador`**, pero sin navegador propio:
+sigue entrando por `NavigationErgo`, y la entrada `/Chequeos/*` de `routesErgo` monta
+`src/routes/ChequeoSegunPerfil.tsx`, que compara `user_perfil?.trim() === 'Administrador'` y da
+`AppChequeoAdministrador`; cualquier otro perfil de ese navegador (en la práctica `Usuario`) sigue
+en `AppChequeo`. `Medicos` sigue en `src/Chequeo/` por `routesME`. Con esto las ramas de
+`Administrador` dentro de `src/Chequeo/` (`isAdmin`) quedan inalcanzables, igual que las de
+`Colegios`, y se conservan como vía de reversa.
 
 `src/routes/NavigationApp.tsx` hace `switch` sobre `user.user_perfil?.trim()` —hoy con cuatro
 `case`: `Emergencia Deportiva`, `Paciente`, `Medicos` y `Colegios`— y solo cae a
@@ -134,7 +141,7 @@ cada servicio; no hay una constante global).
 | Dominio | Endpoints |
 |---|---|
 | **Auth / usuarios** | `auth-login` · `auth-register` · `auth-register/load-logo` · `auth-register/user_email/{perfil}` · `login/create-user` · `user-save` · `user-update-password` · `user-update-ergo-pass` · `user-first-ergo-pass` |
-| **Chequeo cardiovascular** | `chequeo-cardiovascular` (GET/POST) · `/{id}` · `/{rut_paciente}` · `/{id_paciente}` · `/{id}/{user_email}` · `/chequeo-all` · `/club-deportivo` · `/filter-calendar` · `/like-chequeo` · `/like-chequeo/user` · `/estado-general/{user_email}` · `/pdf/{id_paciente}` · `/pdfRut/{rut_paciente}` |
+| **Chequeo cardiovascular** | `chequeo-cardiovascular` (GET/POST) · `/{id}` · `/{rut_paciente}` · `/{id_paciente}` · `/{id}/{user_email}` · `/chequeo-all` · `/club-deportivo` · `/filter-calendar` · `/search-chequeo?limit=&page=` · `/like-chequeo` · `/like-chequeo/user` · `/estado-general/{user_email}` · `/pdf/{id_paciente}` · `/pdfRut/{rut_paciente}` |
 | **Bioimpedancia** | `bioimpedancia/create-bio` · `/form-upload` · `/list-all` · `/first-rut` · `/pdfRut/{rut_paciente}` |
 | **Electrocardiograma** | `electro-cardiograma/save` · `carga-masiva-ecg` · `carga-masiva/excel` |
 | **Certificados** | `certificado/{rut_paciente}` · `certificado/validar/{rut_paciente}` · `certificado/path-url` · `certificado/valida-certificado` · `certificado/save-url` |
@@ -143,7 +150,16 @@ cada servicio; no hay una constante global).
 | **Incidentes** | `incidencia-deportivos/create` · `/find-by-user/{user_email}` · `/count-club/…` · `/count-liga/…` · `/count-gravedad/…` · `/liga-casos/…` · `/lesion-frecuente/…` · `/sp_estadistica_liga|_categoria|_lesiones|_lesiones_fechas|_parte_cuerpo/{user_email}` |
 | **Estadísticas** | `estadisticas/estadistica-imc|-presion|-saturacion|-hemoglucotest/{user_email}` · `estadisticas/agenda-mensual` · `estadisticas/pago-mensual` · `/estadistica-pago-mensual` · `/estadistica-pago-mdc` · `/update-pago-mensual` · `/delete-pago-mensual` |
 | **Agenda / servicios / pago** | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
-| **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico, resuelve por RUT) · `sam-assistant-club/as-question` (**por institución**: body `{ email, prompt, sessionId }`, sin reset) · `chat-comercial/as-question` (**no existe aún**, eco) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
+| **Imágenes del Home** | `home-imagenes` (público, solo activas; lo consume `src/home-ergo/`) · `home-imagenes/admin` · `POST home-imagenes` (multipart) · `PUT home-imagenes/{id}` · `PUT home-imagenes/{id}/activo` · `DELETE home-imagenes/{id}?user_email=` (los cinco últimos, `src/chequeo-administrador/`) |
+| **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico, resuelve por RUT) · `sam-assistant-club/as-question` (**por institución**: body `{ email, prompt, sessionId }`; el back expone `sam-assistant-club/reset-search`, pero el front no lo llama) · `chat-comercial/as-question` (**no existe aún**, eco) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
+
+El back expone 90 operaciones (contrato en `Back-end/ergosanitas-app/docs/openapi.yaml`); este
+catálogo lista solo las que el front consume. **Existen en el back y el front no las llama**:
+`chequeo-cardiovascular-word/{id_paciente}` (Word), `electro-cardiograma/find-by-rut`,
+`sam-assistant-club/reset-search`, `file-upload` (la llamada está comentada en
+`useChequeoService.ts`), `GET user`, `execute-link-simbolik`, los dos `*/health` y
+`transbank/web-pay-response` (la llama Transbank, no el front). Antes de crear un endpoint
+nuevo, revisa si ya está en esa lista.
 
 ⚠️ **Los asistentes están separados por endpoint a propósito, y es una separación de seguridad.**
 `sam-assistant` resuelve por RUT (un paciente), `sam-assistant-club` por `email` (una
@@ -161,6 +177,13 @@ la tabla `juego_niveles`. No hay tabla snapshot: cada llamada recalcula, y retun
 un `UPDATE`, no un despliegue. `niveles` devuelve además los colores de cada banda, de modo que el
 front no escribe ni una etiqueta ni un hex de ese eje. Consumidos por
 `src/chequeo-cardiovascular/` (tab «Nivel de alumnos»).
+
+⚠️ **Los seis de `home-imagenes` también van bajo el sobre A** (`{success, message, data}`;
+en un 422 `message` trae el primer error y `error` la lista). Son las **únicas escrituras del
+catálogo que comprueban quién las hace**: `POST`, `PUT` y `DELETE` exigen un `user_email` de perfil
+`Administrador` y responden 403 si no. `GET home-imagenes/admin` es público. El `PUT` **reemplaza**:
+un `caption` que no viaje queda en `null`. La URL de cada imagen llega absoluta en `src`, armada
+por el back con `API_PATH_HOME`.
 
 Patrones observables, útiles al diseñar endpoints nuevos: los listados por institución terminan
 en `/{user_email}`, los históricos por persona en `/{rut_paciente}`, los PDF se abren con
@@ -236,14 +259,19 @@ Checklist para dar de alta un módulo nuevo:
   `number | null`, página única que hace fetch, cinco tabs por props, gráficos chart.js aislados
   en `components/charts/`, SVG paramétrico en `components/segmentaria/`. Guía:
   `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md`.
-- **`src/home-ergo/`** — la referencia de **contenido configurable**: seis JSON en `config/`
-  con flags `activo`/`destacado`, ningún texto de negocio ni ruta de archivo escrita en un
-  `.tsx`. Guía: `specs/home-ergo/CLAUDE_HOME_ERGO.md`.
+- **`src/home-ergo/`** — la referencia de **contenido configurable**: cuatro JSON en `config/`
+  (hero, servicios, videos, contacto) y, desde su Spec 04, las imágenes desde `GET home-imagenes`;
+  ningún texto de negocio ni ruta de archivo escrita en un `.tsx`. Guía: `specs/home-ergo/CLAUDE_HOME_ERGO.md`.
 
 - **`src/chequeo-cardiovascular/`** — la referencia de **migración por perfil**: reemplaza a
   `src/Chequeo/` un perfil cada vez, sin importar nada del módulo viejo y sin ninguna operación
   de borrado. Hoy sirve solo a `Colegios`. Guía:
   `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.
+- **`src/chequeo-administrador/`** — la **segunda migración por perfil**, para `Administrador`.
+  Mismo patrón (solo importa de `common/`, tabs por constantes, `tema.ts`, carga diferida con
+  `activo`), con una diferencia de fondo: **sí tiene un borrado**, porque el Administrador era el
+  único perfil que borraba. No consume ningún endpoint nuevo (18 existentes). Guía:
+  `specs/chequeo-administrador/CLAUDE_CHEQUEO_ADMINISTRADOR.md`.
 
 Los tres tienen **regla de aislamiento** (no tocan nada fuera de su carpeta), y los tres
 **clonan código a propósito** en vez de importarlo: `ficha-clinica` y `home-ergo` un chat con

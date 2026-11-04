@@ -14,10 +14,14 @@ Este archivo son **las convenciones y las trampas**. No repite lo que ya está e
 |---|---|
 | `CLAUDE.md` (este) | Cómo se trabaja aquí: comandos, convenciones, trampas por módulo, agentes y skills. |
 | `README.md` | Documentación general: instalación, variables de entorno, dependencias reales, inventario de módulos, despliegue (Docker/k8s/CI), MCP y roles. |
-| `.claude/ARQUITECTURA.md` | Modelo de dominio: entidades, las dos claves, catálogo de ~70 endpoints, patrón canónico de módulo. |
+| `.claude/ARQUITECTURA.md` | Modelo de dominio: entidades, las dos claves, catálogo de los ~70 endpoints que consume el front (el back expone 90), patrón canónico de módulo. |
 
 Los módulos construidos por spec añaden su `specs/<modulo>/CLAUDE_<MODULO>.md`, que **manda sobre
 la skill homónima** si discrepan.
+
+`references/` guarda material **del backend y de terceros que las specs citan**, no código a
+portar: hoy `backEnd/juego-carta-nives.md` (la spec del backend del juego de cartas) y
+`html/juego_cartas_evaluacion_pacientes.html` (su maqueta de referencia visual).
 
 ## Comandos
 
@@ -130,15 +134,17 @@ también las comparaciones `user_perfil === "..."` dentro de los módulos, no so
 
 Cada carpeta de primer nivel en `src/` (ej. `Chequeo`, `Bioimpedancia`, `Certificados`, `AgendarHora`, `Incidentes`, `pagos-mensual`, `asistente-voz`, `ficha-clinica`, `User`, `Url`, `Estadisticas`, `EmergenciaDeportivas`) es un módulo autocontenido, típicamente con: `components/`, `config/`, `context/`, `hooks/`, `interface/` (tipos TS), `pages/`, `services/`, `utilities/` y un `index.ts` de barril. Mantén nuevas features dentro de esta estructura y reexporta desde el `index.ts` del módulo.
 
-Inventario, para ubicarse rápido (archivos · líneas TS/TSX; el total de `src/` son 554 archivos
-y ~39.300 líneas). Los tres primeros tienen **guía propia** y regla de aislamiento:
+Inventario, para ubicarse rápido (archivos · líneas TS/TSX; el total de `src/` son 576 archivos
+y ~42.100 líneas, antes de `chequeo-administrador/`). Los cuatro primeros tienen **guía propia**
+y regla de aislamiento:
 
 | Módulo | Tamaño | Qué es |
 |---|---|---|
-| `chequeo-cardiovascular/` | 84 · 5.832 | Chequeo del perfil `Colegios` (reemplazo de `Chequeo/`, por perfil) |
+| `chequeo-cardiovascular/` | 99 · 7.821 | Chequeo del perfil `Colegios` (reemplazo de `Chequeo/`, por perfil) |
+| `chequeo-administrador/` | 100 · ~7.100 | Chequeo del perfil `Administrador` (segundo reemplazo de `Chequeo/`) |
 | `ficha-clinica/` | 55 · 5.681 | Ficha del paciente por RUT: 5 tabs, 3 capas de datos, silueta SVG, asistente |
-| `home-ergo/` | 43 · 2.920 | Portada comercial pública, contenido en 6 JSON de `config/` |
-| `Chequeo/` | 75 · 5.887 | Chequeo de `Administrador`, `Medicos` y `Usuario` (el módulo viejo) |
+| `home-ergo/` | 45 · 3.170 | Portada comercial pública: 4 JSON de `config/` + imágenes desde la API |
+| `Chequeo/` | 75 · 5.887 | Chequeo de `Medicos` y `Usuario` (el módulo viejo; `Administrador` migró) |
 | `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
 | `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
 | `Servicios/` | 22 · 1.859 | Página pública de servicios |
@@ -227,13 +233,17 @@ Lo mínimo que hay que saber:
   en `src/routes/routes.ts`, y los archivos de `public/home-ergo/`. Nada más. `src/Home/`,
   `src/AsistenteVirtual/`, `src/presentation/`, `src/Servicios/` y `Navigation.tsx` quedan
   intactos.
-- **El contenido vive en JSON**, en los seis archivos de `config/`. Agregar una foto, un
-  video o un servicio es agregar un objeto al JSON: ningún `.tsx` lleva rutas de archivo ni
-  textos de negocio escritos a mano. Galería, promociones y videos tienen campo `activo`
-  para apagar una entrada sin borrarla; las promociones llevan además `destacado`, que
-  decide en qué carrusel salen (`true` → promociones, arriba; `false` → alianzas, abajo).
-  Ambos se comparan **explícitamente contra `true`/`false`**, nunca por verdad/falsedad ni
-  por el prefijo del `id`.
+- **El contenido vive en JSON, salvo las imágenes** (Spec 04). Hero, servicios, videos y
+  contacto están en los cuatro JSON de `config/`: agregar un video o un servicio es agregar
+  un objeto al JSON, y ningún `.tsx` lleva rutas de archivo ni textos de negocio a mano.
+  **Promociones, alianzas y galería vienen de `GET api/home-imagenes`** y las gestiona el
+  Administrador desde su mantenedor; `home-promociones.json` y `home-galeria.json` ya no
+  existen. `HomeErgoPage` hace **una** petición con `useImagenesHome` y reparte por props.
+  **Sin respaldo JSON**: si la API falla, esas secciones no se pintan (ni su encabezado) y el
+  resto del Home sigue. El hook deriva `destacado` de `seccion` comparando contra cada
+  literal (`promocion` → arriba, `alianza` → abajo), nunca por el prefijo del `id`.
+  ⚠️ No se despliega antes de que el back tenga `public/HomeImagenes/` sembrada en el hosting
+  y `API_PATH_HOME` definida.
 - **Los assets están en `public/home-ergo/`** en `kebab-case` ASCII con prefijo que indica
   su uso: `promo-`, `alianza-`, `operativo-`, `respaldo-`, `info-`, `logo-`. Las 26
   imágenes (`img/`) sí están versionadas; los 7 videos **no**.
@@ -281,11 +291,14 @@ Lo mínimo que hay que saber:
   que algún día se retirará.
 - **Ninguna operación de borrado**: ni endpoint, ni handler, ni botón. `Colegios` tampoco la
   tenía. El botón de limpiar el buscador usa `ClearIcon`, nunca `DeleteIcon`.
-- **No ramifica por perfil.** `AppChequeoCardiovascular` tiene 5 tabs fijos con índices
-  estables, que es justo lo que hacía insoportable a `AppChequeo`.
+- **No ramifica por perfil.** `AppChequeoCardiovascular` tiene 6 tabs fijos con índices
+  estables, que es justo lo que hacía insoportable a `AppChequeo`: Home · Asistente Virtual ·
+  Nivel de alumnos · Lista de deportistas · Agregar deportista · Carga masiva.
 - **El formulario se agrupa por el campo `seccion`** de `custom-form.json` —el único cambio de
   forma respecto al JSON original—, y una sección sin campos visibles **no se renderiza**. Para
-  `Colegios` eso deja solo «Identificación», con 7 de los 25 campos.
+  `Colegios` eso deja solo «Identificación», con 6 de los 25 campos. `medio_pago_paciente` está
+  oculto (Spec 05), pero **sigue viajando** en el `POST`/`PUT`: el back lo asigna sin condición, y
+  quitarlo del JSON borraría con `null` el pago que registró el Administrador.
 - ⚠️ **El esquema yup valida solo los campos visibles.** Ocho campos ocultos declaran `required`;
   validarlos todos haría el formulario imposible de enviar. El módulo viejo esquivaba esto no
   validando nada (su botón saltaba `handleSubmit`).
@@ -297,9 +310,35 @@ Lo mínimo que hay que saber:
   Es un **clon**, no un import de `src/ficha-clinica/`; usa endpoint propio
   `POST /sam-assistant-club/as-question` con `{ email, prompt, sessionId }` y su propia clave de
   sesión, `colegio_chat_session_id`. **No consulta nada al montarse**: saluda y ofrece chips.
+- **El tab 2 es «Nivel de alumnos»** (Spec 04): cada deportista como una carta con su nivel
+  clínico, cuatro atributos 0–100, estrellas y progreso de ficha, sobre los tres endpoints
+  `juego-cartas/*`. Entró en la posición 2 y **desplazó Lista, Alta y Carga masiva a 3, 4 y 5**.
+  - 🔴 **Aquí no se calcula ni se reordena nada.** Puntaje, bandas, estrellas y progreso los
+    resuelve `SP_juego_cartas_club` contra la tabla `juego_niveles`; retunear una banda es un
+    `UPDATE` en el backend. En el front solo se filtra y se busca, en memoria.
+  - 🔴 **Los colores del badge llegan como dato** y son la **única excepción** a «`tema.ts` es la
+    única fuente de color» — la paleta vive en `juego_niveles` justo para retunearse con un
+    `UPDATE`. La regla sigue siendo verificable: ningún `.tsx` escribe un hex. El armazón de la
+    carta sí está en `tema.ts`, bloque `JUEGO`.
+  - **`SIN EVALUAR` se pinta `—`, nunca `0`**: son alumnos que nadie midió, no alumnos con cero.
+  - ⚠️ **Dos formatos de fecha en el mismo backend**: las cartas traen
+    `YYYY-MM-DD HH:mm:ss.ffffff` y `chequeo-all` `DD-MM-YYYY`. Por eso `fechaDeCarta` convive con
+    `parsearFecha` y no son intercambiables.
+  - ⚠️ **El SP puede no estar desplegado** (un entorno con solo `php artisan migrate` tiene las
+    tablas pero no el procedimiento): los tres endpoints dan 500, y la pantalla distingue
+    «servicio no disponible» de «todavía no hay alumnos evaluados».
+- 🔴 **`activo` no es un extra.** `TabPanel` oculta con `display: none` **sin desmontar**, así que
+  `AsistentePage` y `JuegoCartasPage` reciben `activo={tab === TAB_*}` y cargan en la **primera**
+  activación. Sin esa señal las ~118 cartas se piden nada más entrar el colegio al módulo, aunque
+  nunca abra la pestaña.
+- **`getToken` en vez de `get`** en `useJuegoCartasService`: `ApiAdapter.get` inyecta siempre
+  `limit`/`offset` y estos tres endpoints no los aceptan. Es la razón real de que `getToken`
+  exista, más allá de que el nombre engañe.
 - ⚠️ **Los índices de tab van por constantes `TAB_*`, no por literales.** Dos handlers del
   orquestador los usan a mano, así que insertar un tab en medio los desplaza en silencio — pasó
-  al meter el asistente en la posición 1. Si agregas un tab, declara su constante.
+  al meter el asistente en la posición 1, y otra vez con el juego de cartas en la 2. Si agregas
+  un tab, declara su constante.
+- **Los gráficos del Home no consultan todos al backend.**
   IMC, hemoglucotest y presión piden su serie a `estadisticas/*`; **saturación y pirámide
   edad/sexo se derivan en el front** de `chequeo-all`. `HomePage` llama a `useResumenColegio`
   **una sola vez** y reparte por props: las derivadas no consultan ningún servicio. La asimetría
@@ -321,6 +360,30 @@ Lo mínimo que hay que saber:
   JSDoc. Cambiar un umbral es una decisión médica y va en su propia spec.
 - Ruteo: `src/routes/routesCOL.tsx` + `NavigationCol.tsx` + un `case 'Colegios'` en
   `NavigationApp.tsx`. Son los únicos tres archivos fuera del módulo.
+
+### `src/chequeo-administrador/` — chequeo del perfil Administrador (módulo con guía propia)
+
+Segundo reemplazo de `src/Chequeo/` perfil por perfil, tras `chequeo-cardiovascular`. Sirve **solo
+a `Administrador`**; `Medicos` y `Usuario` siguen en el módulo viejo, intacto. **Antes de tocarlo,
+lee `specs/chequeo-administrador/CLAUDE_CHEQUEO_ADMINISTRADOR.md`.** No tiene agente propio: se
+trabaja con `ergosanitas-developer` más la guía.
+
+- **Regla dura:** solo importa de `src/common/`. Nada de `Chequeo/`, `chequeo-cardiovascular/`,
+  `User/`, `Login/`, `Certificados/`, `components/forms/` ni `Url/`: lo que necesita, lo clona.
+- **8 tabs fijos con etiqueta visible**, índices por constantes `TAB_*` y `value` explícito:
+  Lista · Ficha (alta/edición/revisión) · Carga Excel · Carga ECG · Crear usuario · Calculadora IMC
+  · Imágenes del Home · Mi cuenta. No ramifica por `user_perfil`. «Mi cuenta» va siempre la última.
+- **Ruteo:** `routesErgo` `/Chequeos/*` monta `src/routes/ChequeoSegunPerfil.tsx`, que da
+  `AppChequeoAdministrador` a `Administrador` y `AppChequeo` a cualquier otro. Reversa: una línea.
+  `src/routes/` importa de `chequeo-administrador/pages`, no del barril raíz, para no perder el
+  chunk lazy.
+- **Dos borrados**: `getDeleteById` (chequeo, confirmación nombre + RUT) y `deleteImagen`
+  (imagen del Home, confirmación con miniatura; Spec 02). Al revés que Colegios,
+  aquí sí se borra: el Administrador es el único perfil que lo hacía.
+- **Validación D4 (b)** en el chequeo: solo la identificación es obligatoria; el resto se valida en
+  formato si viene relleno, para no bloquear fichas parciales.
+- **La lógica clínica de IMC está clonada literal**, con su bug. Y el informe de `GPT/analisis-ecg`
+  se escapa (`escaparHtml`) antes de ir a un `html:` de Swal.
 
 ### `src/common/` — infraestructura transversal (skill `ergo-common`)
 
@@ -361,6 +424,9 @@ presente, y renderiza un `<Modal>` de MUI que abre `routes/Navigation.tsx`.
 
 75 archivos, ~5.900 líneas: el módulo más grande y antiguo. Se monta en **dos rutas**
 (`routesErgo` `/Chequeos/*` con perfil `'All'`, y `routesME` `/chequeos/*` con perfil `Medicos`).
+⚠️ Desde la Spec 01 de `chequeo-administrador`, la ruta de `routesErgo` pasa por
+`ChequeoSegunPerfil`: el **Administrador ya no llega aquí**, solo `Usuario` (y `Medicos` por
+`routesME`). El bloque «OTROS» sigue vivo para `Usuario` y es la vía de reversa del Administrador.
 
 - 🔴 **Los índices de tab NO coinciden entre perfiles.** `AppChequeo` ramifica toda la interfaz en
   tres bloques (`Colegios` 4 tabs, `Medicos` 2, resto 7), y el array de `<Tab>` está **separado**
@@ -416,7 +482,7 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 ### Documento de referencia
 
 - **`.claude/ARQUITECTURA.md`** — mapa del modelo de dominio extraído del código: las dos claves
-  del modelo (`rut_paciente` y `user_email`), las entidades, el catálogo de ~70 endpoints, los
+  del modelo (`rut_paciente` y `user_email`), las entidades, el catálogo de los ~70 endpoints que consume el front, los
   perfiles y el patrón canónico de módulo. Complementa a este archivo: aquí están las
   convenciones, allí el modelo. Se actualiza cuando cambia el modelo o aparece un endpoint nuevo.
 
@@ -427,7 +493,7 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergo-code` | **Cómo se escribe código aquí**: TS estricto, componentes como arrow function con `interface Props` local, `sx` de MUI, servicios por `ApiAdapter`. Cárgala antes de crear o modificar cualquier `.ts`/`.tsx`. |
 | `ergo-login` | Conocimiento completo de `src/Login/` (13 archivos): modal dual login/registro, `custom-form.json`, `UseRegister` y sus 5 consumidores externos, sesión. |
 | `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
-| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (84 archivos, ~5.800 líneas): los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 4 servicios, el Home de lista + 5 gráficos y el tab del asistente con sus dos fuentes de datos, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
+| `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (99 archivos, ~7.800 líneas): los 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente con sus dos fuentes de datos y el juego de cartas por nivel, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
 | `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
@@ -439,7 +505,7 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergosanitas-developer` | Desarrolla, modifica, prueba y corrige respetando las convenciones. El agente de uso general para implementar. | Todo el repo |
 | `ergosanitas-architect` | Conoce arquitectura y modelo; diseña módulos nuevos y revisa coherencia. Diseña, no implementa. | Todo el repo (diseño) |
 | `ergo-login` | Dueño de `src/Login/` | **Solo `src/Login/`** |
-| `ergo-chequeo` | Dueño de `src/Chequeo/` (módulo viejo, perfiles Administrador/Medicos/Usuario) | **Solo `src/Chequeo/`** |
+| `ergo-chequeo` | Dueño de `src/Chequeo/` (módulo viejo, perfiles Medicos/Usuario; Administrador migró a `chequeo-administrador/`) | **Solo `src/Chequeo/`** |
 | `ergo-chequeo-cardiovascular` | Dueño de `src/chequeo-cardiovascular/` (módulo nuevo, perfil Colegios) | **Solo `src/chequeo-cardiovascular/`** |
 | `ergo-common` | Dueño de `src/common/` | **Solo `src/common/`** |
 
@@ -448,13 +514,14 @@ flujo, pero solo modifican su carpeta. Si la tarea exige tocar algo fuera, se de
 reportan en vez de improvisar. Cada uno carga su skill homónima al arrancar.
 
 ⚠️ **`ergo-chequeo` y `ergo-chequeo-cardiovascular` son dueños de módulos distintos** y ninguno
-puede tocar el del otro. El perfil decide a quién llamar: `Colegios` → el nuevo; `Administrador`,
-`Medicos` y `Usuario` → el viejo. El **ruteo** (`routesCOL.tsx`, `NavigationCol.tsx`,
+puede tocar el del otro. El perfil decide a quién llamar: `Colegios` → el nuevo; `Medicos` y
+`Usuario` → el viejo. `Administrador` tiene ahora su propio módulo, `src/chequeo-administrador/`,
+que no es de ninguno de los dos (lo lleva `ergosanitas-developer`). El **ruteo** (`routesCOL.tsx`, `NavigationCol.tsx`,
 `NavigationApp.tsx`) queda fuera de ambos perímetros y lo lleva `ergosanitas-developer` o
 `ergosanitas-architect`.
 
-**Módulos sin agente propio pero con guía**: `src/ficha-clinica/` y `src/home-ergo/` usan
-`ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
+**Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/` y
+`src/chequeo-administrador/` usan `ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
 
 ## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo`)
 
@@ -470,13 +537,14 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: hoy hay tres carpetas,
-  `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `03-…`) y
-  `specs/chequeo-cardiovascular/` (`01-…` a `03-…`).
-  La numeración es correlativa **dentro de cada carpeta**, así que existen tres specs `01`
+- **Las specs se agrupan por módulo**: hoy hay cuatro carpetas,
+  `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `04-…`),
+  `specs/chequeo-cardiovascular/` (`01-…` a `05-…`) y `specs/chequeo-administrador/` (`01-…` a `02-…`).
+  La numeración es correlativa **dentro de cada carpeta**, así que existen cuatro specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
-  `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md` y `CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.
+  `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md`, `CLAUDE_CHEQUEO_CARDIOVASCULAR.md` y
+  `CLAUDE_CHEQUEO_ADMINISTRADOR.md`.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a
