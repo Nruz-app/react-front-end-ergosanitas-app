@@ -1,0 +1,79 @@
+[
+    {
+        "order"        : 1,
+        "type"         : "selected",
+        "name"         : "estado_paciente",
+        "placeholder"  : "Normal",
+        "label"        : "Seleccion el Estado",
+        "helperText"   : "Seleccione algun tipo de Estado",
+        "defaultValue" : "",
+        "multiline"    : false, 
+        "values"       : [
+            {
+                "value" : "",
+                "nombre" : ""
+            },
+            {
+                "value" : "Normal",
+                "nombre" : "Normal"
+            },
+            {
+                "value" : "Alterado",
+                "nombre" : "Alterado"
+            }
+        ],
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Estado es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 2,
+        "type"         : "number",
+        "name"         : "frecuencia_cardiaca_paciente",
+        "placeholder"  : "100",
+        "label"        : "Ingresa Frecuencia Cardiaca",
+        "helperText"   : "Ingrese la Frecuencia Cardiaca",
+        "defaultValue" : "",
+        "multiline"    : false, 
+        "value"        : "",
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "La Edad es Requerido"
+            }
+        ]      
+    },
+    {
+        "order"        : 3,
+        "type"         : "text",
+        "name"         : "derivacion_paciente",
+        "placeholder"  : "Al doctor",
+        "label"        : "Ingresa Derivacion",
+        "helperText"   : "Ingrese la Derivacion",
+        "defaultValue" : "",
+        "value"        : "",
+        "multiline"    : false, 
+        "disabledText" : false      
+    },
+    {
+        "order"        : 4,
+        "type"         : "text",
+        "name"         : "observacion_paciente",
+        "placeholder"  : "Al doctor",
+        "label"        : "Ingresa Observacion",
+        "helperText"   : "Ingrese la Observacion",
+        "defaultValue" : "",
+        "value"        : "",
+        "disabledText" : false,
+        "multiline"    : true, 
+        "validations" : [
+            {
+                "type"    : "required",
+                "message" : "El Observacion es Requerido"
+            }
+        ]      
+    }
+]

@@ -1,11 +1,11 @@
 ---
 name: ergo-chequeo-cardiovascular
-description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (84 archivos, ~5.800 líneas). Cubre los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 4 servicios, el Home de lista + 5 gráficos y el tab del asistente con sus dos fuentes de datos, las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas o su ruteo por `NavigationCol`.
+description: Conocimiento completo del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve solo al perfil `Colegios` (99 archivos, ~7.800 líneas). Cubre los 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación yup de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente con sus dos fuentes de datos y el tab «Nivel de alumnos» (el juego de cartas), las cuatro reglas duras (sin borrado, sin importar de `src/Chequeo/`, sin ramificar por perfil, sin tocar la lógica clínica) y la duplicación deliberada. Úsalo antes de tocar cualquier archivo de `src/chequeo-cardiovascular/`, o al responder sobre el chequeo del perfil Colegios, su lista de deportistas, su carga masiva, su Home de estadísticas, el juego de cartas por nivel o su ruteo por `NavigationCol`.
 ---
 
 # ergo-chequeo-cardiovascular — el chequeo del perfil Colegios
 
-Mapa de `src/chequeo-cardiovascular/`: **84 archivos, ~5.800 líneas** (tras la Spec 03). Es el reemplazo
+Mapa de `src/chequeo-cardiovascular/`: **99 archivos, ~7.800 líneas** (tras la Spec 04). Es el reemplazo
 autocontenido de `src/Chequeo/`, construido **perfil por perfil**. Hoy sirve **solo a
 `Colegios`**; `Administrador`, `Medicos` y `Usuario` siguen en el módulo viejo, que queda
 intacto.
@@ -47,7 +47,7 @@ Gobiernan cualquier cambio. Si una tarea las contradice, **para y dilo** antes d
    por `grep -rni delete src/chequeo-cardiovascular/` siga siendo significativa.
 
 3. 🔴 **El módulo no ramifica por `user_perfil` en el orquestador.** `AppChequeoCardiovascular`
-   tiene **5 tabs fijos con índices estables**, que es justo lo que hacía insoportable a
+   tiene **6 tabs fijos con índices estables**, que es justo lo que hacía insoportable a
    `AppChequeo`. Si algún día se migra otro perfil aquí, cómo convivir se decide en **su** spec:
    no repliques un `if (user_perfil === …)` por dentro sin pensarlo.
    (Sí hay una comparación de perfil, y solo una: `estaOculto` en `ChequeoForm` — §5.)
@@ -58,9 +58,10 @@ Gobiernan cualquier cambio. Si una tarea las contradice, **para y dilo** antes d
 
 ```
 src/chequeo-cardiovascular/
-├── pages/       AppChequeoCardiovascular (196) orquestador de 5 tabs ·
-│                HomePage (22) · AsistentePage (45) · ChequeoPage (48)
-├── components/  26 archivos, 2.421 líneas. Los grandes:
+├── pages/       AppChequeoCardiovascular (221) orquestador de 6 tabs ·
+│                HomePage (84) · AsistentePage (47) · ChequeoPage (49) ·
+│                JuegoCartasPage (308, la grilla de cartas del tab 2)
+├── components/  47 .tsx, ~4.700 líneas. Los grandes:
 │   ├── ChequeoTable.tsx (332)             la lista + 3 acciones + paginación
 │   ├── ChequeoForm.tsx (253)              alta y edición, agrupado por sección
 │   ├── ChequeoTarjeta.tsx (93)            la misma fila como tarjeta, bajo 900 px
@@ -79,20 +80,24 @@ src/chequeo-cardiovascular/
 │   ├── asistente/         AsistenteColegio (el chat, tab 1) · SugerenciasChat ·
 │   │                      BurbujaGpt · BurbujaUsuario · CajaMensaje · LoaderEscribiendo
 │   │                      (los 4 últimos, clones de `src/ficha-clinica/`)
+│   ├── juego-cartas/      ModalCarta (209) · CartaAlumno (194) · BarraAtributo (95) ·
+│   │                      FiltrosCartas (84) · BuscadorCartas (55) · BarraProgreso (54) ·
+│   │                      BadgeJuego (44) · Estrellas (43)
 │   ├── statistics-global/ StatisticsGlobal (140)
 │   └── tabs/              TabPanel (29)
 ├── config/      custom-form.json (25 campos, con `seccion`) · custom-likes.json (1) ·
 │                excel-data.json (fila de ejemplo) · secciones.ts (5 secciones) ·
-│                tema.ts (tokens visuales: paleta, sx compartidos) ·
+│                tema.ts (tokens visuales: paleta, sx compartidos, bloque JUEGO) ·
 │                sugerencias-asistente.ts (ejemplos del chat)
 ├── context/     like-text/ (búsqueda) — el único que queda
 ├── hooks/       useChequeo · useChequeoRut · useCalculoIMC · useExportToExcel ·
-│                useResumenColegio · useReconocimientoVoz
-├── interface/   10 archivos de tipos + barril
+│                useResumenColegio · useReconocimientoVoz · useJuegoCartas (92)
+├── interface/   11 archivos de tipos + barril (juego-carta.interface, 144)
 ├── services/    useChequeoCardiovascularService (9 métodos) ·
 │                useEstadisticasService (4) · useCertificadoService (1) ·
-│                useAsistenteColegioService (2)
-└── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility
+│                useAsistenteColegioService (2) · useJuegoCartasService (3)
+└── utilities/   chequeo-validation.utility · chequeo.utility · resumen.utility ·
+                 juego.utility (103, incluye fechaDeCarta)
 ```
 
 El `index.ts` del módulo exporta `AppChequeoCardiovascular` más los barriles de interface,
@@ -119,7 +124,7 @@ resto de perfiles con navegador propio: **no uses `valid` para proteger esta vis
 `AppChequeoCardiovascular` monta su **propio `<ModalProvider>` anidado** sobre el global de
 `App.tsx`, para que el modal de detalle no comparta `isDateModalOpen` con el de login.
 
-## 4. Los 5 tabs — índices estables
+## 4. Los 6 tabs — índices estables
 
 Layout de `Tabs` **vertical** (rail de iconos a la izquierda, 64/90 px según breakpoint).
 
@@ -127,27 +132,73 @@ Layout de `Tabs` **vertical** (rail de iconos a la izquierda, 64/90 px según br
 |---|---|---|---|
 | 0 | Home | `HomePage` → `StatisticsGlobal` + 2 secciones (lista, gráficos) | — |
 | 1 | Asistente Virtual | `AsistentePage` → `AsistenteColegio` | — |
-| 2 | Lista de deportistas | `ChequeoTable` | `LikeTextProvider` |
-| 3 | Agregar deportista | `ChequeoPage` → `ChequeoForm` o `ChequeoFormUpdate` | — |
-| 4 | Carga masiva | `CargaMasiva` | — |
+| 2 | Nivel de alumnos | `JuegoCartasPage` → grilla de `CartaAlumno` + `ModalCarta` | — |
+| 3 | Lista de deportistas | `ChequeoTable` | `LikeTextProvider` |
+| 4 | Agregar deportista | `ChequeoPage` → `ChequeoForm` o `ChequeoFormUpdate` | — |
+| 5 | Carga masiva | `CargaMasiva` | — |
 
 🔴 **Los índices están escritos a mano en dos handlers** del orquestador (`handleChange` mira
 `TAB_ALTA`, `handleUpdateStatus` salta a `TAB_ALTA` o `TAB_LISTA`). Insertar un tab en medio los
-desplaza en silencio: es lo que pasó al meter «Asistente Virtual» en la posición 1. Por eso ya
-**no hay literales**: las cinco posiciones son constantes `TAB_*` declaradas junto al array, y
-tanto los `<TabPanel>` como los handlers las usan. Si agregas un tab, declara su constante.
+desplaza en silencio: pasó al meter «Asistente Virtual» en la posición 1, y otra vez con «Nivel
+de alumnos» en la 2, que corrió Lista, Alta y Carga masiva a 3, 4 y 5. Por eso ya **no hay
+literales**: las seis posiciones son constantes `TAB_*` declaradas junto al array, y tanto los
+`<TabPanel>` como los handlers las usan. Si agregas un tab, declara su constante.
+
+🔴 **Los dos tabs que consultan al entrar reciben `activo`.** `TabPanel` oculta con
+`display: none` **sin desmontar**, así que `AsistentePage` y `JuegoCartasPage` reciben
+`activo={tab === TAB_*}` y cargan en la **primera** activación. Sin esa señal las ~118 cartas se
+piden nada más entrar el colegio al módulo, aunque nunca abra la pestaña.
 
 Estado que vive en el orquestador: `tab`, `{ rut_paciente, id_paciente }`, `chequeoView`,
 `reloadTable`. Tres handlers bajan por props:
 
 - **`handleUpdateStatus(status, rut, id)`** — navegación interna heredada: `1` = editar (guarda
-  rut/id y va al tab 2), cualquier otro = alta limpia (vacía la selección y vuelve al tab 1).
+  rut/id y va a `TAB_ALTA`), cualquier otro = vaciar la selección y volver a `TAB_LISTA`.
   **No tiene nada que ver con `estado_paciente`**, que es el estado clínico del backend.
 - **`handleViewData(id)`** — pide el detalle y lo deja en `chequeoView`, que consume el
   `<ChequeoView>` colgado al final del árbol.
 - **`handleReloadTable()`** — invierte un booleano que es dependencia del `useEffect` de la tabla.
 
-Entrar al tab 2 **por el menú** siempre limpia la selección: a la edición se llega desde la lista.
+Entrar a `TAB_ALTA` **por el menú** siempre limpia la selección: a la edición se llega desde la lista.
+
+### El tab 2, «Nivel de alumnos» — el juego de cartas (Spec 04)
+
+`JuegoCartasPage` pinta a cada deportista como una **carta** con nivel clínico, cuatro atributos
+0–100, estrellas y progreso de ficha. Responde lo que ni el Home ni la lista responden: «¿cómo va
+*este* alumno y qué le falta?». Los detalles largos están en §Spec 04 de
+`specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md`, que **manda si discrepa de aquí**.
+
+- 🔴 **Aquí no se calcula ni se reordena nada.** Puntaje, bandas, estrellas y progreso los resuelve
+  `SP_juego_cartas_club` contra la tabla `juego_niveles`, y el backend ya entrega las cartas
+  ordenadas. Retunear una banda es un `UPDATE`, no código. En el front solo se **filtra y se
+  busca, en memoria**: el club más grande son 147 cartas en una sola respuesta.
+- 🔴 **Los colores del badge vienen del backend**, y son la **única excepción** a «el color sale de
+  `tema.ts`». La paleta vive en `juego_niveles` justo para retunearse con un `UPDATE`; la regla
+  sigue siendo verificable porque allí el color es un **dato** y ningún `.tsx` escribe un hex. El
+  armazón de la carta sí está en `tema.ts`, bloque `JUEGO`.
+- **Dos ejes independientes, y no correlacionan**: nivel clínico (`SIN EVALUAR` · `BAJO` · `MEDIO`
+  · `ALTO`) y completitud de la ficha (`Inicial` · `Evaluado` · `Completo`). Las dos filas de
+  chips salen de `GET /juego-cartas/niveles`; ninguna se escribe a mano.
+- **`SIN EVALUAR` se pinta `—`, nunca `0`**, y no se oculta por defecto: es la tarea pendiente del
+  colegio, no un alumno con cero.
+- **El modal es un `Dialog` de MUI, no el `ModalProvider`** del módulo: aquel comparte un único
+  `isDateModalOpen` con el detalle del deportista y los dos se abrirían juntos.
+- 🔴 **El modal descarta las respuestas que llegan tarde** (`ultimoRut` en un `useRef`). Sin eso,
+  pulsar una carta lenta y luego otra rápida deja en pantalla la evaluación de **otro menor** bajo
+  el nombre del que se pulsó. Un `useState` no sirve: el `handleAbrir` en vuelo ve el valor con el
+  que se creó.
+- **Render incremental de 24 en 24**, y cualquier cambio de filtro vuelve a la primera tanda (la
+  misma razón por la que `ChequeoTable` hace `setPage(0)`). Grilla de 3/2/1 columnas en `md` y
+  `sm`, los cortes que ya usa la lista.
+- ⚠️ **`fecha_atencion` llega aquí como `YYYY-MM-DD HH:mm:ss.ffffff`**, no como el `DD-MM-YYYY` de
+  `chequeo-all`: por eso existe `fechaDeCarta` y `parsearFecha` no sirve para las cartas.
+- ⚠️ **La nota al pie es obligatoria**: las bandas están calibradas sobre la distribución real de
+  la base, no sobre criterio clínico. El nivel no es un diagnóstico. No la quites.
+- ⚠️ **Tres badges no llegan al contraste AA** con la paleta actual (`SIN EVALUAR` 2.31:1,
+  `Inicial` 3.90:1, `BAJO` 3.95:1). **El arreglo es un `UPDATE` en `juego_niveles`, no código.**
+- ⚠️ **El SP puede no estar desplegado** (un entorno con solo `php artisan migrate` tiene las
+  tablas pero no el procedimiento): los tres endpoints dan 500. Por eso la pantalla distingue
+  «servicio no disponible» de «todavía no hay alumnos evaluados».
 
 ## 5. El formulario: agrupado por `seccion` (concepto central)
 
@@ -159,14 +210,21 @@ de campo en el `.tsx`.
 
 | `seccion` | Campos | Visible para `Colegios` |
 |---|---|---|
-| `identificacion` | 7: nombre, rut, fechaNacimiento, edad, sexo_paciente, division_paciente, medio_pago_paciente | **Sí, los 7** |
+| `identificacion` | 7: nombre, rut, fechaNacimiento, edad, sexo_paciente, division_paciente, medio_pago_paciente | **Sí, 6 de 7**: `medio_pago_paciente` oculto desde la Spec 05 |
 | `signos-vitales` | 5: temperatura, presion_sistolica, presionArterial, saturacionOxigeno, hemoglucotest | No |
 | `antropometria` | 3: peso, estatura, imc_paciente | No |
 | `anamnesis` | 7 de texto libre | No |
 | `gestion` | 3: user_email, status, fecha_atencion | No |
 
 Tipos: `text` (18), `selected` (3), `DatePickers` (2), `number` (1), `selected-user` (1).
-**18 de los 25 llevan `disabledText: true`.**
+**19 de los 25 llevan `disabledText: true`.**
+
+🔴 **Oculto no es «no enviado».** Un campo oculto conserva su valor en el estado del formulario
+(`reset(chequeo ?? defaults)`) y viaja en el `POST`/`PUT`: `medio_pago_paciente` sale como
+`"No Pagado"` en el alta y con su valor guardado en la edición. Hace falta porque
+`ChequeoCardiovascularController::Store`/`::Update` asignan `$request->medio_pago_paciente` sin
+condición: **quitar el campo del JSON** borraría con `null` el pago que registró el Administrador.
+Para ocultar algo, `disabledText: true`; nunca borrar la entrada.
 
 **La regla de ocultamiento** (`estaOculto`, en `ChequeoForm`) es la heredada, sin más cambio que
 el `==` → `===`:
@@ -246,7 +304,7 @@ eran tres acordeones y el filtro por fecha estaba oculto para todos salvo `Admin
 350 ms** y limpieza del timer al desmontar. Escribe en `LikeTextContext`; es `ChequeoTable` quien
 reacciona y vuelve a pedir la página.
 
-## 7. Servicios — 16 métodos en 4 archivos, un endpoint nuevo
+## 7. Servicios — 19 métodos en 5 archivos
 
 Patrón `ApiAdapter` de siempre: `const API = ${VITE_API}${VITE_API_PATH}`.
 
@@ -275,6 +333,18 @@ presion, hemoglucotest, saturacion}/{user_email}`. Clonado de `src/Estadisticas/
 **`UseCertificadoService` (async, 1 método)** — `getCertificadoRut(rut)` →
 `GET /certificado/{rut}`. **Es el único servicio del módulo que atrapa su propia excepción** y
 devuelve `null`: un 404 (deportista sin certificado) no debe romper la edición.
+
+**`UseJuegoCartasService` (async, 3 métodos)** — el juego de cartas del tab 2:
+
+| Método | Endpoint |
+|---|---|
+| `getCartasClub(user_email, search?)` | `GET /juego-cartas/{user_email}?search=` |
+| `getCartaDetalle(rut)` | `GET /juego-cartas/detalle/{rut_paciente}` |
+| `getNiveles()` | `GET /juego-cartas/niveles` |
+
+⚠️ **Usa `getToken`, no `get`**: `ApiAdapter.get` inyecta siempre `limit`/`offset` y estos tres
+endpoints no los aceptan. Los tres vienen bajo el sobre `{ success, message, data }`, que el
+servicio desenvuelve.
 
 Las dos claves del modelo, sin cambios: **`user_email`** filtra los listados (el colegio) y
 **`rut`** identifica a la persona. No hay id relacional.

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -10,31 +11,22 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import promociones from '../config/home-promociones.json';
 import { urlWhatsappPromo } from '../config/canales-contacto';
 import { ANCHO_MAXIMO, TEMA_HOME } from '../config/tema-home';
 import { EncabezadoSeccion } from './EncabezadoSeccion';
 import { ImagenAmpliable } from './ImagenAmpliable';
 
+import type { EstadoImagenesHome } from '../hooks';
 import type { IPromocionHome } from '../interface';
-
-const TODAS = promociones as IPromocionHome[];
-
-/**
- * El reparto se hace comparando contra `true` y `false` de forma explícita, y no con la
- * verdad o falsedad del valor.
- *
- * El motivo es concreto: el JSON se tipa con una aserción, y una aserción no obliga a que
- * el campo exista. Si mañana alguien agrega una promoción y olvida `destacado`, con un
- * `!p.destacado` la entrada aparecería silenciosamente entre las alianzas. Comparando
- * contra `false` no aparece en ninguno de los dos bloques, que es un error visible en vez
- * de uno escondido.
- */
-const DESTACADAS = TODAS.filter( ( promo ) => promo.activo && promo.destacado === true );
-const ALIANZAS   = TODAS.filter( ( promo ) => promo.activo && promo.destacado === false );
 
 interface Props {
     variante : 'promociones' | 'alianzas';
+    /**
+     * Imágenes ya repartidas por `useImagenesHome` (Spec 04): llegan de la API, no de un JSON.
+     * El reparto por sección —comparando contra cada literal— vive en el hook.
+     */
+    imagenes : IPromocionHome[];
+    estado   : EstadoImagenesHome;
 }
 
 /**
@@ -49,7 +41,6 @@ interface Props {
  */
 const CONTENIDO = {
     promociones: {
-        items    : DESTACADAS,
         etiqueta : 'Promociones vigentes',
         titulo   : 'Lo que está en oferta',
         bajada   : 'Campañas del mes en chequeos, exámenes y controles. Pulsa la que te interese y te respondemos por WhatsApp.',
@@ -57,7 +48,6 @@ const CONTENIDO = {
         fondo    : TEMA_HOME.hueso,
     },
     alianzas: {
-        items    : ALIANZAS,
         etiqueta : 'Alianzas y convenios',
         titulo   : 'Con quiénes trabajamos',
         bajada   : 'Convenios con clubes, medios e instituciones que respaldan nuestros operativos.',
@@ -82,14 +72,19 @@ const CONTENIDO = {
  * El marco es 3:4, que cubre el rango real del material: medido, va de 1024×1820 hasta
  * 1254×1254.
  */
-export const CarruselPromociones = ( { variante }: Props ) => {
-    const { items, etiqueta, titulo, bajada, enlazada, fondo } = CONTENIDO[ variante ];
+export const CarruselPromociones = ( { variante, imagenes, estado }: Props ) => {
+    const { etiqueta, titulo, bajada, enlazada, fondo } = CONTENIDO[ variante ];
 
     // El autoplay es movimiento no solicitado: quien pide menos movimiento no lo recibe.
     const reducirMovimiento = useMemo(
         () => typeof window !== 'undefined' && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches,
         []
     );
+
+    // Spec 04: si la API falló o no hay imágenes, la sección entera no se pinta —ni su
+    // encabezado—. Una sección de ventas que dice «no se pudo cargar» resta más de lo que
+    // informa. El motivo queda en consola, lo deja `useImagenesHome`.
+    if ( estado === 'error' || ( estado === 'listo' && imagenes.length === 0 ) ) return null;
 
     return (
         <Box component="section" sx={{ bgcolor: fondo, borderTop: `1px solid ${ TEMA_HOME.borde }` }}>
@@ -100,6 +95,7 @@ export const CarruselPromociones = ( { variante }: Props ) => {
                     bajada={ bajada }
                 />
 
+                { estado === 'cargando' ? <EsqueletoCarrusel /> : (
                 <Box
                     sx={{
                         // Swiper pinta flechas y puntos con su color de tema. Se alinean al
@@ -124,7 +120,7 @@ export const CarruselPromociones = ( { variante }: Props ) => {
                             1400: { slidesPerView: 4 },
                         } }
                     >
-                        { items.map( ( promo ) => (
+                        { imagenes.map( ( promo ) => (
                             <SwiperSlide key={ promo.id }>
                                 <Box
                                     // Una promoción es un enlace real a WhatsApp; una alianza es
@@ -190,7 +186,42 @@ export const CarruselPromociones = ( { variante }: Props ) => {
                         ) ) }
                     </Swiper>
                 </Box>
+                ) }
             </Container>
         </Box>
     );
 };
+
+/**
+ * Lo que se ve mientras llegan las imágenes (Spec 04).
+ *
+ * Repite las medidas reales de una tarjeta —marco 3:4, una línea de título y el `pb: 6` que
+ * Swiper reserva para los puntos— y la misma cantidad de columnas por ancho, para que la
+ * página no salte de alto cuando aparece el carrusel.
+ */
+const EsqueletoCarrusel = () => (
+    <Box
+        aria-hidden
+        sx={{
+            display            : 'grid',
+            gridTemplateColumns: '1fr',
+            gap                : '20px',
+            pb                 : 6,
+            // Los mismos cortes que los `breakpoints` del Swiper (600 / 960 / 1400), no los de
+            // MUI (600 / 900 / 1200): si no coinciden, la página salta entre 900 y 960 px.
+            '& > :nth-of-type(n+2)': { display: 'none' },
+            '@media (min-width: 600px)' : { gridTemplateColumns: 'repeat(2, 1fr)', '& > :nth-of-type(2)': { display: 'block' } },
+            '@media (min-width: 960px)' : { gridTemplateColumns: 'repeat(3, 1fr)', '& > :nth-of-type(3)': { display: 'block' } },
+            '@media (min-width: 1400px)': { gridTemplateColumns: 'repeat(4, 1fr)', '& > :nth-of-type(4)': { display: 'block' } },
+        }}
+    >
+        { [ 0, 1, 2, 3 ].map( ( n ) => (
+            <Box key={ n }>
+                <Skeleton variant="rounded" sx={{ width: '100%', height: 'auto', aspectRatio: '3 / 4', borderRadius: 3 }} />
+                {/* `fontSize` y `lineHeight` del caption real: sin el `lineHeight`, el esqueleto
+                    hereda el del cuerpo y la línea mide unos píxeles de más. */}
+                <Skeleton variant="text" sx={{ mt: 1.5, width: '70%', fontSize: '0.95rem', lineHeight: 1.4 }} />
+            </Box>
+        ) ) }
+    </Box>
+);

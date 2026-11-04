@@ -14,7 +14,8 @@ Estado de las specs de esta carpeta:
 | `02-home-colegio.md` | Rediseñó el Home: 2 secciones, 4 gráficos nuevos, accesibilidad | Aprobado (código completo; 4 criterios visuales sin verificar) |
 | `03-asistente-colegio.md` | Cambió el botón «Detalle clínico» por un chat conversacional, hoy en el tab «Asistente Virtual» | Implementado, **revisada** (§9 de la spec: rediseño visual y mudanza a tab propio). 10 de 20 criterios verificados; 10 de comportamiento pendientes de prueba manual — §8 y §9.4 |
 | `04-juego-cartas-nivel.md` | Añadió el tab «Nivel de alumnos»: cada deportista como una carta con nivel, atributos, estrellas y progreso de ficha | Implementado, **revisada** (§9 de la spec). 13 de 24 criterios verificados; 11 de comportamiento pendientes de prueba manual — §9.2 |
-| — | `Medicos`, `Administrador`, `Usuario` siguen en `src/Chequeo/` | — |
+| `05-ocultar-medio-pago-colegio.md` | Ocultó «Medio de Pago» al colegio sin dejar de enviarlo (`disabledText: true`) | Ver la cabecera de la spec |
+| — | `Medicos` y `Usuario` siguen en `src/Chequeo/`; `Administrador` en `src/chequeo-administrador/` | — |
 
 ---
 
@@ -92,7 +93,7 @@ escribir nombres de campo en el `.tsx`.
 
 | `seccion` | Campos | Visible para `Colegios` |
 |---|---|---|
-| `identificacion` | nombre, rut, fechaNacimiento, edad, sexo_paciente, division_paciente, medio_pago_paciente | **Sí, los 7** |
+| `identificacion` | nombre, rut, fechaNacimiento, edad, sexo_paciente, division_paciente, medio_pago_paciente | **Sí, 6 de 7**: `medio_pago_paciente` oculto desde la Spec 05 |
 | `signos-vitales` | temperatura, presion_sistolica, presionArterial, saturacionOxigeno, hemoglucotest | No |
 | `antropometria` | peso, estatura, imc_paciente | No |
 | `anamnesis` | 7 campos de texto libre | No |
@@ -103,7 +104,19 @@ escribir nombres de campo en el `.tsx`.
 
 La regla de ocultamiento es la heredada, sin cambios: `disabledText: true` + perfil `Colegios`
 → el campo no se renderiza; y `rut`/`user_email`/`status`/`fecha_atencion` fuera para todo
-perfil que no sea `Administrador`.
+perfil que no sea `Administrador`. Son **19 de 25** con `disabledText: true`.
+
+### 🔴 Oculto no es «no enviado»: el medio de pago (Spec 05)
+
+`medio_pago_paciente` está oculto para el colegio (el cobro lo gestiona Ergo SaniTas), pero
+**sigue viajando** en el `POST` y el `PUT`. Viaja `"No Pagado"` en el alta, por
+`valoresPorDefecto()`, y el valor guardado en la edición, por `reset(chequeo)`. Funciona porque
+react-hook-form no tiene `shouldUnregister` y yup no descarta las claves sin esquema.
+
+**No lo borres del JSON ni lo quites del payload.** `ChequeoCardiovascularController::Store` y
+`::Update` del back asignan `$request->medio_pago_paciente` sin condición. Sin el campo, cada
+edición de un colegio pondría `null` sobre el pago que registró el Administrador. Lo mismo
+vale para cualquier otro campo oculto que el back asigne sin condición.
 
 ### ⚠️ El esquema yup valida SOLO los campos visibles
 

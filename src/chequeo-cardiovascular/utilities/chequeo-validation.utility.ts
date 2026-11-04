@@ -14,7 +14,7 @@ const NUMBER_DOT = /^[0-9]+(\.[0-9]+)?$/;
 /**
  * Construye el esquema yup recorriendo el JSON.
  *
- * ⚠️ **Solo valida los campos que se le pasan.** Es deliberado: 18 de los 25 campos tienen
+ * ⚠️ **Solo valida los campos que se le pasan.** Es deliberado: 19 de los 25 campos tienen
  * `disabledText: true` y no se renderizan para `Colegios`, pero ocho de ellos declaran
  * `required` (temperatura, presión, peso, estatura, IMC…). Validarlos todos dejaría el
  * formulario imposible de enviar. El módulo original esquivaba el problema saltándose la

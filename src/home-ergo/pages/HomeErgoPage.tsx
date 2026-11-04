@@ -17,6 +17,7 @@ import {
 } from '../components';
 import portada from '../config/home-hero.json';
 import { TEMA_HOME } from '../config/tema-home';
+import { useImagenesHome } from '../hooks';
 
 import type { IPortadaHome } from '../interface';
 
@@ -36,8 +37,10 @@ const DESCRIPCION = 'Chequeos cardiovasculares deportivos, electrocardiogramas a
 /**
  * Portada pública de ergosanitas.com (Spec 01 de `home-ergo`).
  *
- * Compone las diez secciones y monta el chat comercial flotante. No hace fetch de nada:
- * todo su contenido sale de los JSON de `config/`.
+ * Compone las diez secciones y monta el chat comercial flotante. Casi todo su contenido sale
+ * de los JSON de `config/`. La excepción son las imágenes de promociones, alianzas y galería
+ * (Spec 04): las pide `useImagenesHome` **una vez** aquí y se reparten por props, para que las
+ * tres secciones no hagan tres peticiones al mismo endpoint.
  *
  * El orden de las secciones es una decisión de la Spec 02 y no un accidente: los fondos
  * alternan —azul profundo, blanco, hueso, blanco, hueso, azul profundo, hueso, blanco,
@@ -47,6 +50,8 @@ const DESCRIPCION = 'Chequeos cardiovasculares deportivos, electrocardiogramas a
  * `<Helmet>`.
  */
 export const HomeErgoPage = () => {
+    const { promociones, alianzas, galeria, estado } = useImagenesHome();
+
     return (
         <Box
             component="main"
@@ -75,17 +80,17 @@ export const HomeErgoPage = () => {
 
             {/* La oferta va arriba, no al final. Un visitante que lee tres secciones y se
                 va tiene que haber visto ya lo que la empresa está vendiendo este mes. */}
-            <CarruselPromociones variante="promociones" />
+            <CarruselPromociones variante="promociones" imagenes={ promociones } estado={ estado } />
 
             <SeccionServicios />
             <ComoFunciona />
-            <GaleriaOperativos />
+            <GaleriaOperativos imagenes={ galeria } estado={ estado } />
             <SeccionVideos />
 
             {/* Los convenios son respaldo, no oferta: se leen mejor después de las fotos
                 de operativos y los videos, que es donde el visitante ya sabe quiénes
                 somos. */}
-            <CarruselPromociones variante="alianzas" />
+            <CarruselPromociones variante="alianzas" imagenes={ alianzas } estado={ estado } />
 
             {/* Puente hacia el contacto: los seis canales pasando de largo, para quien no
                 pensaba llegar hasta el final. */}

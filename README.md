@@ -12,7 +12,7 @@ repiten** aquí:
 | Documento | Para qué |
 |---|---|
 | `CLAUDE.md` | **Convenciones y trampas** al escribir código. Guía operativa del día a día. |
-| `.claude/ARQUITECTURA.md` | **Modelo de dominio**: entidades, las dos claves, catálogo de ~70 endpoints, patrón canónico de módulo. |
+| `.claude/ARQUITECTURA.md` | **Modelo de dominio**: entidades, las dos claves, catálogo de los ~70 endpoints que consume el front (el back expone 90), patrón canónico de módulo. |
 | `specs/<modulo>/CLAUDE_<MODULO>.md` | Guía viva de cada módulo construido por spec. |
 | `specs/<modulo>/NN-slug.md` | Las especificaciones, con su estado y sus decisiones. |
 
@@ -195,14 +195,15 @@ Cada carpeta de primer nivel de `src/` es un **módulo autocontenido**, típicam
 | Módulo | Tamaño | Qué es | Guía |
 |---|---|---|---|
 | `chequeo-cardiovascular/` | 84 arch. · 5.832 líneas | Reemplazo de `Chequeo/` construido **perfil por perfil**; hoy sirve solo a `Colegios`. 5 tabs de índice estable: Home, Asistente Virtual, Lista, Alta/Edición, Carga masiva. Tab propio de asistente virtual conversacional. | `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md` |
+| `chequeo-administrador/` | 100 arch. · ~7.100 líneas | Segundo reemplazo de `Chequeo/` por perfil; sirve solo a `Administrador` (entra por `src/routes/ChequeoSegunPerfil.tsx`). 8 tabs de índice estable: Lista, Ficha, Carga Excel, Carga ECG, Crear usuario, Calculadora IMC, Imágenes del Home (mantenedor de `home-imagenes`, Spec 02) y Mi cuenta. | `specs/chequeo-administrador/CLAUDE_CHEQUEO_ADMINISTRADOR.md` |
 | `ficha-clinica/` | 55 arch. · 5.681 líneas | Ficha clínica del paciente por RUT: 5 tabs, 3 capas de datos con mappers, silueta segmentaria en SVG y tab «Asistente Ergo». **La referencia de arquitectura de datos.** | `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md` |
-| `home-ergo/` | 43 arch. · 2.920 líneas | Portada comercial pública (`/`): galería, promociones, videos, franja de contacto y chat de ventas. Todo el contenido vive en 6 JSON de `config/`. | `specs/home-ergo/CLAUDE_HOME_ERGO.md` |
+| `home-ergo/` | 43 arch. · 2.920 líneas | Portada comercial pública (`/`): galería, promociones, videos, franja de contacto y chat de ventas. Hero, servicios, videos y contacto viven en 4 JSON de `config/`; promociones, alianzas y galería llegan de `GET home-imagenes` (Spec 04). | `specs/home-ergo/CLAUDE_HOME_ERGO.md` |
 
 ### Módulos de negocio
 
 | Módulo | Tamaño | Qué es |
 |---|---|---|
-| `Chequeo/` | 75 arch. · 5.887 líneas | El módulo más grande y antiguo: chequeo preventivo cardiovascular para `Administrador`, `Medicos` y `Usuario`. Tabla de deportistas, alta/edición, ECG, carga masiva, IMC, exportación a Excel. |
+| `Chequeo/` | 75 arch. · 5.887 líneas | El módulo más grande y antiguo: chequeo preventivo cardiovascular para `Medicos` y `Usuario` (`Administrador` migró a `chequeo-administrador/`). Tabla de deportistas, alta/edición, ECG, carga masiva, IMC, exportación a Excel. |
 | `EmergenciaDeportivas/` | 24 arch. · 2.026 líneas | Panel del perfil `Emergencia Deportiva`: estadísticas de incidentes por liga, club, categoría, gravedad y parte del cuerpo. |
 | `AgendarHora/` | 23 arch. · 1.036 líneas | Reserva de horas y catálogo de servicios; pago por Transbank WebPay. |
 | `Servicios/` | 22 arch. · 1.859 líneas | Página pública de servicios ofrecidos. |
@@ -458,7 +459,7 @@ pero solo modifican su carpeta; si la tarea exige salir de ella, se detienen y l
 |---|---|---|
 | `ergosanitas-developer` | Implementar, corregir y refactorizar respetando las convenciones. | Todo el repo |
 | `ergosanitas-architect` | Diseñar módulos nuevos y revisar coherencia. Diseña, no implementa. | Todo el repo (diseño) |
-| `ergo-chequeo` | Dueño del chequeo viejo (`Administrador`, `Medicos`, `Usuario`). | Solo `src/Chequeo/` |
+| `ergo-chequeo` | Dueño del chequeo viejo (`Medicos`, `Usuario`; `Administrador` migró a `chequeo-administrador/`, que lleva `ergosanitas-developer`). | Solo `src/Chequeo/` |
 | `ergo-chequeo-cardiovascular` | Dueño del chequeo nuevo (perfil `Colegios`). | Solo `src/chequeo-cardiovascular/` |
 | `ergo-common` | Dueño de la infraestructura transversal. | Solo `src/common/` |
 | `ergo-login` | Dueño de la autenticación. | Solo `src/Login/` |
