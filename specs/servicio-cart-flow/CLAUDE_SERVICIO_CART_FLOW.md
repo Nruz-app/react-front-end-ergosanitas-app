@@ -61,7 +61,10 @@ completos → 3; sin bloque elegido → 4).
 ## Sistema visual
 
 Paleta de la página anterior: tarjetas con degradado `primarioClaro → primario`, botones `navy`, chip de precio
-`precioFondo`/`precioTexto`. El panel es un `Paper` translúcido sobre `FONDO_PAGINA`. La caja raíz de cada página
+`precioFondo`/`precioTexto`. El panel es un `Paper` translúcido sobre `FONDO_PAGINA`.
+En el paso Catálogo, «Ver carro» es un `Fab` flotante (`BotonCarroFlotante`), fijo abajo a la derecha y centrado en
+móvil. Aparece con la primera línea y late al cambiar la cantidad. Va en un `Portal`: el `backdropFilter` del panel
+haría que `position: fixed` fuera relativo al panel y no a la ventana. La caja raíz de cada página
 lleva `boxSizing: 'border-box'`: con `width: 100%` + padding se desbordaba en horizontal (la página anterior tiene ese
 defecto).
 

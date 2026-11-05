@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, CircularProgress, LinearProgress, Paper, Stack, Typography } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import {
-    AgendaBloques, CarroResumen, CatalogoProductos, ConfirmacionPedido, PasoPacientes, PasoPago,
+    AgendaBloques, BotonCarroFlotante, CarroResumen, CatalogoProductos, ConfirmacionPedido, PasoPacientes, PasoPago,
     SelectorComuna, StepperCartFlow,
 } from '../components';
 import type { SeleccionAgenda } from '../components';
@@ -12,7 +11,6 @@ import { PASO, PASOS } from '../config/textos';
 import { COLORES, FONDO_PAGINA } from '../config/tema';
 import { useCartFlow } from '../context';
 import type { ICarrito, IComuna } from '../interface';
-import { formatoClp } from '../utilities';
 
 /** Paso más alto al que se puede saltar desde el stepper, según lo que ya tiene el carro. */
 const pasoMaximo = (carrito: ICarrito | null, agenda: SeleccionAgenda | null): number => {
@@ -153,8 +151,9 @@ export const ServicioCartFlowPage = () => {
         }
     };
 
-    /** Botón «Siguiente» de los pasos que no tienen su propia acción de avance. */
-    const siguiente = paso === PASO.catalogo || paso === PASO.carro;
+    /** En Catálogo el avance es el botón flotante; en Carro, el botón de la barra inferior. */
+    const enCatalogo = !!carrito && paso === PASO.catalogo;
+    const siguiente = paso === PASO.carro;
 
     return (
         <Box sx={{ width: '100%', boxSizing: 'border-box', minHeight: '100vh', p: { xs: 2, md: 4 }, background: FONDO_PAGINA }}>
@@ -172,8 +171,18 @@ export const ServicioCartFlowPage = () => {
 
                 {renderPaso()}
 
+                {enCatalogo && carrito && (
+                    <BotonCarroFlotante
+                        cantidad={lineas}
+                        total={carrito.desglose.total}
+                        deshabilitado={PASO.carro > maximo || cargando}
+                        onClick={() => irA(PASO.carro)}
+                    />
+                )}
+
                 {carrito && paso > PASO.comuna && paso < PASO.confirmacion && (
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 5 }} spacing={2}>
+                    // En Catálogo deja espacio para que el botón flotante no tape las últimas tarjetas.
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 5, pb: enCatalogo ? 10 : 0 }} spacing={2}>
                         <Button onClick={() => irA(paso - 1)} sx={{ color: COLORES.primarioOsc, fontWeight: 'bold' }}>
                             ← Volver
                         </Button>
@@ -181,14 +190,11 @@ export const ServicioCartFlowPage = () => {
                         {siguiente && (
                             <Button
                                 variant="contained"
-                                startIcon={<ShoppingCartIcon />}
                                 disabled={paso + 1 > maximo || cargando}
                                 onClick={() => irA(paso + 1)}
                                 sx={{ background: COLORES.navy, fontWeight: 'bold', borderRadius: 3, '&:hover': { background: COLORES.navyHover } }}
                             >
-                                {paso === PASO.catalogo
-                                    ? `Ver carro (${lineas}) · ${formatoClp(carrito.desglose.total)}`
-                                    : 'Datos de los pacientes'}
+                                Datos de los pacientes
                             </Button>
                         )}
                     </Stack>

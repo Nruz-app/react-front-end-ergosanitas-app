@@ -1,3 +1,4 @@
+export * from './boton-carro-flotante';
 export * from './agenda-bloques';
 export * from './avisos-carro';
 export * from './carro-resumen';
