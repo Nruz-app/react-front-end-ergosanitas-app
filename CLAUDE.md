@@ -148,7 +148,7 @@ y regla de aislamiento:
 | `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
 | `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
 | `carrito-compra/` | 23 · 1210 | Mantenedor del carro del Administrador (reemplaza «Incidentes» en el menú) |
-| `servicio-cart-flow/` | 36 · 2577 | Página pública `/servicios`: carro de servicios (reemplazo de `Servicios/`) |
+| `servicio-cart-flow/` | 38 · 2771 | Página pública `/servicios`: carro de servicios (reemplazo de `Servicios/`) |
 | `Servicios/` | 22 · 1.859 | Página pública anterior — **intacta y sin rutear**, vía de reversa |
 | `Certificados/` | 21 · 995 | Certificados PDF por RUT |
 | `Home/` | 21 · 1.354 | Portada anterior — **intacta y sin rutear**, vía de reversa |
