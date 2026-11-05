@@ -147,6 +147,7 @@ y regla de aislamiento:
 | `Chequeo/` | 75 · 5.887 | Chequeo de `Medicos` y `Usuario` (el módulo viejo; `Administrador` migró) |
 | `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
 | `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
+| `carrito-compra/` | 23 · 1210 | Mantenedor del carro del Administrador (reemplaza «Incidentes» en el menú) |
 | `servicio-cart-flow/` | 36 · 2577 | Página pública `/servicios`: carro de servicios (reemplazo de `Servicios/`) |
 | `Servicios/` | 22 · 1.859 | Página pública anterior — **intacta y sin rutear**, vía de reversa |
 | `Certificados/` | 21 · 995 | Certificados PDF por RUT |
@@ -221,6 +222,20 @@ Lo mínimo que hay que saber:
 - **El chat del tab «Asistente Ergo» es un clon**, no un import de `src/presentation/`
   ni de `src/AsistenteVirtual/`. Esas carpetas no se tocan; la duplicación es deliberada
   (Spec 04) y usa su propia clave de sesión, `ficha_chat_session_id`.
+
+### `src/carrito-compra/` — mantenedor del carro para el Administrador (módulo con guía propia)
+
+Ítem «Carrito Compra» del menú del Administrador (`routesErgo.ts`, `/carrito-compra/*`). Tiene tres pestañas:
+- **Pedidos**: resumen, filtros, tabla paginada en el servidor y detalle con acciones de estado e historial.
+- **Cotizaciones**.
+- **Catálogo**: visibilidad en la tienda.
+
+Consume `api/cart-flow/admin/*` (SPEC 05 del back) con el `user_email` de `LoginContext`.
+**Reemplazó a «Incidentes» en el menú**: esa entrada sigue en `routesErgo.ts` con `status: false` y `src/Incidentes/`
+está intacto.
+**Antes de tocarlo, lee `specs/carrito-compra/CLAUDE_CARRITO_COMPRA.md`.**
+
+- **Regla dura:** solo importa de `src/common/`; las acciones visibles las decide el back (`acciones`); nada se borra.
 
 ### `src/servicio-cart-flow/` — carro de servicios en `/servicios` (módulo con guía propia)
 
