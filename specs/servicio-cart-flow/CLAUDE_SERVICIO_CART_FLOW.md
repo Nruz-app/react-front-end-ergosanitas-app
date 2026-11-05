@@ -45,7 +45,12 @@ En `src/routes/routes.ts`: descomentar `import { AppServiciosPage } from '../Ser
 el stepper solo deja saltar hasta `pasoMaximo()` (sin comuna → 0; sin líneas → 1; con bloqueos → 2; sin datos
 completos → 3; sin bloque elegido → 4).
 
-- **Comuna `a_cotizar`** (fuera de RM) y productos `solo_cotizacion` → `/servicios/cotizar?comuna=&sku=&servicio=`.
+- **Selector de comuna**: replica el `InputAutoCompleteComuna` del flujo anterior («Ingrese una Comuna»,
+  mismos estilos). Las opciones salen siempre de `config/comunas-rm.json` (copia de
+  `AgendarHora/config/comunas.json`) unidas con `GET cart-flow/comunas` (`opcionesComuna`, cruce por nombre sin
+  tildes; alias `Santiago` → `Santiago Centro`). Si la API falla (p. ej. el hosting sin `migrate` + `CartFlowSeeder`)
+  la lista igual se ve, aparece un aviso y solo se puede cotizar: el carro necesita el `comuna_id` del back.
+- **Comuna `a_cotizar`** (fuera de RM) o sin par en el back (Alhué, Curacaví, María Pinto, San Pedro, Tiltil) y productos `solo_cotizacion` → `/servicios/cotizar?comuna=&sku=&servicio=`.
 - **Pacientes**: al continuar se hace un `PUT` del carro (dirección) y uno por paciente, para que el back valide
   edad y sexo contra las líneas antes de pagar (D5).
 - **Checkout**: `FormData` con `ordenes[{paciente_id}]` cuando la preparación pide orden médica.

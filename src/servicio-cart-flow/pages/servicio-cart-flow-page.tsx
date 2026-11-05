@@ -86,10 +86,11 @@ export const ServicioCartFlowPage = () => {
             return (
                 <SelectorComuna
                     comunas={comunas}
-                    seleccionada={carrito?.comuna ? comunas.find((c) => c.id === carrito.comuna?.id) ?? null : null}
+                    seleccionada={carrito?.comuna ?? null}
                     cargando={cargando}
+                    errorServidor={flujo.errorComunas}
                     onElegir={elegirComuna}
-                    onCotizar={(c) => cotizar({ comuna: c.comuna })}
+                    onCotizar={(nombre) => cotizar({ comuna: nombre })}
                 />
             );
         }

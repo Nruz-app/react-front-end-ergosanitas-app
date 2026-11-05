@@ -15,7 +15,9 @@ import { mostrarError } from '../utilities';
  */
 interface CartFlowContextProps {
     comunas      : IComuna[];
-    catalogo     : ICatalogo | null;
+    /** GET cart-flow/comunas falló: el back no responde o no tiene las tablas cf_* sembradas. */
+    errorComunas : boolean;
+    catalogo    : ICatalogo | null;
     carrito      : ICarrito | null;
     pedido       : IPedido | null;
     paso         : number;
@@ -80,6 +82,7 @@ export const CartFlowProvider = ({ children }: Props) => {
     const [paso, setPaso] = useState<number>(PASO.comuna);
     const [cargando, setCargando] = useState<boolean>(false);
     const [iniciado, setIniciado] = useState<boolean>(false);
+    const [errorComunas, setErrorComunas] = useState<boolean>(false);
 
     const reiniciar = useCallback(() => {
         guardarUuid(null);
@@ -119,14 +122,14 @@ export const CartFlowProvider = ({ children }: Props) => {
 
             const servicio = await UseCartFlowService();
 
-            try {
-                const [listaComunas, listaCatalogo] = await Promise.all([servicio.getComunas(), servicio.getCatalogo()]);
-                setComunas(listaComunas);
-                setCatalogo(listaCatalogo);
-            }
-            catch (problema) {
-                mostrarError(problema);
-            }
+            // Por separado: si falla uno, el otro igual carga. El selector de comuna usa además una
+            // lista estática (config/comunas-rm.json) y avisa con errorComunas, sin Swal al entrar.
+            const [listaComunas, listaCatalogo] = await Promise.allSettled([servicio.getComunas(), servicio.getCatalogo()]);
+
+            if (listaComunas.status === 'fulfilled') setComunas(listaComunas.value);
+            else setErrorComunas(true);
+
+            if (listaCatalogo.status === 'fulfilled') setCatalogo(listaCatalogo.value);
 
             const uuid = leerUuid();
 
@@ -246,11 +249,11 @@ export const CartFlowProvider = ({ children }: Props) => {
     }, [carrito, ejecutar, pagarWebPay]);
 
     const valor = useMemo<CartFlowContextProps>(() => ({
-        comunas, catalogo, carrito, pedido, paso, cargando, iniciado,
+        comunas, errorComunas, catalogo, carrito, pedido, paso, cargando, iniciado,
         irA: setPaso,
         elegirComuna, cambiarPlan, agregar, cambiarCantidad, quitarLinea,
         agregarPaciente, quitarPaciente, guardarPacientes, confirmar, pagarWebPay, reiniciar,
-    }), [comunas, catalogo, carrito, pedido, paso, cargando, iniciado, elegirComuna, cambiarPlan, agregar,
+    }), [comunas, errorComunas, catalogo, carrito, pedido, paso, cargando, iniciado, elegirComuna, cambiarPlan, agregar,
         cambiarCantidad, quitarLinea, agregarPaciente, quitarPaciente, guardarPacientes, confirmar, pagarWebPay, reiniciar]);
 
     return <CartFlowContext.Provider value={valor}>{children}</CartFlowContext.Provider>;

@@ -34,6 +34,14 @@ export const UI = {
     infoFondo      : '#e0f2fe',
 };
 
+/** Selector de comuna: los mismos colores del `InputAutoCompleteComuna` del flujo anterior. */
+export const CAMPO_COMUNA = {
+    fondo      : '#f9f9f9',
+    acento     : '#3f51b5',
+    limpiar    : '#f44336',
+    ayuda      : '#8c8c8c',
+};
+
 /** Degradado de fondo de la página. */
 export const FONDO_PAGINA = `linear-gradient(to bottom, ${COLORES.fondoApp}, ${COLORES.fondoAppSuave})`;
 
