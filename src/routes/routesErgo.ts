@@ -8,6 +8,7 @@ import { ChequeoSegunPerfil } from './ChequeoSegunPerfil';
 import { AppUrlPage } from '../Url/page';
 
 import { AppIncidentesPages } from '../Incidentes/';
+import { AppCarritoCompraPage } from '../carrito-compra';
 
 import { AppPagosMedicosPage } from '../pagos-mensual';
 import { AppHomeMedico } from '../pagos-mensual';
@@ -66,9 +67,18 @@ export const routesErgo:Route[] = [
         name      : 'Incidentes',
         to        : '/Incidentes',
         path      : '/incidentes/*',
-        perfil    : 'Administrador', 
-        status    : true,  
+        perfil    : 'Administrador',
+        // Desactivado: lo reemplaza «Carrito Compra» (Spec 01 de carrito-compra). Se conserva la entrada.
+        status    : false,
         Component : AppIncidentesPages
+    },
+    {
+        name      : 'Carrito Compra',
+        to        : '/carrito-compra',
+        path      : '/carrito-compra/*',
+        perfil    : 'Administrador',
+        status    : true,
+        Component : AppCarritoCompraPage
     },
     {
     name      : 'Pagos Mensual',

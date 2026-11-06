@@ -197,6 +197,8 @@ Cada carpeta de primer nivel de `src/` es un **módulo autocontenido**, típicam
 | `chequeo-cardiovascular/` | 84 arch. · 5.832 líneas | Reemplazo de `Chequeo/` construido **perfil por perfil**; hoy sirve solo a `Colegios`. 5 tabs de índice estable: Home, Asistente Virtual, Lista, Alta/Edición, Carga masiva. Tab propio de asistente virtual conversacional. | `specs/chequeo-cardiovascular/CLAUDE_CHEQUEO_CARDIOVASCULAR.md` |
 | `chequeo-administrador/` | 100 arch. · ~7.100 líneas | Segundo reemplazo de `Chequeo/` por perfil; sirve solo a `Administrador` (entra por `src/routes/ChequeoSegunPerfil.tsx`). 8 tabs de índice estable: Lista, Ficha, Carga Excel, Carga ECG, Crear usuario, Calculadora IMC, Imágenes del Home (mantenedor de `home-imagenes`, Spec 02) y Mi cuenta. | `specs/chequeo-administrador/CLAUDE_CHEQUEO_ADMINISTRADOR.md` |
 | `ficha-clinica/` | 55 arch. · 5.681 líneas | Ficha clínica del paciente por RUT: 5 tabs, 3 capas de datos con mappers, silueta segmentaria en SVG y tab «Asistente Ergo». **La referencia de arquitectura de datos.** | `specs/ficha-clinica/CLAUDE_FICHA_CLINICA.md` |
+| `servicio-cart-flow/` | 38 arch. · ~2.700 líneas | Página pública `/servicios`: carro de 7 pasos (comuna → catálogo completo → carro con varios pacientes → datos → agenda por bloques → pago Webpay/transferencia/efectivo → confirmación), más `/servicios/resultado` y `/servicios/cotizar`. Reemplazó a `Servicios/` en el router. | `specs/servicio-cart-flow/CLAUDE_SERVICIO_CART_FLOW.md` |
+| `carrito-compra/` | 23 arch. · ~1.200 líneas | Mantenedor «Carrito Compra» del `Administrador`: resumen, pedidos y pagos con detalle e historial, acciones de estado, cotizaciones y visibilidad del catálogo. Reemplazó a «Incidentes» en el menú. | `specs/carrito-compra/CLAUDE_CARRITO_COMPRA.md` |
 | `home-ergo/` | 43 arch. · 2.920 líneas | Portada comercial pública (`/`): galería, promociones, videos, franja de contacto y chat de ventas. Hero, servicios, videos y contacto viven en 4 JSON de `config/`; promociones, alianzas y galería llegan de `GET home-imagenes` (Spec 04). | `specs/home-ergo/CLAUDE_HOME_ERGO.md` |
 
 ### Módulos de negocio
@@ -206,7 +208,7 @@ Cada carpeta de primer nivel de `src/` es un **módulo autocontenido**, típicam
 | `Chequeo/` | 75 arch. · 5.887 líneas | El módulo más grande y antiguo: chequeo preventivo cardiovascular para `Medicos` y `Usuario` (`Administrador` migró a `chequeo-administrador/`). Tabla de deportistas, alta/edición, ECG, carga masiva, IMC, exportación a Excel. |
 | `EmergenciaDeportivas/` | 24 arch. · 2.026 líneas | Panel del perfil `Emergencia Deportiva`: estadísticas de incidentes por liga, club, categoría, gravedad y parte del cuerpo. |
 | `AgendarHora/` | 23 arch. · 1.036 líneas | Reserva de horas y catálogo de servicios; pago por Transbank WebPay. |
-| `Servicios/` | 22 arch. · 1.859 líneas | Página pública de servicios ofrecidos. |
+| `Servicios/` | 22 arch. · 1.859 líneas | Página pública de servicios anterior. **Intacta y sin rutear** desde que entró `servicio-cart-flow` (su import está comentado en `routes.ts`): es la vía de reversa. |
 | `Certificados/` | 21 arch. · 995 líneas | Emisión, validación y descarga de certificados en PDF por RUT. |
 | `Home/` | 21 arch. · 1.354 líneas | Portada anterior. **Intacta y sin rutear** desde que entró `home-ergo`: es la vía de reversa. |
 | `pagos-mensual/` | 14 arch. · 1.798 líneas | Resumen mensual de pagos y su variante MDC (perfil `Administrador`). |
@@ -217,7 +219,7 @@ Cada carpeta de primer nivel de `src/` es un **módulo autocontenido**, típicam
 | `User/` | 10 arch. · 428 líneas | Alta y edición de usuarios; formulario declarado en `config/custom-form.json`. |
 | `reserva-hora/` | 10 arch. · 412 líneas | Agenda mensual con FullCalendar. **Su ruta está comentada** en `routesErgo.ts`. |
 | `Bioimpedancia/` | 8 arch. · 825 líneas | Composición corporal. `IBioimpedanciaAll` es **la entidad mejor tipada del repo**. |
-| `Incidentes/` | 8 arch. · 411 líneas | Registro de lesiones deportivas con jerarquía liga → club → categoría. |
+| `Incidentes/` | 8 arch. · 411 líneas | Registro de lesiones deportivas con jerarquía liga → club → categoría. Su entrada de `routesErgo.ts` está en `status: false` desde que entró «Carrito Compra». |
 | `Url/` | 8 arch. · 304 líneas | Resolución de URLs de certificados. |
 | `Maps/` | 4 arch. · 111 líneas | Mapa con Mapbox. |
 | `AsistenteVirtual/` | 2 arch. · 19 líneas | Envoltorio del asistente. |
@@ -333,7 +335,9 @@ rol, revisa ambos sitios.
 - Bioimpedancia y composición corporal.
 - Certificados en PDF: emisión, validación y descarga.
 - Incidentes y lesiones deportivas, con estadísticas por liga, club y categoría.
-- Agenda de horas, reservas y pago en línea por Transbank WebPay.
+- Tienda pública de servicios y exámenes (`/servicios`): carro con varios pacientes, preparación consolidada, agenda
+  por bloques con cupo y pago por Webpay, transferencia o efectivo. El total lo calcula siempre el back.
+- Mantenedor «Carrito Compra» del Administrador: pedidos, pagos, estados con historial, cotizaciones y catálogo.
 - Estadísticas agregadas por institución.
 - Exportación a Excel.
 - Asistentes de IA: clínico (SAM), por voz, comercial (portada), el de la ficha clínica y el del

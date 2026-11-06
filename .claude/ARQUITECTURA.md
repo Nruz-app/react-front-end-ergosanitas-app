@@ -149,16 +149,19 @@ cada servicio; no hay una constante global).
 | **Juego de cartas** | `juego-cartas/{user_email}?search=` · `juego-cartas/detalle/{rut_paciente}` · `juego-cartas/niveles` |
 | **Incidentes** | `incidencia-deportivos/create` · `/find-by-user/{user_email}` · `/count-club/…` · `/count-liga/…` · `/count-gravedad/…` · `/liga-casos/…` · `/lesion-frecuente/…` · `/sp_estadistica_liga|_categoria|_lesiones|_lesiones_fechas|_parte_cuerpo/{user_email}` |
 | **Estadísticas** | `estadisticas/estadistica-imc|-presion|-saturacion|-hemoglucotest/{user_email}` · `estadisticas/agenda-mensual` · `estadisticas/pago-mensual` · `/estadistica-pago-mensual` · `/estadistica-pago-mdc` · `/update-pago-mensual` · `/delete-pago-mensual` |
-| **Agenda / servicios / pago** | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
+| **Agenda / servicios / pago** (flujo anterior, sin ruta visible) | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
+| **Carro de servicios** (`src/servicio-cart-flow/`, página `/servicios`) | `cart-flow/comunas` · `cart-flow/catalogo` · `POST cart-flow/carritos` · `cart-flow/carritos/{uuid}` (GET/PUT) · `…/pacientes[/{id}[/quitar]]` · `…/lineas[/{id}[/quitar]]` · `cart-flow/agenda/bloques?carrito=` · `…/checkout` (multipart) · `cart-flow/pedidos/{numero}?t=` · `cart-flow/pedidos/{numero}/webpay` · `cart-flow/cotizaciones` |
+| **Mantenedor del carro** (`src/carrito-compra/`, perfil Administrador) | `cart-flow/admin/resumen` · `cart-flow/admin/pedidos` · `/pedidos/{numero}` · `PUT /pedidos/{numero}/estado` · `POST /ordenes/{id}/enlace` · `cart-flow/admin/cotizaciones` · `PUT /cotizaciones/{id}/estado` · `cart-flow/admin/productos` · `PUT /productos/{sku}/visibilidad` (todos con `user_email`) |
 | **Imágenes del Home** | `home-imagenes` (público, solo activas; lo consume `src/home-ergo/`) · `home-imagenes/admin` · `POST home-imagenes` (multipart) · `PUT home-imagenes/{id}` · `PUT home-imagenes/{id}/activo` · `DELETE home-imagenes/{id}?user_email=` (los cinco últimos, `src/chequeo-administrador/`) |
 | **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico, resuelve por RUT) · `sam-assistant-club/as-question` (**por institución**: body `{ email, prompt, sessionId }`; el back expone `sam-assistant-club/reset-search`, pero el front no lo llama) · `chat-comercial/as-question` (**no existe aún**, eco) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
 
-El back expone 90 operaciones (contrato en `Back-end/ergosanitas-app/docs/openapi.yaml`); este
+El back expone 119 operaciones (contrato en `Back-end/ergosanitas-app/docs/openapi.yaml`); este
 catálogo lista solo las que el front consume. **Existen en el back y el front no las llama**:
 `chequeo-cardiovascular-word/{id_paciente}` (Word), `electro-cardiograma/find-by-rut`,
 `sam-assistant-club/reset-search`, `file-upload` (la llamada está comentada en
 `useChequeoService.ts`), `GET user`, `execute-link-simbolik`, los dos `*/health` y
-`transbank/web-pay-response` (la llama Transbank, no el front). Antes de crear un endpoint
+`transbank/web-pay-response` y `cart-flow/webpay/retorno` (las llama Transbank, no el front), `cart-flow/catalogo/{sku}` y
+`cart-flow/admin/ordenes/{id}/descarga` (el front abre la URL firmada que devuelve `.../enlace`, no arma esta ruta). Antes de crear un endpoint
 nuevo, revisa si ya está en esa lista.
 
 ⚠️ **Los asistentes están separados por endpoint a propósito, y es una separación de seguridad.**
@@ -184,6 +187,11 @@ catálogo que comprueban quién las hace**: `POST`, `PUT` y `DELETE` exigen un `
 `Administrador` y responden 403 si no. `GET home-imagenes/admin` es público. El `PUT` **reemplaza**:
 un `caption` que no viaje queda en `null`. La URL de cada imagen llega absoluta en `src`, armada
 por el back con `API_PATH_HOME`.
+
+⚠️ **Los de `cart-flow/*` van todos bajo el sobre A** (`{success, message, data}`; en un error, `error` trae el código
+—`bloque_lleno`, `requiere_confirmacion`, `transicion_invalida`…— o la lista de bloqueos del carro). **El front nunca
+calcula un precio**: cada acción del carro devuelve el carro entero recalculado por el back y se reemplaza tal cual. Los
+de `cart-flow/admin/*` exigen `user_email` de perfil `Administrador` (403 si no), igual que `home-imagenes`.
 
 Patrones observables, útiles al diseñar endpoints nuevos: los listados por institución terminan
 en `/{user_email}`, los históricos por persona en `/{rut_paciente}`, los PDF se abren con
