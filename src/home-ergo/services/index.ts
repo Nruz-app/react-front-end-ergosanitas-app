@@ -1,5 +1,5 @@
-// Chat comercial de la portada. Hoy responde con eco: el endpoint del backend todavía
-// no existe y el interruptor `USAR_ECO` vive dentro del servicio.
+// Chat comercial de la portada, «Ergosanito» (Spec 05): consume `chat-comercial/as-question`
+// del back y guarda la conversación en `localStorage`. `USAR_ECO` sigue dentro del servicio.
 export { UseChatComercialService } from './UseChatComercialService';
 
 // Imágenes de promociones, alianzas y galería (Spec 04). Las lee el hook `useImagenesHome`.

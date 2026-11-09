@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LoginIcon from '@mui/icons-material/Login';
 import { ModalContext, SubMenuContext } from '../common/context';
 
 import { routes } from './routes';
@@ -210,46 +210,65 @@ export const Navigation = () => {
                             ))}
                         </Box>
     
-                        <Box
+                        {/* Mismo lenguaje que el CTA principal del Hero de `home-ergo`
+                            (píldora, peso 700, sin mayúsculas forzadas) y el mismo azul:
+                            `#1976d2` / `#1565c0` son `azulErgo` y su hover en
+                            `home-ergo/config/tema-home.ts`. Se copian como literales para no
+                            atar el navegador a un módulo. Es un `Button` real —antes era un
+                            `Box` con `onClick`— para que se pueda usar con teclado. */}
+                        <Button
+                            variant="contained"
                             onClick={handleOpenModal}
-                            title={'Ingresa Ergosanitas'}
+                            title="Ingresa a Ergo Sanitas"
+                            aria-label="Ingresar a Ergo Sanitas"
+                            startIcon={<LoginIcon />}
                             sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: '#2196F3', // Azul más vibrante
-                                padding: { xs: '12px 16px', sm: '16px 24px' }, // Espaciado adaptado a diferentes tamaños
-                                borderRadius: '30px', // Bordes más redondeados
-                                boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Sombra más pronunciada y elegante
-                                maxWidth: '400px', // Tamaño más definido
-                                color: 'white',
-                                textAlign: 'center',
-                                transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Transiciones suaves
-                                margin: '0 auto', // Centra el botón en la pantalla
+                                flexShrink    : 0,
+                                // En `xs` la barra deja ~280 px útiles (360 menos el padding
+                                // del AppBar y del Container) para logo, menú, «ERGO SANITAS» y
+                                // este botón; por eso se compacta ahí y no encima del título.
+                                ml            : { xs: 0.5, md: 2 },
+                                minHeight     : { xs: 40, sm: 44 },
+                                px            : { xs: 1.5, sm: 2.5, md: 3 },
+                                py            : { xs: 0.75, sm: 1 },
+                                borderRadius  : 999,
+                                fontSize      : { xs: '0.8125rem', sm: '0.95rem', md: '1rem' },
+                                fontWeight    : 700,
+                                letterSpacing : '0.02em',
+                                textTransform : 'none',
+                                whiteSpace    : 'nowrap',
+                                bgcolor       : '#1976d2',
+                                boxShadow     : '0 2px 8px rgba(0, 0, 0, 0.25)',
+                                transition    : 'background-color 0.2s ease, box-shadow 0.2s ease',
+                                '& .MuiButton-startIcon': {
+                                    mr: { xs: 0.5, sm: 1 },
+                                },
                                 '&:hover': {
-                                transform: 'scale(1.05)', // Efecto de hover para aumentar ligeramente el tamaño
-                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.4)', // Sombra más profunda al hacer hover
+                                    bgcolor  : '#1565c0',
+                                    boxShadow: '0 4px 14px rgba(25, 118, 210, 0.45)',
+                                },
+                                '&:focus-visible': {
+                                    outline      : '2px solid #fff',
+                                    outlineOffset: 2,
+                                },
+                                // Bajo 360 px (iPhone SE de primera generación y similares) no
+                                // caben logo, menú, «ERGO SANITAS» y el texto del botón: queda
+                                // un botón circular solo con el ícono. El nombre accesible lo
+                                // sigue dando `aria-label`.
+                                '@media (max-width: 359.95px)': {
+                                    minWidth : 40,
+                                    width    : 40,
+                                    height   : 40,
+                                    px       : 0,
+                                    '& .MuiButton-startIcon': { m: 0 },
+                                    '& .texto-ingresar'     : { display: 'none' },
                                 },
                             }}
-                            >
-                            <ManageAccountsIcon
-                                className="pointer"
-                                sx={{
-                                fontSize: { xs: '2rem', sm: '2.5rem' }, // Tamaño del ícono adaptado a diferentes tamaños
-                                marginRight: { xs: '8px', sm: '16px' }, // Margen adaptado
-                                }}
-                            />
-                            <Typography
-                                sx={{
-                                fontWeight: 'bold',
-                                fontSize: { xs: '1.1rem', sm: '1.3rem' }, // Texto adaptado a diferentes tamaños
-                                letterSpacing: '0.08em',
-                                lineHeight: '1.3',
-                                }}
-                            >
+                        >
+                            <Box component="span" className="texto-ingresar">
                                 Ingresar
-                            </Typography>
-                        </Box>
+                            </Box>
+                        </Button>
                     </Toolbar>
                 </Container>
             </AppBar>

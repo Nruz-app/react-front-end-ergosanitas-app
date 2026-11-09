@@ -19,4 +19,6 @@ export type {
 export type {
     IMensajeChatHome,
     IRespuestaChatHome,
+    ISugerenciaChatHome,
+    IConfigChatHome,
 } from './chat-home.interface';

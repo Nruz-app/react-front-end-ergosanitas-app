@@ -1,8 +1,9 @@
-import { FormEvent } from 'react';
+import { FormEvent, useId } from 'react';
 
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
 
 import { TEMA_HOME } from '../../config/tema-home';
@@ -12,6 +13,8 @@ interface Props {
     onChange      : ( value: string ) => void;
     onEnviar      : ( mensaje: string ) => void;
     placeholder   : string;
+    /** Tope del back (`prompt` `max:500`). El campo no deja escribir ni pegar más. */
+    maxCaracteres : number;
     /** Bloquea el envío mientras hay una respuesta en curso. */
     deshabilitado?: boolean;
 }
@@ -27,8 +30,17 @@ interface Props {
  *
  * El botón de envío es un icono y no un botón con la palabra «Enviar»: en un panel de
  * 360 px, un botón de texto se come el ancho que necesita el campo.
+ *
+ * El contador `n/max` (Spec 05) avisa antes de chocar con el tope: desde el 90 % pasa al
+ * color de advertencia del tema. Va asociado al campo por `aria-describedby` y no con
+ * `aria-live`, que anunciaría cada tecla.
  */
-export const CajaMensaje = ( { value, onChange, onEnviar, placeholder, deshabilitado = false }: Props ) => {
+export const CajaMensaje = ( { value, onChange, onEnviar, placeholder, maxCaracteres, deshabilitado = false }: Props ) => {
+
+    const idContador = useId();
+
+    /** Desde el 90 % del límite el contador se pinta en color de advertencia. */
+    const cercaDelLimite = value.length >= maxCaracteres * 0.9;
 
     const alEnviar = ( evento: FormEvent<HTMLFormElement> ) => {
 
@@ -47,40 +59,56 @@ export const CajaMensaje = ( { value, onChange, onEnviar, placeholder, deshabili
             component="form"
             onSubmit={ alEnviar }
             sx={{
-                display     : 'flex',
-                alignItems  : 'flex-end',
-                gap         : 1,
                 p           : 1.25,
                 borderTop   : `1px solid ${ TEMA_HOME.borde }`,
                 bgcolor     : '#fff',
             }}
         >
-            <TextField
-                fullWidth
-                multiline
-                size="small"
-                minRows={ 1 }
-                maxRows={ 4 }
-                placeholder={ placeholder }
-                value={ value }
-                onChange={ ( evento ) => onChange( evento.target.value ) }
-                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '18px', fontSize: '0.92rem' } }}
-            />
+            <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
+                <TextField
+                    fullWidth
+                    multiline
+                    size="small"
+                    minRows={ 1 }
+                    maxRows={ 4 }
+                    placeholder={ placeholder }
+                    value={ value }
+                    onChange={ ( evento ) => onChange( evento.target.value ) }
+                    inputProps={{ maxLength: maxCaracteres, 'aria-describedby': idContador }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '18px', fontSize: '0.92rem' } }}
+                />
 
-            <IconButton
-                type="submit"
-                aria-label="Enviar mensaje"
-                disabled={ deshabilitado || value.trim().length === 0 }
+                <IconButton
+                    type="submit"
+                    aria-label="Enviar mensaje"
+                    disabled={ deshabilitado || value.trim().length === 0 }
+                    sx={{
+                        flexShrink : 0,
+                        bgcolor    : TEMA_HOME.azulErgo,
+                        color      : '#fff',
+                        '&:hover'  : { bgcolor: '#1565c0' },
+                        '&.Mui-disabled': { bgcolor: TEMA_HOME.borde, color: '#fff' },
+                    }}
+                >
+                    <SendIcon fontSize="small" />
+                </IconButton>
+            </Box>
+
+            <Typography
+                id={ idContador }
+                variant="caption"
                 sx={{
-                    flexShrink : 0,
-                    bgcolor    : TEMA_HOME.azulErgo,
-                    color      : '#fff',
-                    '&:hover'  : { bgcolor: '#1565c0' },
-                    '&.Mui-disabled': { bgcolor: TEMA_HOME.borde, color: '#fff' },
+                    display    : 'block',
+                    textAlign  : 'right',
+                    pr         : 6,
+                    mt         : 0.25,
+                    fontSize   : '0.7rem',
+                    color      : cercaDelLimite ? 'warning.dark' : 'text.secondary',
+                    fontWeight : cercaDelLimite ? 700 : 400,
                 }}
             >
-                <SendIcon fontSize="small" />
-            </IconButton>
+                { value.length }/{ maxCaracteres }
+            </Typography>
         </Box>
     );
 };
