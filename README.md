@@ -446,7 +446,7 @@ Las del proyecto viven en `.claude/skills/`; las genéricas de terceros se insta
 | `ergo-chequeo-cardiovascular` | `src/chequeo-cardiovascular/` completo (84 archivos): los 5 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, el Home de chat + lista + 5 gráficos, las cuatro reglas duras. |
 | `ergo-common` | `src/common/` completo (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos, localStorage, y por qué `table/` es código muerto. |
 | `ergo-login` | `src/Login/` completo (13 archivos): modal dual, `custom-form.json`, `UseRegister` y sus 5 consumidores externos. |
-| `spec-impl-ergo` | `/spec-impl` más el cierre propio del proyecto: build, lint, revisión por el agente dueño de cada módulo y actualización de la documentación. |
+| `spec-impl-ergo-front` | `/spec-impl` más el cierre propio del proyecto: build, lint, revisión por el agente dueño de cada módulo y actualización de la documentación. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico, importado de `Klerith/fernando-skills` (ver `skills-lock.json`). |
 
 ```bash
@@ -477,7 +477,7 @@ Las features grandes pasan por especificación antes del código:
 
 ```bash
 /spec <descripción>          # diseña la spec; nunca escribe código. Queda en Borrador.
-/spec-impl-ergo <NN-slug>    # implementa una spec Aprobada, con el cierre del proyecto
+/spec-impl-ergo-front <NN-slug>    # implementa una spec Aprobada, con el cierre del proyecto
 ```
 
 Convenciones:

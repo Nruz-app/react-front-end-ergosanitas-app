@@ -4,7 +4,7 @@ Guía del módulo `src/chequeo-administrador/`. Recoge el estado tras las Specs 
 que romper. Léela antes de tocar el módulo. Si esta guía y una skill discrepan, **manda esta guía**.
 
 El módulo **no tiene agente ni skill propios** todavía: se trabaja con `ergosanitas-developer` más
-esta guía. Si se crean, hay que actualizar las tablas de la skill `ergo-father` §2 y §5.
+esta guía. Si se crean, hay que actualizar las tablas de la skill `ergo-father` §2 y §6.
 
 | Spec | Qué hizo | Estado |
 |---|---|---|
