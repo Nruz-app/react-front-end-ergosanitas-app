@@ -18,17 +18,49 @@
  * `isGpt: true`, porque ocupan el mismo hueco visual que una respuesta.
  */
 export interface IMensajeChatHome {
-    text  : string;
-    isGpt : boolean;
+    text     : string;
+    isGpt    : boolean;
+    /** Solo en turnos del asistente: pinta el botón de WhatsApp bajo la burbuja. */
+    derivar? : boolean;
 }
 
 /**
- * Respuesta de `POST {API}/chat-comercial/as-question`.
+ * Respuesta de `POST {API}/chat-comercial/as-question` (SPEC 06 del back, «Ergosanito»).
  *
- * El endpoint todavía no existe: mientras `USAR_ECO` esté en `true`, el servicio
- * fabrica esta misma forma localmente devolviendo la pregunta recibida. El contrato se
- * fija aquí para que el backend, cuando se escriba, tenga a qué ajustarse.
+ * El back devuelve siempre los tres campos, pero `sessionId` y `derivar` se declaran
+ * opcionales a propósito: el `<T>` del `ApiAdapter` no valida nada. Si falta `sessionId`,
+ * el front conserva el que tenía; si falta `derivar`, se trata como `false`.
+ * Con `USAR_ECO` en `true` el servicio fabrica esta misma forma localmente.
  */
 export interface IRespuestaChatHome {
-    response : string;
+    response   : string;
+    /** Hilo que el back reconoce. Puede ser distinto del enviado si el nuestro no era un UUID. */
+    sessionId? : string;
+    /** `true` cuando el asistente no supo responder y derivó a contacto. */
+    derivar?   : boolean;
+}
+
+/** Una sugerencia: lo que se ve en el chip y lo que se envía al pulsarlo. */
+export interface ISugerenciaChatHome {
+    etiqueta : string;
+    pregunta : string;
+}
+
+/** Textos del chat, desde config/home-chat.json. */
+export interface IConfigChatHome {
+    titulo         : string;
+    subtitulo      : string;
+    bienvenida     : string;
+    aviso          : string;
+    placeholder    : string;
+    maxCaracteres  : number;
+    maxTurnos      : number;
+    botonDerivar   : string;
+    sugerencias    : ISugerenciaChatHome[];
+    errores        : {
+        limite   : string;
+        red      : string;
+        servidor : string;
+        vacia    : string;
+    };
 }

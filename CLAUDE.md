@@ -294,11 +294,13 @@ Lo mínimo que hay que saber:
 - **Los enlaces de contacto salen solo de `config/canales-contacto.tsx`.** Ningún
   componente arma por su cuenta una URL de `wa.me`, `tel:` ni `mailto:`.
 - **El chat comercial es un clon**, no un import de `src/presentation/`. Usa endpoint propio
-  `POST /chat-comercial/as-question` —que **todavía no existe**— y su propia clave de
-  sesión, `home_chat_session_id`. Reutilizar `sam-assistant/as-question` aquí expondría
-  datos de pacientes a visitantes anónimos: la separación es de seguridad.
-- **`USAR_ECO = true` en `UseChatComercialService.ts`**: hoy el chat devuelve la misma
-  pregunta. Se pone en `false` cuando exista el backend.
+  `POST /chat-comercial/as-question` (SPEC 06 del back, «Ergosanito»: `{ prompt, sessionId? }`
+  → `{ sessionId, response, derivar }`) y sus propias claves, `home_chat_session_id` y
+  `home_chat_mensajes`. Reutilizar `sam-assistant/as-question` aquí expondría datos de
+  pacientes a visitantes anónimos: la separación es de seguridad.
+- **`USAR_ECO = false`** (Spec 05): el chat habla con el back real y guarda la conversación,
+  con los datos del visitante enmascarados. ⚠️ No se publica en `main` antes de que la
+  SPEC 06 del back esté desplegada en producción.
 - **`dist/` ronda los 60 MB** (las 26 imágenes pesan 30 MB) y el CI lo sube entero por FTP
   en cada push a `main`. Sacar los videos del repositorio es justo lo que evita que sean
   139 MB más, subidos tres veces en paralelo por la matriz de Node.
@@ -525,7 +527,8 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (99 archivos, ~7.800 líneas): los 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente con sus dos fuentes de datos y el juego de cartas por nivel, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
-| `spec-impl-ergo` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
+| `spec-ergo-front` | `/spec` + convenciones del repo para **diseñar o revisar** una spec en `specs/<modulo>/` (ver sección siguiente). |
+| `spec-impl-ergo-front` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
 
 ### Agentes (`.claude/agents/`)
 
@@ -552,13 +555,14 @@ que no es de ninguno de los dos (lo lleva `ergosanitas-developer`). El **ruteo**
 **Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/` y
 `src/chequeo-administrador/` usan `ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
 
-## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo`)
+## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo-front`)
 
 El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`:
 
 - **`/spec <descripción>`** — diseña una spec por fases (nunca escribe código). Guarda en `specs/<modulo>/NN-slug.md` en estado `Borrador`. Lee `template.md` de la skill para la estructura.
+- **`/spec-ergo-front <descripción | spec existente>`** — el diseñador que conviene usar aquí: invoca `/spec` y le añade la carpeta por módulo, la guía `CLAUDE_<MODULO>.md`, el contrato copiado del back real y su spec hermana; con una spec existente entra en **modo revisión** (hallazgos con línea, contrato, criterios, archivos). Deja la spec en `Borrador`.
 - **`/spec-impl <NN-slug>`** — implementa una spec **ya aprobada** (`Aprobado`); crea/cambia a la rama `spec-NN-slug` (según `specs/.spec-config.yml`, `AutoCreateBranch: true` por defecto) e implementa por pasos con pausas para revisar diffs.
-- **`/spec-impl-ergo <NN-slug>`** — **el que conviene usar en este repo.** No reimplementa nada:
+- **`/spec-impl-ergo-front <NN-slug>`** — **el que conviene usar en este repo.** No reimplementa nada:
   invoca `/spec-impl` tal cual y le añade el cierre propio del proyecto — detectar módulos
   tocados, `npm run build` + `eslint`, **revisión por el agente dueño de cada módulo**, repaso de
   los criterios de aceptación, y actualización de `CLAUDE_<MODULO>.md` / `ARQUITECTURA.md` /

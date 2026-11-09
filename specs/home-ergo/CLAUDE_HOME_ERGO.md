@@ -1,14 +1,14 @@
 # CLAUDE_HOME_ERGO.md — Guía del módulo `src/home-ergo/`
 
 Documento de referencia para trabajar sobre la portada comercial de ergosanitas.com.
-Recoge lo que decidieron las Specs 01 a 04, por qué, y qué **no** hay que romper.
+Recoge lo que decidieron las Specs 01 a 05, por qué, y qué **no** hay que romper.
 
 > **Lee esto antes de tocar `src/home-ergo/`.** Las specs
 > (`01-home-comercial-chat-ventas.md` y `02-promociones-arriba-y-contacto-visible.md`)
 > tienen el detalle y la justificación de cada decisión; este archivo es el estado
 > consolidado.
 
-**Última actualización:** 2026-11-03 (Spec 04: promociones, alianzas y galería desde la API)
+**Última actualización:** 2026-11-09 (Spec 05: chat «Ergosanito» conectado al backend real)
 
 ---
 
@@ -30,7 +30,9 @@ Recoge lo que decidieron las Specs 01 a 04, por qué, y qué **no** hay que romp
 6. **El contenido vive en JSON o en la API, nunca en los componentes.** Ningún `.tsx` puede
    llevar una ruta de imagen o de video escrita a mano. Desde la Spec 04, promociones,
    alianzas y galería vienen de `GET api/home-imagenes`; hero, servicios, videos y contacto
-   siguen en JSON.
+   siguen en JSON. Desde la Spec 05 los textos del chat (cabecera, bienvenida, aviso,
+   sugerencias, errores) también: `config/home-chat.json`. La bienvenida escrita en el
+   `.tsx` era la excepción heredada de la Spec 01 y ya no existe.
 7. **Sin tests.** El proyecto no tiene runner configurado. No inventes comandos de test.
 8. **`npm run build` debe quedar en verde.** `tsc -b` corre antes de Vite.
 
@@ -43,8 +45,10 @@ Recoge lo que decidieron las Specs 01 a 04, por qué, y qué **no** hay que romp
 | 01 | Home comercial «home-ergo» con chat de ventas | **Implementado** |
 | 02 | Promociones al inicio y contacto siempre visible | **Implementado** |
 | 03 | Ampliación de gráficas al pasar el cursor y contacto solo en móvil | **Implementado** |
+| 04 | Promociones, alianzas y galería desde la API | **Implementado** |
+| 05 | Chat «Ergosanito» conectado al backend real | **Aprobado** (implementación terminada; faltan los criterios de navegador, back local y producción) |
 
-Las tres están en **`Implementado`**. Ese paso lo da el humano tras comprobar los criterios
+Las cuatro primeras están en **`Implementado`**. Ese paso lo da el humano tras comprobar los criterios
 en el navegador, nunca el agente: `/spec-impl` se niega a implementar una spec que no esté
 en `Aprobado`, y no toca el estado al terminar.
 
@@ -63,17 +67,19 @@ src/home-ergo/
 │   ├── home-hero.json            hero + los 2 indicadores
 │   ├── home-servicios.json       7 servicios
 │   ├── home-videos.json          5 videos (hay 7 archivos en el servidor)
-│   └── home-contacto.json        teléfono, WhatsApp, correo, redes, mensajes
+│   ├── home-contacto.json        teléfono, WhatsApp, correo, redes, mensajes
+│   └── home-chat.json            textos del chat: cabecera, bienvenida, aviso, chips, errores (Spec 05)
 ├── interface/
 │   ├── index.ts
 │   ├── home.interface.ts         IHeroHome, IPortadaHome, IIndicadorHome,
 │   │                             IServicioHome, IImagenHome, IPromocionHome,
 │   │                             IVideoHome, IContactoHome, ICanalContacto,
 │   │                             SeccionImagenHome, IHomeImagenApi, IRespuestaHomeImagenes
-│   └── chat-home.interface.ts    IMensajeChatHome, IRespuestaChatHome
+│   └── chat-home.interface.ts    IMensajeChatHome, IRespuestaChatHome,
+│                                 ISugerenciaChatHome, IConfigChatHome
 ├── services/
 │   ├── index.ts
-│   ├── UseChatComercialService.ts
+│   ├── UseChatComercialService.ts preguntar, leerMensajes, guardarMensajes (Spec 05)
 │   └── UseHomeImagenesService.ts GET home-imagenes (Spec 04)
 ├── hooks/
 │   ├── index.ts
@@ -100,8 +106,10 @@ src/home-ergo/
 │       ├── BotonChatFlotante.tsx   el FAB
 │       ├── BurbujaBot.tsx
 │       ├── BurbujaVisitante.tsx
-│       ├── CajaMensaje.tsx
-│       └── LoaderEscribiendo.tsx
+│       ├── CajaMensaje.tsx         campo con tope de 500 y contador (Spec 05)
+│       ├── LoaderEscribiendo.tsx
+│       ├── SugerenciasChat.tsx     chips con el historial vacío (Spec 05)
+│       └── BotonDerivarWhatsapp.tsx botón bajo una respuesta con `derivar` (Spec 05)
 └── pages/
     ├── index.ts                  barril con lazy()
     ├── HomeErgoPage.tsx          compone las 10 secciones + Helmet + chat + rail
@@ -563,29 +571,57 @@ inmune a cambios en el asistente global.
 
 El asistente que sí existe (`sam-assistant/as-question`) resuelve **pacientes por RUT**.
 Exponerlo a un visitante anónimo de la portada arriesga filtrar datos clínicos. Por eso el
-Home tiene endpoint propio:
+Home tiene endpoint propio, que el back implementa en su SPEC 06 con la persona
+«Ergosanito»:
 
 ```
-POST {VITE_API}{VITE_API_PATH}/chat-comercial/as-question   { prompt, sessionId } → { response }
+POST {VITE_API}{VITE_API_PATH}/chat-comercial/as-question   pública, throttle 20/min y 200/día por IP
+body  { prompt, sessionId? }        prompt máx. 500; sessionId opcional (si no es UUID, el back crea uno)
+200   { sessionId, response, derivar }
 ```
 
 **La separación es de seguridad, no de estilo.** No reutilices `sam-assistant` aquí.
 
+- `response` llega sin markdown y sin el marcador interno `[DERIVAR]`; `BurbujaBot` lo pinta
+  como texto plano.
+- `derivar: true` → `BotonDerivarWhatsapp` bajo esa burbuja, con `urlWhatsapp` de
+  `canales-contacto.tsx`. La derivación la decide el back; el front no busca el teléfono.
+- Tras un 200, si el `sessionId` devuelto es distinto del guardado, reemplaza al de
+  `home_chat_session_id`.
+- **Validación UUID**: si lo guardado no es un UUID (editado a mano, corrupto), la petición
+  va **sin** `sessionId`. Un valor de más de 64 caracteres daría 422 en cada mensaje.
+
+### Errores
+
+El servicio traduce el fallo a un texto de `errores` de `home-chat.json` y `ChatComercial`
+lo pinta tal cual, como turno del asistente. Nunca se muestra el `message` del back ni el
+de axios.
+
+| Situación | Texto |
+|---|---|
+| 429 (cupo por minuto o por día) | `errores.limite` — neutro, «Espera un momento» |
+| Sin respuesta (red, CORS, timeout) | `errores.red` |
+| 422, 500 u otro código | `errores.servidor` |
+| 200 sin `response` | `errores.vacia` |
+
 ### `USAR_ECO`
 
 ```ts
-const USAR_ECO = true;   // en services/UseChatComercialService.ts
+const USAR_ECO = false;   // en services/UseChatComercialService.ts
 ```
 
-El endpoint todavía **no existe**. En `true` el servicio devuelve la misma pregunta tras
-700 ms de latencia simulada. Las dos ramas son código real y `tsc -b` las type-checkea: la
-llamada HTTP no está comentada a propósito, porque un comentario no compila y se pudre sin
-que nadie se entere.
+El chat habla con el back real. En `true` el servicio devuelve la misma pregunta tras
+700 ms de latencia simulada, con `derivar: false`: es el modo para desarrollar sin back.
+Las dos ramas son código real y `tsc -b` las type-checkea: la llamada HTTP no está
+comentada a propósito, porque un comentario no compila y se pudre sin que nadie se entere.
 
 Es el mismo mecanismo que el `USAR_MOCK` de `UsePacienteService.ts` en ficha clínica.
 
-> ⚠️ **Mientras esté en `true`, el chat le repite al visitante su propia pregunta.**
-> Antes de desplegar con el backend listo, esto va en `false`.
+> ⚠️ **No se despliega a `main` antes que el back.** Comprobar con Postman
+> `POST https://ergosanitas.com/BackEnd/public/api/chat-comercial/as-question` con
+> `{ "prompt": "hola" }` → 200 `{ sessionId, response, derivar }` (código de la SPEC 06,
+> sus dos migraciones y las tablas `cache` / `cache_locks`). Si no, cada mensaje termina en
+> `errores.red` o `errores.servidor`.
 
 ### Tres chats, tres claves de sesión
 
@@ -594,9 +630,19 @@ Es el mismo mecanismo que el `USAR_MOCK` de `UsePacienteService.ts` en ficha cl�
 | `chat_session_id` | asistente global (`src/presentation/`) |
 | `ficha_chat_session_id` | ficha clínica (Spec 04) |
 | `home_chat_session_id` | **portada** |
+| `home_chat_mensajes` | **portada**: conversación visible (Spec 05), no es un hilo |
 
 Están separadas para que un hilo abierto en la ficha de un paciente no se filtre a lo que
 ve un visitante anónimo en el Home.
+
+`home_chat_mensajes` guarda los últimos `maxTurnos` (20) turnos como `IMensajeChatHome[]`.
+Solo se enmascaran los turnos **del visitante**, con la misma regla del back
+(`ChatComercialService::enmascarar()`): correo → `[EMAIL]`, teléfono → `[TELEFONO]`,
+RUT → `[RUT]`, en ese orden. El teléfono de una derivación sigue legible tras un F5. Las
+regex del front no usan *lookbehind* (el *target* de Vite incluye Safari 14): si el back
+cambia `enmascarar()`, hay que revisar las del servicio. Los turnos de error no se
+guardan, y `leerMensajes()` cae a `[]` si el JSON está roto. Todo acceso a `localStorage`
+va en `try/catch`.
 
 ### Lo que se quitó del original
 
@@ -610,9 +656,16 @@ ve un visitante anónimo en el Home.
   cierra sin leer.
 - La burbuja de bienvenida se pinta fija y **no vive en el historial**: nadie la escribió,
   así que no es un turno de la conversación.
-- El historial vive en `useState` dentro de `ChatComercial`. Sin contexto, sin store y
-  **sin persistencia** entre recargas.
-- Los errores se pintan como turno del asistente y proponen WhatsApp como salida.
+- El historial vive en `useState` dentro de `ChatComercial`, sin contexto ni store, y
+  **se persiste** en `home_chat_mensajes` (Spec 05): un F5 conserva la conversación.
+- Franja de aviso fija entre la cabecera y la lista («No entrego información de pacientes
+  ni diagnósticos», desde el JSON): no se va con el scroll.
+- Con el historial vacío, cuatro chips de sugerencias bajo la bienvenida; cada uno envía
+  una pregunta completa, distinta de su etiqueta.
+- `CajaMensaje` no deja escribir ni pegar más de 500 caracteres y muestra `n/500`, en color
+  de advertencia desde el 90 %.
+- Los errores se pintan como turno del asistente con los textos de `errores`, y no se
+  guardan.
 - Escape cierra el panel; el foco va al campo de texto al abrir.
 
 ---
@@ -631,7 +684,11 @@ Comprobaciones que conviene repetir tras cualquier cambio:
 grep -rn "/home-ergo/img\|/home-ergo/video" src/home-ergo --include=*.tsx
 
 # Una sola URL de WhatsApp en todo el módulo, en canales-contacto.tsx
-grep -rn "wa\.me" src/home-ergo --include=*.tsx --include=*.ts
+# (con "wa\.me" a secas salen además tres comentarios)
+grep -rn "https://wa\.me" src/home-ergo --include=*.tsx --include=*.ts
+
+# Ningún texto de negocio del chat en los componentes
+grep -rn "Ergosanito\|No entrego información" src/home-ergo --include=*.tsx
 
 # Nombres de archivo sin espacios, tildes ni mayúsculas
 ls public/home-ergo/img public/home-ergo/video | grep -E '[[:upper:][:space:]]|[áéíóúñ]'
@@ -650,8 +707,9 @@ git status --porcelain
 En el navegador, lo que no se puede verificar desde la terminal:
 
 - Al cargar `/`, **ningún `.mp4` en la pestaña Network**; y sí al pulsar play.
-- El chat responde «hola» a «hola», con el loader entre medio.
-- `localStorage` tiene `home_chat_session_id` y `chat_session_id` no se tocó.
+- El chat responde de verdad a «hola», con el loader entre medio (back de la SPEC 06).
+- `localStorage` tiene `home_chat_session_id` igual al `sessionId` devuelto, y
+  `home_chat_mensajes` sobrevive a un F5; `chat_session_id` no se tocó.
 - A 360 px ninguna sección desborda horizontalmente.
 - Activar una foto de galería desde el mantenedor del Administrador y recargar `/` la hace
   aparecer sin tocar código; con el back apagado, las tres secciones de imágenes no aparecen
@@ -669,8 +727,6 @@ Ninguno de estos es un descuido: están medidos, documentados y decididos.
 
 | Pendiente | Detalle |
 |---|---|
-| `USAR_ECO = true` | El chat repite la pregunta. Va en `false` cuando exista el backend |
-| El endpoint `/chat-comercial/as-question` no existe | La spec fija el contrato; el backend es trabajo aparte |
 | Open Graph no lo verán los rastreadores | Helmet inyecta los `<meta>` **en el cliente**. Facebook y WhatsApp no ejecutan JavaScript, así que en un SPA estático leerán el `index.html`, cuyo `<title>` sigue siendo «Ergo Sanitas SPA». Arreglarlo exige tocar `index.html` o prerenderizar: otra spec |
 | ~~`dist/` pesa 201 MB~~ | **Resuelto en parte.** Los 139 MB de video salieron del repositorio y del `dist/`: viven en el servidor. Quedan los 30 MB de imágenes, que sí se despliegan. Apagar una imagen con `activo: false` sigue sin sacarla del despliegue: `public/` se copia completo |
 | El CI despliega tres veces por push | El job corre en matriz `[18.x, 20.x, 22.x]` y la matriz aplica al job entero, así que el paso de `lftp` se ejecuta tres veces en paralelo contra el mismo FTP. Es un problema del workflow, fuera del alcance del módulo. Se arregla moviendo el deploy a un job aparte que dependa del build |

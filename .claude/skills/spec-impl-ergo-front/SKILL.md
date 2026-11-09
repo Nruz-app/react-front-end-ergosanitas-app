@@ -1,17 +1,17 @@
 ---
-name: spec-impl-ergo
+name: spec-impl-ergo-front
 description: Implementa una spec aprobada de Ergosanitas. Delega el flujo completo en /spec-impl (validación del estado, rama, implementación por pasos) y al terminar ejecuta el cierre propio del proyecto: verificación, revisión por el agente dueño de cada módulo tocado, criterios de aceptación y documentación.
 disable-model-invocation: true
 argument-hint: <NN-slug de la spec, ej. 03-imagen-ampliable>
 ---
 
-# /spec-impl-ergo — implementador de specs con cierre Ergosanitas
+# /spec-impl-ergo-front — implementador de specs con cierre Ergosanitas
 
 Este comando **no reimplementa** el flujo de `/spec-impl`: lo invoca tal cual y le añade una
 fase de cierre con los agentes y skills de este proyecto.
 
 ```
-/spec-impl-ergo  =  /spec-impl  +  Fase de cierre Ergosanitas
+/spec-impl-ergo-front  =  /spec-impl  +  Fase de cierre Ergosanitas
 ```
 
 Responde y escribe siempre en español.
@@ -28,6 +28,26 @@ Rama actual:
 
 Specs disponibles:
 !`ls specs/*/ 2>/dev/null || echo "No existe la carpeta specs/"`
+
+---
+
+## Si te ejecuta `ergo-father` desde `D:\ErgoSanitas\Projectos`
+
+El super agente `ergo-father` sigue esta skill leyendo este archivo (no puede invocarla con
+`Skill`: tiene `disable-model-invocation`). En ese caso el directorio actual **no es este repo**,
+así que el «Contexto de sesión» de arriba no se evaluó y `Skill("spec-impl")` puede no
+encontrarse. Entonces:
+
+- Ejecuta a mano: `git -C "D:/ErgoSanitas/Projectos/Front-end/ergosanitas-app" status --short`,
+  `git -C … branch --show-current` y lista `Front-end/ergosanitas-app/specs/*/`.
+- Lee `Front-end/ergosanitas-app/.agents/skills/spec-impl/SKILL.md` (la copia de
+  `.claude/skills/spec-impl/` es un enlace que en Windows queda vacío) y sigue sus cuatro fases tal
+  cual, usando `git -C <repo>` para git y rutas absolutas para leer y editar.
+- `npm run build` y `npx eslint` se corren con `cd "D:/ErgoSanitas/Projectos/Front-end/ergosanitas-app" && …`.
+- Los agentes de la tabla 2.3 no son `subagent_type` desde la raíz: se lanzan con la plantilla de
+  la skill `ergo-father` §5 (general-purpose que adopta `.claude/agents/<nombre>.md`).
+- Todo lo demás (bloqueo por estado, pausas por paso, cierre Ergosanitas, nada de commits) se
+  aplica **igual**.
 
 ---
 

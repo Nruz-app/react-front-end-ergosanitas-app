@@ -1,0 +1,22 @@
+{
+  "titulo": "Ergosanito",
+  "subtitulo": "Asistente virtual de Ergo SaniTas",
+  "bienvenida": "Hola, soy Ergosanito, el asistente virtual de Ergo SaniTas. Te oriento sobre exámenes, precios, cobertura por comuna y preparación. ¿En qué te ayudo?",
+  "aviso": "No entrego información de pacientes ni diagnósticos.",
+  "placeholder": "Escribe tu consulta…",
+  "maxCaracteres": 500,
+  "maxTurnos": 20,
+  "botonDerivar": "Escribir por WhatsApp",
+  "sugerencias": [
+    { "etiqueta": "Exámenes disponibles", "pregunta": "¿Qué exámenes tienen disponibles?" },
+    { "etiqueta": "Precios",              "pregunta": "¿Cuáles son los precios de los exámenes más pedidos?" },
+    { "etiqueta": "¿Llegan a mi comuna?", "pregunta": "¿Llegan a mi comuna?" },
+    { "etiqueta": "Preparación y ayuno",  "pregunta": "¿Qué preparación o ayuno necesito para un examen de sangre?" }
+  ],
+  "errores": {
+    "limite": "Estás enviando muchos mensajes seguidos. Espera un momento y vuelve a intentarlo.",
+    "red": "No pude conectarme. Revisa tu conexión o escríbenos por WhatsApp.",
+    "servidor": "No pude responder en este momento. Inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.",
+    "vacia": "No recibí respuesta. Inténtalo de nuevo o escríbenos por WhatsApp."
+  }
+}

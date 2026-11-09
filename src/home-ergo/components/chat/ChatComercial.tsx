@@ -1,30 +1,43 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import { UseChatComercialService } from '../../services';
 import { TEMA_HOME } from '../../config/tema-home';
+import homeChat from '../../config/home-chat.json';
 import { BotonChatFlotante } from './BotonChatFlotante';
+import { BotonDerivarWhatsapp } from './BotonDerivarWhatsapp';
 import { BurbujaBot } from './BurbujaBot';
 import { BurbujaVisitante } from './BurbujaVisitante';
 import { CajaMensaje } from './CajaMensaje';
 import { LoaderEscribiendo } from './LoaderEscribiendo';
+import { SugerenciasChat } from './SugerenciasChat';
 
-import type { IMensajeChatHome } from '../../interface';
+import type { IConfigChatHome, IMensajeChatHome } from '../../interface';
+
+/** Textos del chat (Spec 05). Tipados para que un JSON mal editado no compile. */
+const textos: IConfigChatHome = homeChat;
 
 /**
- * Saludo de apertura. No pide RUT ni identifica a nadie: quien llega a la portada es un
- * visitante anónimo preguntando por un servicio, no un profesional abriendo una ficha.
+ * Turno tal como se pinta. `error` marca los avisos de fallo del propio front (429, red,
+ * servidor): se ven en pantalla pero no se guardan, porque tras un F5 serían ruido. Es un
+ * tipo local a propósito: `IMensajeChatHome` es lo que se persiste y no lleva esa marca.
  */
-const BIENVENIDA = 'Hola. Soy el asistente de Ergo SaniTas. Cuéntame qué servicio necesitas y te oriento.';
+type IMensajeVista = IMensajeChatHome & { error?: true };
 
 /**
- * Chat comercial flotante de la portada.
+ * Chat comercial flotante de la portada (Specs 01 y 05). El nombre del asistente sale del JSON.
  *
  * El historial vive en este componente y no en un contexto ni en un store: la
- * conversación no la necesita nadie más y no se persiste entre recargas. Con el servicio
- * en modo eco, guardar respuestas que repiten la pregunta no aportaría nada.
+ * conversación no la necesita nadie más. Desde la Spec 05 se persiste en `localStorage`
+ * (`home_chat_mensajes`, a través del servicio): al montar se lee lo guardado y tras cada
+ * respuesta se guarda, con los datos del visitante enmascarados. Así un F5 conserva la
+ * conversación, y el back, con el mismo `home_chat_session_id`, recuerda el mismo hilo.
+ *
+ * Todos los textos (cabecera, bienvenida, aviso, sugerencias, errores) vienen de
+ * `config/home-chat.json`; aquí no se escribe ninguno.
  *
  * El panel arranca cerrado. Un chat que se abre solo encima del contenido es justamente
  * lo que la gente cierra sin leer.
@@ -33,11 +46,13 @@ export const ChatComercial = () => {
 
     const [ abierto, setAbierto ]   = useState( false );
     const [ visitado, setVisitado ] = useState( false );
-    const [ mensajes, setMensajes ] = useState<IMensajeChatHome[]>( [] );
     const [ texto, setTexto ]       = useState( '' );
     const [ cargando, setCargando ] = useState( false );
 
-    const { preguntar } = useMemo( () => UseChatComercialService(), [] );
+    const { preguntar, leerMensajes, guardarMensajes } = useMemo( () => UseChatComercialService(), [] );
+
+    // Inicializador perezoso: `localStorage` se lee una sola vez, al montar.
+    const [ mensajes, setMensajes ] = useState<IMensajeVista[]>( () => leerMensajes() );
 
     const finDeLista = useRef<HTMLDivElement>( null );
     const campo      = useRef<HTMLDivElement>( null );
@@ -70,27 +85,36 @@ export const ChatComercial = () => {
         setVisitado( true );
     };
 
+    /**
+     * Envío común del formulario y de los chips de sugerencias.
+     *
+     * La lista nueva se calcula a partir de `mensajes` de este render y se guarda desde
+     * esa misma lista, no desde un `setMensajes( previos => … )`: mientras `cargando` es
+     * `true` no entra otro envío, así que no hay turnos intermedios que perder.
+     */
     const enviar = async ( mensaje: string ) => {
 
         const limpio = mensaje.trim();
         if ( !limpio || cargando ) return;
 
-        setMensajes( ( previos ) => [ ...previos, { text: limpio, isGpt: false } ] );
+        const conPregunta: IMensajeVista[] = [ ...mensajes, { text: limpio, isGpt: false } ];
+
+        setMensajes( conPregunta );
         setTexto( '' );
         setCargando( true );
 
         try {
-            const respuesta = await preguntar( limpio );
-            setMensajes( ( previos ) => [ ...previos, { text: respuesta, isGpt: true } ] );
+            const { texto: respuesta, derivar } = await preguntar( limpio );
+            const conRespuesta: IMensajeVista[] = [ ...conPregunta, { text: respuesta, isGpt: true, derivar } ];
+
+            setMensajes( conRespuesta );
+            guardarMensajes( conRespuesta.filter( ( turno ) => !turno.error ) );
 
         } catch ( problema ) {
-            // El error se pinta como un turno del asistente: ocupa el mismo hueco que
-            // ocuparía la respuesta y no deja al visitante mirando un vacío.
-            const detalle = problema instanceof Error ? problema.message : 'No hay respuesta del servidor.';
-            setMensajes( ( previos ) => [
-                ...previos,
-                { text: `No pude responder en este momento. ${ detalle } Puedes escribirnos por WhatsApp mientras tanto.`, isGpt: true },
-            ] );
+            // El servicio ya traduce el fallo a un texto de `home-chat.json`: se pinta tal
+            // cual, como turno del asistente, y no se guarda.
+            const aviso = problema instanceof Error ? problema.message : textos.errores.servidor;
+            setMensajes( [ ...conPregunta, { text: aviso, isGpt: true, error: true } ] );
 
         } finally {
             setCargando( false );
@@ -104,7 +128,7 @@ export const ChatComercial = () => {
             { abierto && (
                 <Box
                     role="dialog"
-                    aria-label="Chat con Ergo SaniTas"
+                    aria-label={ `Chat con ${ textos.titulo }` }
                     sx={{
                         position     : 'fixed',
                         zIndex       : 1299,
@@ -130,21 +154,55 @@ export const ChatComercial = () => {
                 >
                     <Box sx={{ px: 2, py: 1.75, bgcolor: TEMA_HOME.azulProfundo, color: '#fff' }}>
                         <Typography sx={{ fontWeight: 700, fontSize: '1rem', lineHeight: 1.2 }}>
-                            Ergo SaniTas
+                            { textos.titulo }
                         </Typography>
                         <Typography sx={{ fontSize: '0.8rem', opacity: 0.75 }}>
-                            Consulta por nuestros servicios
+                            { textos.subtitulo }
+                        </Typography>
+                    </Box>
+
+                    {/* Aviso fijo, fuera del contenedor con scroll: una burbuja se iría con la
+                        conversación, y esto tiene que leerse siempre. */}
+                    <Box
+                        sx={{
+                            display      : 'flex',
+                            alignItems   : 'center',
+                            gap          : 0.75,
+                            px           : 2,
+                            py           : 0.75,
+                            flexShrink   : 0,
+                            bgcolor      : 'background.paper',
+                            borderBottom : `1px solid ${ TEMA_HOME.borde }`,
+                        }}
+                    >
+                        <InfoOutlinedIcon aria-hidden sx={{ fontSize: '1rem', color: TEMA_HOME.azulErgo }} />
+                        <Typography sx={{ fontSize: '0.75rem', color: TEMA_HOME.grafito, lineHeight: 1.3 }}>
+                            { textos.aviso }
                         </Typography>
                     </Box>
 
                     <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 1.5, pt: 2 }}>
                         {/* La bienvenida se pinta fija y no vive en el historial: nadie la
                             escribió, así que no es un turno de la conversación. */}
-                        <BurbujaBot text={ BIENVENIDA } />
+                        <BurbujaBot text={ textos.bienvenida } />
+
+                        {/* Solo con el historial vacío: después del primer mensaje estorban. */}
+                        { mensajes.length === 0 && !cargando && (
+                            <SugerenciasChat
+                                sugerencias={ textos.sugerencias }
+                                onElegir={ enviar }
+                                deshabilitado={ cargando }
+                            />
+                        ) }
 
                         { mensajes.map( ( mensaje, i ) => (
                             mensaje.isGpt
-                                ? <BurbujaBot key={ i } text={ mensaje.text } />
+                                ? (
+                                    <Fragment key={ i }>
+                                        <BurbujaBot text={ mensaje.text } />
+                                        { mensaje.derivar === true && <BotonDerivarWhatsapp texto={ textos.botonDerivar } /> }
+                                    </Fragment>
+                                )
                                 : <BurbujaVisitante key={ i } text={ mensaje.text } />
                         ) ) }
 
@@ -159,7 +217,8 @@ export const ChatComercial = () => {
                             onChange={ setTexto }
                             onEnviar={ enviar }
                             deshabilitado={ cargando }
-                            placeholder="Escribe tu consulta…"
+                            maxCaracteres={ textos.maxCaracteres }
+                            placeholder={ textos.placeholder }
                         />
                     </Box>
                 </Box>
