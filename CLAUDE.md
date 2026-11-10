@@ -19,6 +19,13 @@ Este archivo son **las convenciones y las trampas**. No repite lo que ya está e
 Los módulos construidos por spec añaden su `specs/<modulo>/CLAUDE_<MODULO>.md`, que **manda sobre
 la skill homónima** si discrepan.
 
+Junto a ellos hay piezas menores que no son documentación general:
+`.claude/CLAUDE.md` es un puntero de tres líneas a la skill `graphify` (lo escribe
+`graphify install`), `.claude/rules/context7.md` es la regla que obliga a consultar Context7
+(ver «Servidores MCP») y `docs/img/` guarda las capturas que muestra el `README.md`, tomadas
+de la cuenta demo con nombres y RUT **difuminados** y un «Paciente Demo» ficticio (Ley 21.719:
+nunca una captura con pacientes reales).
+
 `references/` guarda material **del backend y de terceros que las specs citan**, no código a
 portar: hoy `backEnd/juego-carta-nives.md` (la spec del backend del juego de cartas) y
 `html/juego_cartas_evaluacion_pacientes.html` (su maqueta de referencia visual).
@@ -134,16 +141,16 @@ también las comparaciones `user_perfil === "..."` dentro de los módulos, no so
 
 Cada carpeta de primer nivel en `src/` (ej. `Chequeo`, `Bioimpedancia`, `Certificados`, `AgendarHora`, `Incidentes`, `pagos-mensual`, `asistente-voz`, `ficha-clinica`, `User`, `Url`, `Estadisticas`, `EmergenciaDeportivas`) es un módulo autocontenido, típicamente con: `components/`, `config/`, `context/`, `hooks/`, `interface/` (tipos TS), `pages/`, `services/`, `utilities/` y un `index.ts` de barril. Mantén nuevas features dentro de esta estructura y reexporta desde el `index.ts` del módulo.
 
-Inventario, para ubicarse rápido (archivos · líneas TS/TSX; el total de `src/` son 576 archivos
-y ~42.100 líneas, antes de `chequeo-administrador/`). Los cuatro primeros tienen **guía propia**
+Inventario, para ubicarse rápido (archivos · líneas TS/TSX; el total de `src/` son 689 archivos
+TS/TSX y ~54.000 líneas, recontado el 2026-11-10). Los cuatro primeros tienen **guía propia**
 y regla de aislamiento:
 
 | Módulo | Tamaño | Qué es |
 |---|---|---|
 | `chequeo-cardiovascular/` | 99 · 7.821 | Chequeo del perfil `Colegios` (reemplazo de `Chequeo/`, por perfil) |
-| `chequeo-administrador/` | 100 · ~7.100 | Chequeo del perfil `Administrador` (segundo reemplazo de `Chequeo/`) |
+| `chequeo-administrador/` | 100 · 7.245 | Chequeo del perfil `Administrador` (segundo reemplazo de `Chequeo/`) |
 | `ficha-clinica/` | 55 · 5.681 | Ficha del paciente por RUT: 5 tabs, 3 capas de datos, silueta SVG, asistente |
-| `home-ergo/` | 45 · 3.170 | Portada comercial pública: 4 JSON de `config/` + imágenes desde la API |
+| `home-ergo/` | 42 · 3.547 | Portada comercial pública: 4 JSON de `config/` + imágenes desde la API |
 | `Chequeo/` | 75 · 5.887 | Chequeo de `Medicos` y `Usuario` (el módulo viejo; `Administrador` migró) |
 | `EmergenciaDeportivas/` | 24 · 2.026 | Panel de incidentes por liga/club/categoría |
 | `AgendarHora/` | 23 · 1.036 | Reserva de horas y pago WebPay |
@@ -482,19 +489,34 @@ presente, y renderiza un `<Modal>` de MUI que abre `routes/Navigation.tsx`.
 
 ## Servidores MCP
 
-Tres, configurados **a nivel de usuario para esta carpeta**. No hay `.mcp.json` versionado: si
-alguien clona el repo, no los tiene hasta instalarlos.
+`context7` se declara en el `.mcp.json` de la raíz, por HTTP con OAuth
+(`https://mcp.context7.com/mcp/oauth`). Se habilita en `.claude/settings.local.json`
+(`enabledMcpjsonServers`), donde también queda apagado el plugin `context7@claude-plugins-official`
+para que las herramientas no salgan dos veces. La primera vez se autentica desde `/mcp`.
+`playwright` también va en `.mcp.json` (stdio, `npx @playwright/mcp@latest`) porque lo usa el agente
+`spec-verify-ergo-front`, y `graphify` (stdio, `graphify-mcp graphify-out/graph.json`) expone el
+grafo de conocimiento del código (ver «graphify»). Los tres de `.mcp.json` se habilitan juntos en
+`enabledMcpjsonServers`. `github` se configura **a nivel de usuario**: quien clone el repo debe
+instalarlo.
+
+⚠️ **El MCP `graphify` no arranca sin el grafo**: `graphify-out/` no se versiona, así que tras un
+clon no existe `graphify-out/graph.json` y el servidor cae con `CONNECTION_CLOSED`. Se arregla
+construyéndolo una vez con `/graphify`.
+
+La regla `.claude/rules/context7.md` (con la skill `context7-mcp`) obliga a consultar Context7
+—`resolve-library-id` y luego `query-docs`— ante cualquier pregunta sobre una librería, aunque
+parezca conocida. No aplica a refactorizaciones ni a revisiones que no dependan de una API externa.
 
 | Servidor | Paquete | Para qué |
 |---|---|---|
-| `context7` | `@upstash/context7-mcp` | Documentación al día de MUI, React, Vite y demás librerías. Prefiérelo a buscar en la web. |
+| `context7` | HTTP vía `.mcp.json` (`npx ctx7 setup`) | Documentación al día de MUI, React, Vite y demás librerías. Prefiérelo a buscar en la web. |
 | `github` | `@modelcontextprotocol/server-github` | Issues, PRs y búsqueda de código. |
-| `playwright` | `@playwright/mcp` | Manejar el navegador para revisar la UI en marcha. **No es un runner de tests**: aquí no hay tests. |
+| `graphify` | `graphify-mcp` (PyPI `graphifyy`) vía `.mcp.json` | Consultar el grafo del código: nodos, vecinos, caminos y comunidades. Instalación en README §11.4. |
+| `playwright` | `@playwright/mcp` vía `.mcp.json` | Manejar el navegador para revisar la UI en marcha; es la herramienta de la Fase 5 de `/spec-verify-ergo-front`. **No es un runner de tests**: aquí no hay tests. Solo contra local, nunca contra producción. |
 
 ```bash
-claude mcp add context7   -- npx -y @upstash/context7-mcp@latest
+npx ctx7 setup            # context7: instalador oficial (interactivo, OAuth)
 claude mcp add github     -- npx -y @modelcontextprotocol/server-github
-claude mcp add playwright -- npx @playwright/mcp@latest
 ```
 
 El de GitHub necesita `GITHUB_PERSONAL_ACCESS_TOKEN`: pásalo con `--env` al agregarlo y **nunca lo
@@ -526,9 +548,12 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergo-chequeo` | Conocimiento completo de `src/Chequeo/` (75 archivos): matriz de tabs por perfil, las dos máquinas de estados, los 5 JSON de formularios, servicio de 23 métodos, lógica clínica de IMC. |
 | `ergo-chequeo-cardiovascular` | Conocimiento completo de `src/chequeo-cardiovascular/` (99 archivos, ~7.800 líneas): los 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente con sus dos fuentes de datos y el juego de cartas por nivel, y las cuatro reglas duras. **No confundir con `ergo-chequeo`**: son dos módulos distintos. |
 | `ergo-common` | Conocimiento completo de `src/common/` (21 archivos, 64 dependientes): `ApiAdapter`, los tres contextos globales, localStorage, y por qué `table/` es código muerto. |
+| `graphify` | Construir (`/graphify`) y consultar el grafo de conocimiento del código en `graphify-out/` (ver «graphify»). La instaló `graphify install --platform claude`. |
+| `context7-mcp` | Consultar la documentación al día de una librería por Context7 (ver «Servidores MCP»). |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
 | `spec-ergo-front` | `/spec` + convenciones del repo para **diseñar o revisar** una spec en `specs/<modulo>/` (ver sección siguiente). |
 | `spec-impl-ergo-front` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
+| `spec-verify-ergo-front` | Verifica specs ya implementadas y deja cada criterio con evidencia ✅/❌/⏸ (graphify, Context7, Playwright). Solo manual: `/spec-verify-ergo-front <NN-slug \| módulo \| todas>`. |
 
 ### Agentes (`.claude/agents/`)
 
@@ -540,6 +565,7 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `ergo-chequeo` | Dueño de `src/Chequeo/` (módulo viejo, perfiles Medicos/Usuario; Administrador migró a `chequeo-administrador/`) | **Solo `src/Chequeo/`** |
 | `ergo-chequeo-cardiovascular` | Dueño de `src/chequeo-cardiovascular/` (módulo nuevo, perfil Colegios) | **Solo `src/chequeo-cardiovascular/`** |
 | `ergo-common` | Dueño de `src/common/` | **Solo `src/common/`** |
+| `spec-verify-ergo-front` | Verifica specs implementadas y escribe la evidencia en ellas. No implementa ni corrige, no cambia `Estado:`. Sigue la skill homónima. | **Solo `specs/`** (criterios, «Estado de verificación», `evidencias/`) |
 
 Los cuatro agentes de módulo tienen **perímetro cerrado**: leen lo que haga falta para entender el
 flujo, pero solo modifican su carpeta. Si la tarea exige tocar algo fuera, se detienen y lo
@@ -552,10 +578,11 @@ que no es de ninguno de los dos (lo lleva `ergosanitas-developer`). El **ruteo**
 `NavigationApp.tsx`) queda fuera de ambos perímetros y lo lleva `ergosanitas-developer` o
 `ergosanitas-architect`.
 
-**Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/` y
-`src/chequeo-administrador/` usan `ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
+**Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/`,
+`src/chequeo-administrador/`, `src/carrito-compra/` y `src/servicio-cart-flow/` usan
+`ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
 
-## Flujo Spec-Driven (skills `/spec`, `/spec-impl` y `/spec-impl-ergo-front`)
+## Flujo Spec-Driven (skills `/spec`, `/spec-impl`, `/spec-impl-ergo-front` y `/spec-verify-ergo-front`)
 
 El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`:
 
@@ -567,17 +594,26 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
   tocados, `npm run build` + `eslint`, **revisión por el agente dueño de cada módulo**, repaso de
   los criterios de aceptación, y actualización de `CLAUDE_<MODULO>.md` / `ARQUITECTURA.md` /
   estado de la spec. Marca `Implementado` solo si todos los criterios pasaron.
+- **`/spec-verify-ergo-front <NN-slug | módulo | todas>`** — el tercer paso, después de implementar.
+  Mapea el código con graphify, revisa dependencias e impactos (y lanza en solo lectura al agente
+  dueño del módulo), contrasta buenas prácticas con Context7, recorre los criterios uno por uno y
+  valida la UI con Playwright **solo contra local** (front 5173 + back 127.0.0.1, datos ficticios).
+  El login lo hace la persona en la ventana de Playwright. Cada criterio queda `[x]` ✅, `❌` o `⏸`
+  con una sublínea de evidencia, las capturas van a `specs/<modulo>/evidencias/<NN>/` y se añade la
+  sección «Estado de verificación». **Solo reporta**: no toca `src/` ni el `Estado:` de la spec. Lo
+  mismo hace el agente `spec-verify-ergo-front` cuando se le delega.
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: hoy hay cuatro carpetas,
-  `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `04-…`),
-  `specs/chequeo-cardiovascular/` (`01-…` a `05-…`) y `specs/chequeo-administrador/` (`01-…` a `02-…`).
-  La numeración es correlativa **dentro de cada carpeta**, así que existen cuatro specs `01`
+- **Las specs se agrupan por módulo**: hoy hay seis carpetas,
+  `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `05-…`),
+  `specs/chequeo-cardiovascular/` (`01-…` a `05-…`), `specs/chequeo-administrador/` (`01-…` a `02-…`),
+  `specs/carrito-compra/` (`01-…`) y `specs/servicio-cart-flow/` (`01-…`).
+  La numeración es correlativa **dentro de cada carpeta**, así que existen seis specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
-  `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md`, `CLAUDE_CHEQUEO_CARDIOVASCULAR.md` y
-  `CLAUDE_CHEQUEO_ADMINISTRADOR.md`.
+  `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md`, `CLAUDE_CHEQUEO_CARDIOVASCULAR.md`,
+  `CLAUDE_CHEQUEO_ADMINISTRADOR.md`, `CLAUDE_CARRITO_COMPRA.md` y `CLAUDE_SERVICIO_CART_FLOW.md`.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a
@@ -605,3 +641,24 @@ Dos detalles del workflow que importan al tocar assets:
 Verificación local antes de commitear: `npm run build` en verde y `npx eslint src/<modulo>/` en 0.
 
 El sistema se considera **en producción**: reutiliza la arquitectura existente, respeta los permisos por perfil y evita romper módulos actuales (ver README.md para el contexto de negocio y los roles Administrador / Médico / Colegio / Check).
+
+## graphify
+
+El proyecto tiene un grafo de conocimiento en `graphify-out/` (nodos centrales, comunidades y
+relaciones entre archivos). **No se versiona** (`.gitignore`): cada clon lo construye con
+`/graphify` y lo mantiene con `graphify update .`. Instalación y detalle en README §11.4.
+
+Reglas:
+- Si existe `graphify-out/graph.json`, ejecuta `graphify query "<pregunta>"` antes del primer
+  grep, búsqueda o lectura de código para una pregunta sobre el código, y copia esta regla en el
+  prompt de todo subagente que explore código. Lee archivos crudos solo en las líneas que el grafo
+  o una lectura anterior ya ubicó. Usa `graphify path "<A>" "<B>"` para relaciones y
+  `graphify explain "<concepto>"` para un concepto: devuelven un subgrafo acotado, mucho menor que
+  `GRAPH_REPORT.md` o un grep.
+- Si existe `graphify-out/wiki/index.md`, úsalo para navegar a grandes rasgos.
+- Lee `graphify-out/GRAPH_REPORT.md` solo para revisiones de arquitectura amplias o cuando
+  query/path/explain no basten.
+- Tras modificar código, ejecuta `graphify update .` (solo AST, sin coste de API).
+- `.claude/settings.json` versiona tres hooks que lo recuerdan: `graphify hook-guard search`
+  (antes de `Bash`/`Grep`), `graphify hook-guard read` (antes de `Read`/`Glob`) y
+  `graphify hook-guard compact` (al reanudar tras compactar).

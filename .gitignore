@@ -31,3 +31,7 @@ dist-ssr
 # Son 139 MB: en el repositorio inflarian cada clone y el CI los re-subiria en cada push
 public/home-ergo/video/
 .playwright-mcp/
+
+# graphify: grafo derivado y respaldo del instalador
+graphify-out/
+.claude/settings.json.graphify-bak
