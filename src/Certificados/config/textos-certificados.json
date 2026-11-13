@@ -1,0 +1,49 @@
+{
+    "titulo": "Descargar certificados",
+    "subtitulo": "Ingresa el RUT del deportista para ver y descargar sus certificados.",
+    "buscador": {
+        "etiqueta": "RUT",
+        "placeholder": "11111111-1",
+        "ayuda": "Sin puntos y con guion, por ejemplo 11111111-1.",
+        "buscar": "Buscar",
+        "limpiar": "Limpiar",
+        "requerido": "Ingresa un RUT.",
+        "formatoInvalido": "El formato del RUT no es válido. Usa 11111111-1."
+    },
+    "resultados": {
+        "titulo": "Documentos disponibles",
+        "resumenUno": "Encontramos 1 documento.",
+        "resumenVarios": "Encontramos {n} documentos.",
+        "resumenVacio": "No encontramos documentos para este RUT.",
+        "resumenError": "No pudimos consultar los documentos.",
+        "cargando": "Buscando documentos…",
+        "vacioTitulo": "No encontramos documentos para este RUT",
+        "vacioTexto": "Revisa que el RUT esté bien escrito. Si la evaluación médica sigue en proceso, los certificados aparecerán aquí cuando estén listos.",
+        "errorTitulo": "No pudimos consultar los documentos",
+        "errorTexto": "Revisa tu conexión e inténtalo de nuevo.",
+        "reintentar": "Reintentar",
+        "errorDescarga": "No se pudo descargar el documento. Inténtalo de nuevo.",
+        "fecha": "Fecha",
+        "ayudaBio": "El primer certificado de bioimpedancia puede tardar unos segundos en generarse."
+    },
+    "tarjetas": {
+        "chequeo": {
+            "titulo": "Chequeo cardiovascular",
+            "certificado_ecg": { "etiqueta": "Certificado", "ariaLabel": "Certificado del chequeo cardiovascular: descargar PDF" },
+            "ecg": { "etiqueta": "Examen ECG", "ariaLabel": "Examen ECG: abrir en una pestaña nueva" }
+        },
+        "bioimpedancia": {
+            "titulo": "Bioimpedancia",
+            "certificado_bio": { "etiqueta": "Certificado", "ariaLabel": "Certificado de bioimpedancia: descargar PDF" },
+            "bio": { "etiqueta": "Informe bioimpedancia", "ariaLabel": "Informe bioimpedancia: abrir en una pestaña nueva" }
+        }
+    },
+    "banner": {
+        "etiqueta": "Mientras buscamos, mira lo que está en oferta",
+        "ariaRegion": "Ofertas de Ergosanitas",
+        "cta": "Consultar por WhatsApp",
+        "ariaCta": "{oferta}: consultar por WhatsApp (se abre en una pestaña nueva)",
+        "ariaPunto": "Ver la oferta {{index}}",
+        "ariaDiapositiva": "Oferta {{index}} de {{slidesLength}}"
+    }
+}

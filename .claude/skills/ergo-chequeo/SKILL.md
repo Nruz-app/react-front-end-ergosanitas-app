@@ -1,6 +1,6 @@
 ---
 name: ergo-chequeo
-description: Conocimiento completo del módulo `src/Chequeo/` de Ergosanitas — el chequeo preventivo cardiovascular, el módulo más grande del repo (75 archivos, ~5.900 líneas). Cubre la matriz de tabs por perfil, la máquina de estados del paciente, los formularios declarados en JSON, el servicio de 23 métodos, los contextos propios, la lógica clínica de IMC y la deuda técnica. Úsalo antes de tocar cualquier archivo de `src/Chequeo/`, o al responder sobre chequeos, la tabla de deportistas, carga masiva, ECG, calculadora IMC o los estados del paciente.
+description: "Conocimiento completo del módulo `src/Chequeo/` de Ergosanitas — el chequeo preventivo cardiovascular, el módulo más grande del repo (75 archivos, ~5.900 líneas). Cubre la matriz de tabs por perfil, la máquina de estados del paciente, los formularios declarados en JSON, el servicio de 23 métodos, los contextos propios, la lógica clínica de IMC y la deuda técnica. Úsalo antes de tocar cualquier archivo de `src/Chequeo/`, o al responder sobre chequeos, la tabla de deportistas, carga masiva, ECG, calculadora IMC o los estados del paciente. La carga el Kit de ejecución de los /spec-*-ergo-front si la spec toca este módulo (MATRIZ-HERRAMIENTAS §8)."
 ---
 
 # ergo-chequeo — el módulo de chequeo cardiovascular

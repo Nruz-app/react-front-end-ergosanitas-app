@@ -1,6 +1,6 @@
 ---
 name: ergo-chequeo-cardiovascular
-description: Dueño del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve al perfil `Colegios` (99 archivos, ~7.800 líneas). Conoce sus 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente y el juego de cartas por nivel, y sus cuatro reglas duras. Úsalo para cualquier trabajo sobre el chequeo del perfil Colegios — la lista de deportistas, el alta y edición, la carga masiva, el Home de estadísticas, el juego de cartas por nivel o la exportación a Excel. Trabaja SOLO dentro de `src/chequeo-cardiovascular/` y no toca otros módulos — ni siquiera `src/Chequeo/`.
+description: "Dueño del módulo `src/chequeo-cardiovascular/` de Ergosanitas — el reemplazo autocontenido de `src/Chequeo/` que hoy sirve al perfil `Colegios` (99 archivos, ~7.800 líneas). Conoce sus 6 tabs de índice estable, el formulario agrupado por `seccion`, la validación de solo campos visibles, los 5 servicios, el Home de lista + 5 gráficos, el tab del asistente y el juego de cartas por nivel, y sus cuatro reglas duras. Úsalo para cualquier trabajo sobre el chequeo del perfil Colegios — la lista de deportistas, el alta y edición, la carga masiva, el Home de estadísticas, el juego de cartas por nivel o la exportación a Excel. Trabaja SOLO dentro de `src/chequeo-cardiovascular/` y no toca otros módulos — ni siquiera `src/Chequeo/`. En el flujo de specs revisa su módulo en el cierre de /spec-impl-ergo-front (corrige dentro de su perímetro) y en la Fase 2b de /spec-verify-ergo-front (solo lectura), cargando además las skills del Kit de ejecución que le pasen."
 tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell, Skill, ToolSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 ---
 
@@ -180,8 +180,20 @@ Este módulo se construye por specs, en `specs/chequeo-cardiovascular/`. Dos con
 - **Al cerrar un trabajo con impacto en el módulo, actualiza
   `CLAUDE_CHEQUEO_CARDIOVASCULAR.md`.** Es la guía que leerá el siguiente; que quede
   desactualizada cuesta más que el propio cambio.
-- Migrar otro perfil (`Medicos`, `Administrador`, `Usuario`) **no es una tarea tuya de oficio**:
-  es una spec nueva, y toca ruteo, que está fuera de tu perímetro.
+- Migrar otro perfil (`Medicos`, `Usuario`) **no es una tarea tuya de oficio**: es una spec
+  nueva, y toca ruteo, que está fuera de tu perímetro. `Administrador` ya migró a
+  `src/chequeo-administrador/`, que no es tuyo.
+- **Tu papel en el flujo de specs** (`.claude/MATRIZ-HERRAMIENTAS.md` §8). Eres el revisor de
+  este módulo en dos momentos:
+  - en el **cierre** de `/spec-impl-ergo-front` corriges dentro de tu perímetro;
+  - en la **Fase 2b** de `/spec-verify-ergo-front` solo lees y devuelves hallazgos.
+
+  El prompt te pasa las **skills del Kit de ejecución** de la spec. Cárgalas además de la tuya:
+  - aquí suelen ser `interface-design` (UI de producto) y `dataviz` (los 5 gráficos del Home),
+    más `vercel-react-best-practices` filtrada (§4.3);
+  - las aplicas **a través de su adaptador**: `tema.ts` sigue siendo la única fuente de color, el
+    color clínico va por etiqueta y la lógica clínica no se toca;
+  - si una skill sugiere algo que la guía descarta, **gana la guía**.
 
 ## Git
 

@@ -1,7 +1,11 @@
 
 
-export { Certificado }  from './Certificado';
+export { BuscadorRut } from './BuscadorRut';
 
-export { Banner }   from './Banner';
+export { BotonDescarga } from './BotonDescarga';
 
-export { DownloadFile } from './DownloadFile';
+export { EstadoResultado } from './EstadoResultado';
+
+export { TarjetaDocumentos } from './TarjetaDocumentos';
+
+export { BannerOfertas } from './BannerOfertas';

@@ -144,7 +144,7 @@ cada servicio; no hay una constante global).
 | **Chequeo cardiovascular** | `chequeo-cardiovascular` (GET/POST) · `/{id}` · `/{rut_paciente}` · `/{id_paciente}` · `/{id}/{user_email}` · `/chequeo-all` · `/club-deportivo` · `/filter-calendar` · `/search-chequeo?limit=&page=` · `/like-chequeo` · `/like-chequeo/user` · `/estado-general/{user_email}` · `/pdf/{id_paciente}` · `/pdfRut/{rut_paciente}` |
 | **Bioimpedancia** | `bioimpedancia/create-bio` · `/form-upload` · `/list-all` · `/first-rut` · `/pdfRut/{rut_paciente}` |
 | **Electrocardiograma** | `electro-cardiograma/save` · `carga-masiva-ecg` · `carga-masiva/excel` |
-| **Certificados** | `certificado/{rut_paciente}` · `certificado/validar/{rut_paciente}` · `certificado/path-url` · `certificado/valida-certificado` · `certificado/save-url` |
+| **Certificados** | `certificados/consulta` (página pública, una sola llamada; SPEC 01 de `certificados`) · `certificados/descarga/ecg/{id}` · `certificados/descarga/bio/{id}` (URL firmada) · `certificado/{rut_paciente}` · `certificado/validar/{rut_paciente}` · `certificado/path-url` · `certificado/valida-certificado` · `certificado/save-url` |
 | **Ficha clínica** | `ficha-clinica/{rut}` |
 | **Juego de cartas** | `juego-cartas/{user_email}?search=` · `juego-cartas/detalle/{rut_paciente}` · `juego-cartas/niveles` |
 | **Incidentes** | `incidencia-deportivos/create` · `/find-by-user/{user_email}` · `/count-club/…` · `/count-liga/…` · `/count-gravedad/…` · `/liga-casos/…` · `/lesion-frecuente/…` · `/sp_estadistica_liga|_categoria|_lesiones|_lesiones_fechas|_parte_cuerpo/{user_email}` |
@@ -152,7 +152,7 @@ cada servicio; no hay una constante global).
 | **Agenda / servicios / pago** (flujo anterior, sin ruta visible) | `agenda-horas` · `servicios` · `servicios/{nombre}` · `servicios/like` · `email/reserva-hora` · `transbank/web-pay-request` |
 | **Carro de servicios** (`src/servicio-cart-flow/`, página `/servicios`) | `cart-flow/comunas` · `cart-flow/catalogo` · `POST cart-flow/carritos` · `cart-flow/carritos/{uuid}` (GET/PUT) · `…/pacientes[/{id}[/quitar]]` · `…/lineas[/{id}[/quitar]]` · `cart-flow/agenda/bloques?carrito=` · `…/checkout` (multipart) · `cart-flow/pedidos/{numero}?t=` · `cart-flow/pedidos/{numero}/webpay` · `cart-flow/cotizaciones` |
 | **Mantenedor del carro** (`src/carrito-compra/`, perfil Administrador) | `cart-flow/admin/resumen` · `cart-flow/admin/pedidos` · `/pedidos/{numero}` · `PUT /pedidos/{numero}/estado` · `POST /ordenes/{id}/enlace` · `cart-flow/admin/cotizaciones` · `PUT /cotizaciones/{id}/estado` · `cart-flow/admin/productos` · `PUT /productos/{sku}/visibilidad` (todos con `user_email`) |
-| **Imágenes del Home** | `home-imagenes` (público, solo activas; lo consume `src/home-ergo/`) · `home-imagenes/admin` · `POST home-imagenes` (multipart) · `PUT home-imagenes/{id}` · `PUT home-imagenes/{id}/activo` · `DELETE home-imagenes/{id}?user_email=` (los cinco últimos, `src/chequeo-administrador/`) |
+| **Imágenes del Home** | `home-imagenes` (público, solo activas; lo consumen `src/home-ergo/` y, filtrando `promocion`, el banner de ofertas de `src/Certificados/`, SPEC 02 de `certificados`) · `home-imagenes/admin` · `POST home-imagenes` (multipart) · `PUT home-imagenes/{id}` · `PUT home-imagenes/{id}/activo` · `DELETE home-imagenes/{id}?user_email=` (los cinco últimos, `src/chequeo-administrador/`) |
 | **IA** | `sam-assistant/as-question` · `sam-assistant/reset-patient` (clínico, resuelve por RUT) · `sam-assistant-club/as-question` (**por institución**: body `{ email, prompt, sessionId }`; el back expone `sam-assistant-club/reset-search`, pero el front no lo llama) · `chat-comercial/as-question` (**público**, con throttle 20/min y 200/día por IP: body `{ prompt, sessionId? }` → `{ sessionId, response, derivar }`) · `GPT/asistente-voz` · `GPT/analisis-ecg` |
 
 El back expone 119 operaciones (contrato en `Back-end/ergosanitas-app/docs/openapi.yaml`); este
@@ -213,7 +213,7 @@ Lo que de verdad se usa:
   orden: `HelmetProvider → LoginProvider → ModalProvider → SubMenuProvider`.
 - **Formularios:** `react-hook-form` + `yup` (`yupResolver`) es el patrón vigente — hook
   `useXForm` en `hooks/` que devuelve `{ control, reset, handleSubmit, setValue, errors }` y
-  esquema en `utilities/`. **Formik sobrevive en 5 archivos antiguos** (Certificados, LikeText
+  esquema en `utilities/`. **Formik sobrevive en 3 archivos antiguos** (LikeText
   de Chequeo, Home); no lo propagues ni lo migres sin que te lo pidan.
 - **Tablas:** hay una tabla propia en `src/common/table/` (`Table`, `HeaderTable`, `Filters`,
   `Pagination`, `useTable`, `useFiltersBase`) con `IColumnsTable`, `IFilterBase`, `IOrderBy` e
@@ -294,7 +294,9 @@ Para que no lo des por supuesto ni lo introduzcas de contrabando:
 - **No hay tests** (ni script, ni runner). La verificación es `npm run build` + `npx eslint`.
 - **No hay router único ni layout único**: seis `routes*`, seis navegadores, cada uno con su
   `interface Route` local.
-- **No hay `BrowserRouter`**: todo `HashRouter`, porque el deploy es estático por FTP.
+- **Dos routers.** Los navegadores autenticados usan `HashRouter`. El público
+  (`Navigation.tsx`) usa `BrowserRouter`, con URLs sin `#`, apoyado en la reescritura a
+  `index.html` de `public/.htaccess`, porque el deploy es estático por FTP.
 - **No hay cliente HTTP con interceptores, retry ni caché**: `ApiAdapter` es un envoltorio fino
   de axios.
 - **No hay tipo compartido de ruta, ni enum de perfiles, ni constante global de API.**

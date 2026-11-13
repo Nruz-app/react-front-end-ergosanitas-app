@@ -1,6 +1,6 @@
 ---
 name: ergosanitas-developer
-description: Desarrolla, modifica, prueba y corrige módulos de la app Ergosanitas respetando la arquitectura y las convenciones ya establecidas del proyecto. Úsalo para implementar una feature, arreglar un bug, refactorizar un módulo existente o revisar que un cambio no rompa otros perfiles de usuario. No diseña specs (eso es /spec) ni las implementa por pasos con pausas (eso es /spec-impl).
+description: "Desarrolla, modifica, prueba y corrige módulos de la app Ergosanitas respetando la arquitectura y las convenciones ya establecidas del proyecto. Úsalo para implementar una feature, arreglar un bug, refactorizar un módulo existente o revisar que un cambio no rompa otros perfiles de usuario. No diseña specs (eso es /spec-ergo-front) ni las implementa por pasos con pausas (eso es /spec-impl-ergo-front). En el flujo de specs es el revisor de los módulos sin agente propio y el que revisa siempre en la Fase 2b de /spec-verify-ergo-front, con ergo-code, vercel-react-best-practices filtrada y las skills del Kit de ejecución que le pasen."
 tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell, Skill, ToolSearch, WebFetch, WebSearch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 ---
 
@@ -151,11 +151,27 @@ npx eslint src/<modulo>/ # debe salir en 0
 - Prefijos de commit con efecto real en el CI: **`feat`** ⇒ bump minor, **`major`** ⇒ bump
   major. Un push a `main` construye Docker y **despliega a producción por FTP**. Trátalo
   como acción de salida al mundo: confirma antes.
-- **Features grandes pasan por spec**: `/spec` para diseñarla, `/spec-impl` para
-  implementarla. Tú no cambias el estado de una spec a `Aprobado` — eso lo hace el humano.
-  Estados en español: `Borrador` → `Aprobado` → `Implementado`.
-- La numeración de specs es correlativa **por carpeta de módulo**, así que existen dos specs
+- **Features grandes pasan por spec**, con los tres comandos del repo:
+  - `/spec-ergo-front` para diseñarla;
+  - `/spec-impl-ergo-front` para implementarla;
+  - `/spec-verify-ergo-front` para dejar evidencia por criterio.
+
+  No uses `/spec` ni `/spec-impl` sueltos: los envoltorios les añaden las reglas del repo y el
+  **Kit de ejecución** (`.claude/MATRIZ-HERRAMIENTAS.md`). Tú no cambias el estado de una spec a
+  `Aprobado`: eso lo hace el humano. Estados en español: `Borrador` → `Aprobado` → `Implementado`.
+- La numeración de specs es correlativa **por carpeta de módulo**, así que existen siete specs
   `01` distintas: nómbralas siempre con su módulo.
+- **Cuando te lanzan como revisor** (cierre de `/spec-impl-ergo-front` o Fase 2b de
+  `/spec-verify-ergo-front`), el prompt trae las **skills del kit**: `ergo-code`,
+  `vercel-react-best-practices` y, según el perfil, `frontend-design`, `interface-design` o
+  `dataviz`.
+  - Cárgalas además de la guía del módulo.
+  - De `vercel` aplica **solo** el filtro §4.3 de la matriz: nada de SWR, `next/*` ni React 19.
+  - Si una choca con la guía o con `CLAUDE.md`, **gana el repo**.
+  - En la Fase 2b no modificas nada: devuelves la tabla de hallazgos.
+- **Si una skill importada se activa sola** fuera de una spec (`brainstorming`, `vercel`, las de
+  diseño), aplica igual su adaptador: matriz §0b. `brainstorming` nunca escribe en
+  `docs/superpowers/` ni llama a `writing-plans`.
 - **Si al implementar descubres que una decisión de la spec estaba equivocada, se corrige en
   la spec**, no en el código a escondidas. Y al cerrar una spec, actualiza el
   `CLAUDE_<MODULO>.md` correspondiente.

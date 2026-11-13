@@ -1,6 +1,6 @@
 ---
 name: ergo-common
-description: Conocimiento completo de `src/common/` de Ergosanitas — el módulo transversal del que dependen 64 archivos del proyecto: el `ApiAdapter` (capa HTTP), los tres contextos globales (Login, Modal, SubMenu), el servicio de localStorage y la tabla genérica. Úsalo antes de tocar cualquier archivo de `src/common/`, o al responder sobre la capa HTTP, la sesión, los providers globales, `isDateModalOpen`, persistencia en el navegador o la tabla común.
+description: "Conocimiento completo de `src/common/` de Ergosanitas — el módulo transversal del que dependen 64 archivos del proyecto: el `ApiAdapter` (capa HTTP), los tres contextos globales (Login, Modal, SubMenu), el servicio de localStorage y la tabla genérica. Úsalo antes de tocar cualquier archivo de `src/common/`, o al responder sobre la capa HTTP, la sesión, los providers globales, `isDateModalOpen`, persistencia en el navegador o la tabla común. La carga el Kit de ejecución de los /spec-*-ergo-front si la spec toca este módulo (MATRIZ-HERRAMIENTAS §8)."
 ---
 
 # ergo-common — el módulo transversal

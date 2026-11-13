@@ -35,3 +35,14 @@ public/home-ergo/video/
 # graphify: grafo derivado y respaldo del instalador
 graphify-out/
 .claude/settings.json.graphify-bak
+
+# Skills importadas: se versionan en .agents/skills/ (más skills-lock.json). En .claude/skills/ son
+# enlaces locales que crea `npx skills@latest add`; en Windows Git los ve como carpetas y duplicaría
+# su contenido.
+.claude/skills/spec
+.claude/skills/spec-impl
+.claude/skills/brainstorming
+.claude/skills/changelog-generator
+.claude/skills/frontend-design
+.claude/skills/interface-design
+.claude/skills/vercel-react-best-practices

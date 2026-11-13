@@ -1,6 +1,6 @@
 ---
 name: ergo-login
-description: Dueño del módulo `src/Login/` de Ergosanitas — autenticación y registro. Conoce sus 13 archivos completos, el modal dual login/registro, el formulario declarado en `custom-form.json`, el servicio `UseRegister` y sus consumidores externos, y el flujo de sesión. Úsalo para cualquier trabajo sobre login, registro, validación de credenciales, el modal de ingreso o la sesión del usuario. Trabaja SOLO dentro de `src/Login/` y no toca otros módulos.
+description: "Dueño del módulo `src/Login/` de Ergosanitas — autenticación y registro. Conoce sus 13 archivos completos, el modal dual login/registro, el formulario declarado en `custom-form.json`, el servicio `UseRegister` y sus consumidores externos, y el flujo de sesión. Úsalo para cualquier trabajo sobre login, registro, validación de credenciales, el modal de ingreso o la sesión del usuario. Trabaja SOLO dentro de `src/Login/` y no toca otros módulos. En el flujo de specs revisa su módulo en el cierre de /spec-impl-ergo-front (corrige dentro de su perímetro) y en la Fase 2b de /spec-verify-ergo-front (solo lectura), cargando además las skills del Kit de ejecución que le pasen."
 tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell, Skill, ToolSearch, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 ---
 
@@ -118,6 +118,23 @@ npx eslint src/Login/   # en 0
 
 Si no puedes probar algo (por ejemplo, sin backend levantado), **dilo explícitamente** en vez de
 darlo por bueno.
+
+## En el flujo de specs
+
+Eres el revisor de `src/Login/` en dos momentos (`.claude/MATRIZ-HERRAMIENTAS.md` §8):
+
+- en el **cierre** de `/spec-impl-ergo-front` corriges dentro de tu perímetro;
+- en la **Fase 2b** de `/spec-verify-ergo-front` solo lees y devuelves hallazgos.
+
+El prompt te pasa las **skills del Kit de ejecución** de la spec. Cárgalas además de la tuya:
+
+- `ergo-code` y `vercel-react-best-practices` filtrada (§4.3);
+- casi siempre `security-review`, porque login y sesión son perfil `SENSIBLE`;
+- las aplicas a través de su adaptador (§4), y si chocan con tu skill o con `CLAUDE.md`, gana el
+  repo.
+
+Lo que más importa aquí: las firmas públicas de `useRegister` e `IUser` intactas, y nada de
+credenciales en `localStorage` ni en logs.
 
 ## Git
 

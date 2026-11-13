@@ -1,6 +1,6 @@
 ---
 name: ergo-code
-description: Escribe TypeScript, React y TSX con el estilo real de este proyecto — tipos estrictos, componentes como arrow function con `interface Props` local, estilos con `sx` de MUI 5, servicios por `ApiAdapter`, comentarios en español que explican el porqué. Úsalo siempre que vayas a crear o modificar un archivo `.ts` o `.tsx` en `src/`, o cuando te pregunten cómo se escribe algo "al estilo del proyecto".
+description: "Escribe TypeScript, React y TSX con el estilo real de este proyecto — tipos estrictos, componentes como arrow function con `interface Props` local, estilos con `sx` de MUI 5, servicios por `ApiAdapter`, comentarios en español que explican el porqué. Úsalo siempre que vayas a crear o modificar un archivo `.ts` o `.tsx` en `src/`, o cuando te pregunten cómo se escribe algo \"al estilo del proyecto\". La cargan /spec-impl-ergo-front antes del primer archivo y los revisores de /spec-verify-ergo-front, junto con vercel-react-best-practices filtrada para React 18 + Vite (ver .claude/MATRIZ-HERRAMIENTAS.md §4.3 y §8)."
 ---
 
 # ergo-code — cómo se escribe código en Ergosanitas
@@ -152,7 +152,7 @@ const { control, reset, handleSubmit, setValue, formState: { errors } } = useFor
 
 - Inputs controlados reutilizables en `src/components/forms/` (`InputSelect`, `DatePickers`,
   `InputAutoComplete`, `auto-complete-comuna`). **Búscalos ahí antes de escribir uno nuevo.**
-- **Formik existe en cinco archivos antiguos.** No lo propagues a código nuevo y no lo migres
+- **Formik existe en tres archivos antiguos.** No lo propagues a código nuevo y no lo migres
   salvo que te lo pidan explícitamente.
 
 ---
