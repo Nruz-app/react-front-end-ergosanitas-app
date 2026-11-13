@@ -1,6 +1,1 @@
-
-
-export { ValidaExisteRut } from './ValidaExisteRut';
-
-
-export { GetUrlPdf } from './GetUrlPdf';
+export { useOfertasBanner } from './useOfertasBanner';
