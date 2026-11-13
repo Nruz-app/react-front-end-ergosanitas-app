@@ -1,6 +1,6 @@
 ---
 name: ergo-login
-description: Conocimiento completo del módulo `src/Login/` de Ergosanitas — autenticación y registro: los 13 archivos, el modal dual login/registro, el formulario declarado en JSON, el servicio `UseRegister` y sus 5 consumidores externos, el flujo de sesión con `LoginContext`, y la deuda técnica conocida. Úsalo antes de tocar cualquier archivo de `src/Login/`, o al responder sobre login, registro, sesión, `ValidLogin`, `custom-form.json` o el modal de ingreso.
+description: "Conocimiento completo del módulo `src/Login/` de Ergosanitas — autenticación y registro: los 13 archivos, el modal dual login/registro, el formulario declarado en JSON, el servicio `UseRegister` y sus 5 consumidores externos, el flujo de sesión con `LoginContext`, y la deuda técnica conocida. Úsalo antes de tocar cualquier archivo de `src/Login/`, o al responder sobre login, registro, sesión, `ValidLogin`, `custom-form.json` o el modal de ingreso. La carga el Kit de ejecución de los /spec-*-ergo-front si la spec toca este módulo (MATRIZ-HERRAMIENTAS §8)."
 ---
 
 # ergo-login — el módulo de autenticación

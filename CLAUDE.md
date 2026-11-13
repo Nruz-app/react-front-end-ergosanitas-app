@@ -47,8 +47,8 @@ npm run preview    # Sirve el build de dist/ localmente
 
 Vite 5 + React 18 + TypeScript 5 (SPA, `"type": "module"`). UI **MUI 5** (`@mui/material` en 229
 archivos, `@mui/icons-material` en 85, `@mui/x-data-grid` y `-premium`, `@mui/x-date-pickers`),
-con Emotion solo como peer. Ruteo con `react-router-dom` 6 en `HashRouter`. Formularios con
-react-hook-form + yup (formik sobrevive en 5 archivos antiguos). HTTP con axios, importado **en un
+con Emotion solo como peer. Ruteo con `react-router-dom` 6: `BrowserRouter` en el navegador público y `HashRouter` en los autenticados. Formularios con
+react-hook-form + yup (formik sobrevive en 3 archivos antiguos). HTTP con axios, importado **en un
 solo archivo** (`common/api/api.adapter.ts`). Gráficos con chart.js + react-chartjs-2. Excel con
 exceljs + file-saver. Fechas con dayjs. Mapas con mapbox-gl. Calendario con `@fullcalendar/*`.
 Feedback con `Swal` de sweetalert2 en 25 archivos.
@@ -100,7 +100,12 @@ La app no tiene un router único. `src/routes/NavigationApp.tsx` elige el **nave
 | (autenticado, resto)  | `NavigationErgo`| `routesErgo.ts`|
 | (no autenticado)      | `Navigation`    | `routes.ts`    |
 
-- Cada navegador usa **`HashRouter`** (importante: el deploy es estático por FTP, sin reescrituras del servidor; por eso rutas con `#`).
+- **Dos routers distintos.**
+  - Los cinco navegadores autenticados usan **`HashRouter`**, con rutas con `#`.
+  - El público, `Navigation.tsx` L58, usa **`BrowserRouter`** desde marzo de 2025, con `HashRouter`
+    comentado. Por eso `/certificados`, `/servicios` y la portada van **sin `#`**.
+  - Recargar o entrar directo a esas URLs funciona porque `public/.htaccess` reescribe a
+    `index.html`. Un enlace a `#/certificados` abre la portada.
 - **Cada `routes*` define su propio `interface Route` local**; no hay tipo compartido. Agregar un campo obliga a editar los cinco archivos.
 - `status: boolean` sí es uniforme: los cuatro navegadores autenticados hacen `.filter(({ status }) => status)`, así que se desactiva una vista sin borrar la entrada.
 - **El filtrado por perfil NO es uniforme, y es la trampa del área:**
@@ -157,7 +162,7 @@ y regla de aislamiento:
 | `carrito-compra/` | 23 · 1210 | Mantenedor del carro del Administrador (reemplaza «Incidentes» en el menú) |
 | `servicio-cart-flow/` | 38 · 2771 | Página pública `/servicios`: carro de servicios (reemplazo de `Servicios/`) |
 | `Servicios/` | 22 · 1.859 | Página pública anterior — **intacta y sin rutear**, vía de reversa |
-| `Certificados/` | 21 · 995 | Certificados PDF por RUT |
+| `Certificados/` | 21 · 1.486 | Página pública de certificados por RUT: consulta única, descarga firmada y banner de ofertas mientras busca (guía propia) |
 | `Home/` | 21 · 1.354 | Portada anterior — **intacta y sin rutear**, vía de reversa |
 | `pagos-mensual/` | 14 · 1.798 | Resumen mensual de pagos y variante MDC |
 | `routes/` | 14 · 2.706 | Los 6 navegadores y sus 6 tablas de rutas |
@@ -524,13 +529,28 @@ escribas en un archivo versionado**.
 
 ## Agentes y skills del proyecto (`.claude/`)
 
-El repositorio trae sus propios agentes y skills, **todos versionados dentro del proyecto**. No
-están en la carpeta personal del usuario: en `~/.claude/skills/` solo hay skills genéricas
-(`frontend-design`, `find-skills`) que **no aplican a este proyecto**.
+El repositorio trae sus propios agentes y skills, **todos versionados dentro del proyecto**. Las
+skills de la carpeta personal, de plugin o integradas **no viajan con el repo**: `dataviz`,
+`api-design-principles`, `error-handling-patterns`, `code-review`, `security-review` y
+`figma:figma-design-to-code`. El flujo de specs solo las usa donde lo dice
+`.claude/MATRIZ-HERRAMIENTAS.md` (perfiles `GRAFICOS`, `CONTRATO`, cierre, `SENSIBLE`, `FIGMA`), y
+si faltan lo dice y sigue.
 
-Las dos skills del flujo spec-driven (`spec`, `spec-impl`) son **importadas**, no propias: vienen
-de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se reinstalan con
-`npx skills@latest add Klerith/fernando-skills`.
+Siete skills son **importadas**, no propias. Viven en `.agents/skills/`, enlazadas desde
+`.claude/skills/`, con su origen y hash en `skills-lock.json`. Se reinstalan con
+`npx skills@latest add <origen>`.
+
+| Skill | Origen |
+|---|---|
+| `spec`, `spec-impl` | `Klerith/fernando-skills` |
+| `brainstorming` | `obra/superpowers` |
+| `frontend-design` | `anthropics/skills` |
+| `interface-design` | `Dammyjay93/interface-design` |
+| `vercel-react-best-practices` | `vercel-labs/agent-skills` |
+| `changelog-generator` | `composiohq/awesome-claude-skills` |
+
+Las cinco últimas **no se usan sueltas sobre el código**: entran a través de los adaptadores de la
+matriz, que las encajan en React 18 + Vite + MUI 5 y en las reglas de cada guía.
 
 ### Documento de referencia
 
@@ -538,6 +558,16 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
   del modelo (`rut_paciente` y `user_email`), las entidades, el catálogo de los ~70 endpoints que consume el front, los
   perfiles y el patrón canónico de módulo. Complementa a este archivo: aquí están las
   convenciones, allí el modelo. Se actualiza cuando cambia el modelo o aparece un endpoint nuevo.
+- **`.claude/MATRIZ-HERRAMIENTAS.md`** — el **kit de ejecución** del flujo de specs. Es la
+  fuente única que leen `/spec-ergo-front`, `/spec-impl-ergo-front`, `/spec-verify-ergo-front` y el
+  agente verificador para decidir qué skills, agentes y MCP usar en cada spec. Contiene:
+  - los perfiles de spec (`UI-PUBLICA`, `UI-PRODUCTO`, `GRAFICOS`, `CONTRATO`, `SENSIBLE`,
+    `TRANSVERSAL`, `CLINICO`, `FIGMA`);
+  - la matriz perfil × fase;
+  - los adaptadores de cada skill externa;
+  - lo excluido a propósito: `claude-in-chrome`, Snyk y `mysql-server`.
+
+  Para cambiar el kit se edita este archivo, no las tres skills.
 
 ### Skills (`.claude/skills/`)
 
@@ -551,9 +581,14 @@ de `Klerith/fernando-skills` y su origen y hash están en `skills-lock.json`. Se
 | `graphify` | Construir (`/graphify`) y consultar el grafo de conocimiento del código en `graphify-out/` (ver «graphify»). La instaló `graphify install --platform claude`. |
 | `context7-mcp` | Consultar la documentación al día de una librería por Context7 (ver «Servidores MCP»). |
 | `spec`, `spec-impl` | Flujo spec-driven genérico (enlazadas a `.agents/skills/`, ver sección siguiente). |
-| `spec-ergo-front` | `/spec` + convenciones del repo para **diseñar o revisar** una spec en `specs/<modulo>/` (ver sección siguiente). |
-| `spec-impl-ergo-front` | `/spec-impl` + cierre propio del proyecto (ver sección siguiente). |
-| `spec-verify-ergo-front` | Verifica specs ya implementadas y deja cada criterio con evidencia ✅/❌/⏸ (graphify, Context7, Playwright). Solo manual: `/spec-verify-ergo-front <NN-slug \| módulo \| todas>`. |
+| `spec-ergo-front` | `/spec` + convenciones del repo para **diseñar o revisar** una spec en `specs/<modulo>/`, con el kit de su perfil y *builder check* al guardar (ver sección siguiente). |
+| `spec-impl-ergo-front` | `/spec-impl` + kit de la spec + cierre propio del proyecto (ver sección siguiente). |
+| `spec-verify-ergo-front` | Verifica specs ya implementadas y deja cada criterio con evidencia ✅/❌/⏸ (graphify, Context7, Playwright, LSP). Revisión de calidad por los agentes del repo con las skills del kit (Fase 2b), `security-review` si es sensible (3b) y auditoría visual de las capturas (5b). Solo manual: `/spec-verify-ergo-front <NN-slug \| módulo \| todas>`. |
+| `brainstorming` | Importada. Técnica de conversación para diseñar: leer antes de preguntar, una pregunta a la vez, mensaje de enfoques, *builder check*. La usa `/spec-ergo-front` a través del adaptador §4.1 de la matriz (sin su flujo de `docs/superpowers/`). |
+| `frontend-design` | Importada. Dirección visual de UI **pública** (`home-ergo`, `servicio-cart-flow`, `Certificados`), siempre dentro de MUI 5 + `sx` y la paleta del módulo. |
+| `interface-design` | Importada. Oficio de UI **de producto** (paneles, tablas, mantenedores): jerarquía, densidad, estados. Mismas restricciones de stack. |
+| `vercel-react-best-practices` | Importada. Rendimiento React; **aquí solo las reglas que aplican a React 18 + Vite SPA** (filtro §4.3 de la matriz: nada de `server-*`, SWR ni APIs de React 19). |
+| `changelog-generator` | Importada. Nota de versión en lenguaje de usuario al cerrar `/spec-impl-ergo-front` (en `CHANGELOG.md` si existe; si no, en el informe). |
 
 ### Agentes (`.claude/agents/`)
 
@@ -571,6 +606,15 @@ Los cuatro agentes de módulo tienen **perímetro cerrado**: leen lo que haga fa
 flujo, pero solo modifican su carpeta. Si la tarea exige tocar algo fuera, se detienen y lo
 reportan en vez de improvisar. Cada uno carga su skill homónima al arrancar.
 
+En el flujo de specs, los cuatro y `ergosanitas-developer` son los **revisores**:
+
+- en el **cierre** de `/spec-impl-ergo-front` corrigen dentro de su perímetro;
+- en la **Fase 2b** de `/spec-verify-ergo-front` solo leen;
+- `ergosanitas-architect` se suma si la spec es `TRANSVERSAL`.
+
+Todos cargan las skills del Kit de ejecución que les pasa el prompt. Cada definición lo explica en
+su sección sobre el flujo de specs.
+
 ⚠️ **`ergo-chequeo` y `ergo-chequeo-cardiovascular` son dueños de módulos distintos** y ninguno
 puede tocar el del otro. El perfil decide a quién llamar: `Colegios` → el nuevo; `Medicos` y
 `Usuario` → el viejo. `Administrador` tiene ahora su propio módulo, `src/chequeo-administrador/`,
@@ -579,21 +623,58 @@ que no es de ninguno de los dos (lo lleva `ergosanitas-developer`). El **ruteo**
 `ergosanitas-architect`.
 
 **Módulos sin agente propio pero con guía**: `src/ficha-clinica/`, `src/home-ergo/`,
-`src/chequeo-administrador/`, `src/carrito-compra/` y `src/servicio-cart-flow/` usan
-`ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
+`src/chequeo-administrador/`, `src/carrito-compra/`, `src/servicio-cart-flow/` y
+`src/Certificados/` usan `ergosanitas-developer` más su `CLAUDE_<MODULO>.md` en `specs/`.
 
-## Flujo Spec-Driven (skills `/spec`, `/spec-impl`, `/spec-impl-ergo-front` y `/spec-verify-ergo-front`)
+`src/Certificados/` es la página pública `/certificados` (SPEC 01 de `certificados`, sobre la
+SPEC 07 del back): una sola consulta por RUT y descargas con URL firmada. Desde la SPEC 02, mientras
+busca muestra un banner con las ofertas `promocion` de `GET home-imagenes`, pedidas una vez al
+montar. Precarga solo la oferta inicial, porque los flyers pesan unos 2 MB. Lo único que importa de
+`home-ergo` es `urlWhatsappPromo`. **Antes de tocarlo, lee `specs/certificados/CLAUDE_CERTIFICADOS.md`.**
 
-El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`:
+## Flujo Spec-Driven (skills `/spec-ergo-front`, `/spec-impl-ergo-front` y `/spec-verify-ergo-front`)
 
-- **`/spec <descripción>`** — diseña una spec por fases (nunca escribe código). Guarda en `specs/<modulo>/NN-slug.md` en estado `Borrador`. Lee `template.md` de la skill para la estructura.
-- **`/spec-ergo-front <descripción | spec existente>`** — el diseñador que conviene usar aquí: invoca `/spec` y le añade la carpeta por módulo, la guía `CLAUDE_<MODULO>.md`, el contrato copiado del back real y su spec hermana; con una spec existente entra en **modo revisión** (hallazgos con línea, contrato, criterios, archivos). Deja la spec en `Borrador`.
-- **`/spec-impl <NN-slug>`** — implementa una spec **ya aprobada** (`Aprobado`); crea/cambia a la rama `spec-NN-slug` (según `specs/.spec-config.yml`, `AutoCreateBranch: true` por defecto) e implementa por pasos con pausas para revisar diffs.
-- **`/spec-impl-ergo-front <NN-slug>`** — **el que conviene usar en este repo.** No reimplementa nada:
-  invoca `/spec-impl` tal cual y le añade el cierre propio del proyecto — detectar módulos
-  tocados, `npm run build` + `eslint`, **revisión por el agente dueño de cada módulo**, repaso de
-  los criterios de aceptación, y actualización de `CLAUDE_<MODULO>.md` / `ARQUITECTURA.md` /
-  estado de la spec. Marca `Implementado` solo si todos los criterios pasaron.
+El proyecto usa diseño guiado por especificación. Las skills viven en `.claude/skills/` y `.agents/skills/`.
+Así se relacionan las piezas:
+
+```
+            .claude/MATRIZ-HERRAMIENTAS.md  (perfiles → skills · agentes · MCP por fase)
+                 │ la leen los tres al arrancar
+                 ▼
+/spec-ergo-front ──escribe──► specs/<modulo>/NN-slug.md  (Borrador, con «## Kit de ejecución»)
+   │ envuelve /spec                       │ una persona la cambia a «Aprobado»
+   │                                      ▼
+   │                      /spec-impl-ergo-front ──► código + cierre (build, eslint, code-review,
+   │                         envuelve /spec-impl        security-review, agente dueño, changelog)
+   │                                      │ marca «Implementado»
+   │                                      ▼
+   │                      /spec-verify-ergo-front ──► evidencia ✅/❌/⏸ por criterio
+   │                         (o el agente homónimo)      + «Estado de verificación»
+   ▼
+CLAUDE_<MODULO>.md manda sobre todo el kit en las tres fases
+```
+
+- **`/spec <descripción>`** — diseña una spec por fases (nunca escribe código). Guarda en `specs/<modulo>/NN-slug.md` en estado `Borrador`. Lee `template.md` de la skill para la estructura. **Aquí no se usa suelta**: la envuelve `/spec-ergo-front`.
+- **`/spec-ergo-front <descripción | spec existente>`** — el diseñador que conviene usar aquí. Invoca `/spec` y le añade:
+  - la carpeta por módulo y la guía `CLAUDE_<MODULO>.md`;
+  - el contrato copiado del back real y su spec hermana;
+  - el **Kit de ejecución** del perfil de la spec: la técnica de `brainstorming`, la skill de diseño y engram;
+  - el ***builder check***: un subagente lee la spec como si fuera a implementarla y saca las dudas.
+
+  Con una spec existente entra en **modo revisión** (hallazgos con línea, contrato, criterios, archivos y kit). Deja la spec en `Borrador`.
+- **`/spec-impl <NN-slug>`** — implementa una spec **ya aprobada** (`Aprobado`); crea/cambia a la rama `spec-NN-slug` (según `specs/.spec-config.yml`, `AutoCreateBranch: true` por defecto) e implementa por pasos con pausas para revisar diffs. **Aquí no se usa suelta**: la envuelve `/spec-impl-ergo-front`.
+- **`/spec-impl-ergo-front <NN-slug>`** — **el que conviene usar en este repo.** No reimplementa
+  nada: invoca `/spec-impl` tal cual, le carga el **Kit de ejecución** de la spec (Fase 0) y le
+  añade el cierre propio del proyecto:
+  1. detecta los módulos tocados;
+  2. `npm run build` + `eslint`;
+  3. `code-review` y, si la spec es `SENSIBLE`, `security-review`;
+  4. **revisión por el agente dueño de cada módulo**, con las skills del kit;
+  5. repaso de los criterios de aceptación;
+  6. actualización de `CLAUDE_<MODULO>.md` / `ARQUITECTURA.md` / estado de la spec, más
+     `graphify update` y la nota de `changelog-generator`.
+
+  Marca `Implementado` solo si todos los criterios pasaron.
 - **`/spec-verify-ergo-front <NN-slug | módulo | todas>`** — el tercer paso, después de implementar.
   Mapea el código con graphify, revisa dependencias e impactos (y lanza en solo lectura al agente
   dueño del módulo), contrasta buenas prácticas con Context7, recorre los criterios uno por uno y
@@ -605,15 +686,16 @@ El proyecto usa diseño guiado por especificación. Las skills viven en `.claude
 
 Convenciones del repo:
 
-- **Las specs se agrupan por módulo**: hoy hay seis carpetas,
+- **Las specs se agrupan por módulo**: hoy hay siete carpetas,
   `specs/ficha-clinica/` (`01-…` a `04-…`), `specs/home-ergo/` (`01-…` a `05-…`),
   `specs/chequeo-cardiovascular/` (`01-…` a `05-…`), `specs/chequeo-administrador/` (`01-…` a `02-…`),
-  `specs/carrito-compra/` (`01-…`) y `specs/servicio-cart-flow/` (`01-…`).
-  La numeración es correlativa **dentro de cada carpeta**, así que existen seis specs `01`
+  `specs/carrito-compra/` (`01-…`), `specs/servicio-cart-flow/` (`01-…`) y `specs/certificados/` (`01-…` a `02-…`).
+  La numeración es correlativa **dentro de cada carpeta**, así que existen siete specs `01`
   distintas y hay que nombrarlas con su módulo. Si el módulo tiene guía propia
   (`CLAUDE_<MODULO>.md`), vive en la misma carpeta y se actualiza al cerrar cada spec:
   `CLAUDE_FICHA_CLINICA.md`, `CLAUDE_HOME_ERGO.md`, `CLAUDE_CHEQUEO_CARDIOVASCULAR.md`,
-  `CLAUDE_CHEQUEO_ADMINISTRADOR.md`, `CLAUDE_CARRITO_COMPRA.md` y `CLAUDE_SERVICIO_CART_FLOW.md`.
+  `CLAUDE_CHEQUEO_ADMINISTRADOR.md`, `CLAUDE_CARRITO_COMPRA.md`, `CLAUDE_SERVICIO_CART_FLOW.md` y
+  `CLAUDE_CERTIFICADOS.md`.
 - **Los estados van en español**: `Borrador` → `Aprobado` → `Implementado` (también
   `En revisión` / `Obsoleto`). La skill acepta ambos idiomas, pero mantén el español.
 - **El cambio a `Aprobado` lo hace el humano**, nunca el agente. `/spec-impl` se niega a
@@ -621,7 +703,42 @@ Convenciones del repo:
 - **Si durante la implementación una decisión de la spec resulta equivocada, se corrige
   en la spec**, no en el código por sorpresa.
 
-Al arrancar una feature grande, prefiere pasar por `/spec` antes de codificar.
+**Kit de ejecución automático.** Los tres comandos `*-ergo-front` leen
+`.claude/MATRIZ-HERRAMIENTAS.md` al arrancar y siguen estos pasos:
+
+1. Detectan los **perfiles** de la spec por su carpeta, «Área afectada» y palabras clave.
+2. Imprimen la tabla del kit.
+3. La ejecutan **sin pedir confirmación**.
+
+Qué carga cada fase:
+
+| Fase | Qué carga |
+|---|---|
+| Diseño | `brainstorming` (técnica), `frontend-design` o `interface-design`, `dataviz`, `ergo-contrato-api` |
+| Implementación | `ergo-code`, la skill del módulo, `vercel-react-best-practices` filtrada y la skill de diseño. En el cierre: `code-review medium`, `security-review` si la spec es `SENSIBLE` y `changelog-generator` |
+| Verificación | Revisores con las skills del kit, `security-review` y auditoría visual de las capturas |
+| Siempre | graphify, Context7, engram y LSP |
+
+`/spec-ergo-front` deja el kit escrito en la spec (sección `## Kit de ejecución`) y los otros
+dos parten de él. En las specs anteriores lo derivan de la matriz. Lo que falte se marca ❌ y se
+sigue. El kit **no relaja** ninguna regla: el bloqueo por estado, las pausas por paso, el login
+manual, solo local y nada de commits sin pedirlo siguen igual.
+
+La vista inversa (qué comando o agente carga cada skill y cada MCP) está en la matriz §8. Para
+agregar o quitar una pieza del kit, sigue su checklist en §9: no se edita en las tres skills.
+
+**Skills importadas fuera del flujo de specs.** `brainstorming`, `vercel-react-best-practices`,
+`frontend-design`, `interface-design` y `changelog-generator` se activan solas en cualquier tarea,
+no solo dentro de los `/spec-*-ergo-front`. Donde se activen, se aplican **a través de su
+adaptador** (matriz §0b y §4):
+
+- `brainstorming` nunca escribe en `docs/superpowers/` ni llama a `writing-plans`. Si sale una
+  feature, el paso siguiente es `/spec-ergo-front`.
+- `vercel` solo con las reglas que sirven a React 18 + Vite: sin SWR, `next/*` ni React 19.
+- Las de diseño trabajan dentro de MUI 5 + `sx` + `tema.ts`.
+- Los textos de estas skills **no se editan**: rompería su hash en `skills-lock.json`.
+
+Al arrancar una feature grande, prefiere pasar por `/spec-ergo-front` antes de codificar.
 
 ## CI/CD y versionado
 
